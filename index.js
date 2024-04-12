@@ -33,7 +33,8 @@ const orderRoutesMob = require('./routes/mob/orderRoutes.js');
 dotenv.config();
 
 mongoose
-  .connect(process.env.MONGODB_URI)
+  // .connect(process.env.MONGODB_URI)
+  .connect('mongodb+srv://admin:admin123456@chatapp.fe0krcf.mongodb.net/sdb')
   .then(() => {
     console.log('connected to db');
   })
@@ -94,9 +95,9 @@ app.use((err, req, res, next) => {
 
 const port = process.env.PORT || 5000;
 
-// const httpServer = http.Server(app);
-// const io = new Server(httpServer, { cors: { origin: '*' } });
-// const users = [];
+const httpServer = http.Server(app);
+const io = new Server(httpServer, { cors: { origin: '*' } });
+const users = [];
 
 // io.on("connection", (socket) => {
 //   socket.on("onLogin", (user) => {
