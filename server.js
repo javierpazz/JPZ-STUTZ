@@ -46,12 +46,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/api/keys/paypal', (req, res) => {
-  res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
-});
-app.get('/api/keys/google', (req, res) => {
-  res.send({ key: process.env.GOOGLE_API_KEY || '' });
-});
+// app.get('/api/keys/paypal', (req, res) => {
+//   res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
+// });
+// app.get('/api/keys/google', (req, res) => {
+//   res.send({ key: process.env.GOOGLE_API_KEY || '' });
+// });
 
 const upload = multer({
   storage: multer.memoryStorage()
@@ -83,10 +83,10 @@ app.use('/api/valuees', valueeRouter);
 app.use('/api/configurations', configurationRouter);
 
 // const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, '/frontend/build')));
-app.get('*', (req, res) =>
-  res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
-);
+// app.use(express.static(path.join(__dirname, '/frontend/build')));
+// app.get('*', (req, res) =>
+//   res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
+// );
 
 app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message });
