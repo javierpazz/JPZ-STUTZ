@@ -96,7 +96,7 @@ app.use((err, req, res, next) => {
 const port = process.env.PORT || 5000;
 
 const httpServer = http.Server(app);
-const io = new Server(httpServer, { cors: { origin: '*' } });
+const io = new Server(httpServer, { cors: {} });
 const users = [];
 
 // io.on("connection", (socket) => {
