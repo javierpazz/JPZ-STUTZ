@@ -22,11 +22,11 @@ const receiptRouter = require ('./routes/receiptRoutes.js');
 /*
 * IMPORTAR RUTAS
 */
-const usersRoutesMob = require('./routes/mob/userRoutes');
-const categoriesRoutesMob = require('./routes/mob/categoryRoutes');
-const productRoutesMob = require('./routes/mob/productRoutes');
-const addressRoutesMob = require('./routes/mob/addressRoutes');
-const orderRoutesMob = require('./routes/mob/orderRoutes');
+const usersRoutesMob = require('./routes/mob/userRoutes.js');
+const categoriesRoutesMob = require('./routes/mob/categoryRoutes.js');
+const productRoutesMob = require('./routes/mob/productRoutes.js');
+const addressRoutesMob = require('./routes/mob/addressRoutes.js');
+const orderRoutesMob = require('./routes/mob/orderRoutes.js');
 // const mercadoPago
 
 
