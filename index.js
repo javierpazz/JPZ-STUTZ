@@ -34,7 +34,7 @@ dotenv.config();
 
 mongoose
   // .connect(process.env.MONGODB_URI)
-  .connect('mongodb+srv://admin:admin123456@chatapp.fe0krcf.mongodb.net/sdb')
+  .connect(`${process.env.MONGODB_URI}`)
   .then(() => {
     console.log('connected to db');
   })
