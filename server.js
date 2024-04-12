@@ -1,7 +1,7 @@
 const http = require ('http');
 const { Server } = require ('socket.io');
 const express = require ('express');
-// const cors = require('cors');
+const cors = require('cors');
 const multer = require('multer');
 const path = require ('path');
 const mongoose = require ('mongoose');
