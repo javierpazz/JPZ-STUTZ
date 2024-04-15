@@ -18,7 +18,7 @@ module.exports = {
     },
 
     async create(req, res) {
-
+        
         const category = JSON.parse(req.body.category); // CAPTURO LOS DATOS QUE ME ENVIE EL CLIENTE
 
         const files = req.files;

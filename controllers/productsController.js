@@ -65,7 +65,7 @@ module.exports = {
                             }
                         }
 
-                        await Product.update(product, (err, data) => {
+                        await Product.updateS(product, (err, data) => {
                             if (err) {
                                 return res.status(501).json({
                                     success: false,
@@ -98,7 +98,7 @@ module.exports = {
     update(req, res) {
         const product = req.body;
 
-        Product.update(product, (err, data) => {
+        Product.updateS(product, (err, data) => {
             if (err) {
                 return res.status(501).json({
                     success: false,
@@ -128,7 +128,7 @@ module.exports = {
             });
         }
         else {
-            Product.update(product, (err, id_product) => {
+            Product.updateS(product, (err, id_product) => {
 
                 if (err) {
                     return res.status(501).json({
@@ -156,7 +156,7 @@ module.exports = {
                             }
                         }
 
-                        await Product.update(product, (err, data) => {
+                        await Product.updateS(product, (err, data) => {
                             if (err) {
                                 return res.status(501).json({
                                     success: false,

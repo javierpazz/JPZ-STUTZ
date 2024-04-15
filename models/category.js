@@ -18,19 +18,20 @@ const Category = mongoose.model('Category', categorySchema);
 
 
 Category.getAll = async (result) => {
-    const data = await Category.find(
-        (err, data) => {
-            if (err) {
-                console.log('Error:', err);
-                result(err, null);
-            }
-            else {
-                console.log('Id de la nueva categoria:', data);
-                result(null, data);
-            }
-        }
-    )
-}
+      
+    try {
+        const data = await Category.find();
+        console.log('Id de la nueva categoria:', data);
+        result(null, data);
+      } catch (error) {
+        let err = '';
+        err = error;
+        console.log('Error:', err);
+        result(err, null);
+      }
+      };
+  
+
 
 Category.create = async (category, result) => {
  

@@ -2,9 +2,9 @@ const mongoose = require ('mongoose');
 
 const reviewSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    comment: { type: String, required: true },
-    rating: { type: Number, required: true },
+    name: { type: String },
+    comment: { type: String },
+    rating: { type: Number },
   },
   {
     timestamps: true,
@@ -14,16 +14,21 @@ const reviewSchema = new mongoose.Schema(
 const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    slug: { type: String, required: true, unique: true },
-    image: { type: String, required: true },
+    slug: { type: String },
+    // slug: { type: String, required: true, unique: true },
+    image: { type: String },
     images: [String],
-    brand: { type: String, required: true },
-    category: { type: String, required: true },
+    image1: { type: String },
+    image2: { type: String },
+    image3: { type: String },
+    brand: { type: String },
+    category: { type: String },
+    id_category: { type: String },    
     description: { type: String, required: true },
-    price: { type: Number, required: true },
-    countInStock: { type: Number, required: true },
-    rating: { type: Number, required: true },
-    numReviews: { type: Number, required: true },
+    price: { type: Number },
+    countInStock: { type: Number },
+    rating: { type: Number },
+    numReviews: { type: Number },
     reviews: [reviewSchema],
   },
   {
@@ -34,19 +39,18 @@ const productSchema = new mongoose.Schema(
 const Product = mongoose.model('Product', productSchema);
 
 Product.findByCategory = async (id_categoryR, result) => {
-  const data = await Product.find({id_category : id_categoryR }, 
-         (err, res) => {
-             if (err) {
-                 console.log('Error:', err);
-                 result(err, null);
-             }
-             else {
-                 console.log('Id de la nuevo producto:', res);
-                 result(null, res);
-             }
-         }
-   )
- }
+
+  try {
+    const data = await Product.find({id_category : id_categoryR }); 
+    console.log('Id de la nueva categoria:', data);
+    result(null, data);
+  } catch (error) {
+    let err = '';
+    err = error;
+    console.log('Error:', err);
+    result(err, null);
+  }
+  };
  
  
  Product.create = async (product, result) => {
@@ -78,7 +82,7 @@ Product.findByCategory = async (id_categoryR, result) => {
  }
  
  
- Product.update = async (product, result) => {
+ Product.updateS = async (product, result) => {
  
  
    const productR = await Product.findById(product._id); 
@@ -90,22 +94,20 @@ Product.findByCategory = async (id_categoryR, result) => {
        productR.image2 = product.image2,
        productR.image3 = product.image3,
        productR.id_category = product.id_category
-       let productRe = await productR.save(
-         (err, res) => {
-             if (err) {
-                 console.log('Error:', err);
-                 result(err, null);
-             }
-             else {
-                 console.log('Id del producto actualizado:', product._id);
-                 result(null, product._id);
-             }
-         }
-     );
-   } else {
-       console.log('problema con find');
-   }
- }
+       try {
+        let productRe = await productR.save;
+        console.log('Id del producto actualizado:', product._id);
+        result(null, productRe._id);
+      } catch (error) {
+        let err = '';
+        err = error;
+        console.log('Error:', err);
+        result(err, null);
+      }
+      };
+    }
+
+
  
  Product.delete = async (id, result) => {
    const product = await Product.findById(id); 
