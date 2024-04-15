@@ -9,9 +9,9 @@ module.exports = (app, upload) => {
 
     // app.get('/api/users/findDeliveryMen', passport.authenticate('jwt', { session: false }), usersController.findDeliveryMen);
 
-    app.post('/api/mob/users/create', usersController.register);
-    app.post('/api/mob/users/createWithImage', upload.array('image', 1), usersController.registerWithImage);
-    app.post('/api/mob/users/login', usersController.login);
+    app.post('/api/users/create', usersController.register);
+    app.post('/api/users/createWithImage', upload.array('image', 1), usersController.registerWithImage);
+    app.post('/api/users/login', usersController.login);
     
     // 401 UNAUTHORIZED
     app.put('/api/users/update', upload.array('image', 1), usersController.updateWithImage);
