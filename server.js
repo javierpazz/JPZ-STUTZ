@@ -75,17 +75,17 @@ orderRoutesMob(app);
 
 
 
-app.use('/api/adm/upload', uploadRouter);
-app.use('/api/adm/seed', seedRouter);
-app.use('/api/adm/products', productRouter);
-app.use('/api/adm/suppliers', supplierRouter);
-app.use('/api/adm/stateOrds', stateOrdRouter);
-app.use('/api/adm/users', userRouter);
-app.use('/api/adm/orders', orderRouter);
-app.use('/api/adm/invoices', invoiceRouter);
-app.use('/api/adm/receipts', receiptRouter);
-app.use('/api/adm/valuees', valueeRouter);
-app.use('/api/adm/configurations', configurationRouter);
+app.use('/api/upload', uploadRouter);
+app.use('/api/seed', seedRouter);
+app.use('/api/products', productRouter);
+app.use('/api/suppliers', supplierRouter);
+app.use('/api/stateOrds', stateOrdRouter);
+app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter);
+app.use('/api/invoices', invoiceRouter);
+app.use('/api/receipts', receiptRouter);
+app.use('/api/valuees', valueeRouter);
+app.use('/api/configurations', configurationRouter);
 
 // const __dirname = path.resolve();
 // app.use(express.static(path.join(__dirname, '/frontend/build')));
