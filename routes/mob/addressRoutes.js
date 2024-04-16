@@ -9,8 +9,8 @@ module.exports = (app) => {
 
     // app.get('/api/categories/getAll',  passport.authenticate('jwt', { session: false }), categoriesController.getAll);
 
-    app.get('/api/address/findByUser/:id_user', addressController.findByUser);
-    app.post('/api/address/create', addressController.create);
+    app.get('/api/mob/address/findByUser/:id_user', addressController.findByUser);
+    app.post('/api/mob/address/create', addressController.create);
 
 
 }
