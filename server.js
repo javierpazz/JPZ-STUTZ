@@ -93,6 +93,12 @@ app.use('/api/configurations', configurationRouter);
 //   res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
 // );
 
+app.use(express.static('public'));
+app.get('*', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+})
+
+
 app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message });
 });
