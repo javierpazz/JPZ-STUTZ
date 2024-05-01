@@ -24,21 +24,35 @@ const userSchema = new mongoose.Schema(
 
 const User = mongoose.model('User', userSchema);
 
-
+const db = require('../config/config');
 
 User.findDeliveryMen = async (result) => {
 
-  const userR = await User.find((err, res) => {
-    if (err) {
-        console.log('Error:', err);
-        result(err, null);
-    }
-    else {
-        console.log('Usuario obtenido:', res);
-        result(null, res);
-    }
+
+  try {
+    const data = await User.find({isAdmin : false }); 
+    console.log('Repartidores:', data);
+    result(null, data);
+  } catch (error) {
+    let err = '';
+    err = error;
+    console.log('Error:', err);
+    result(err, null);
   }
-  );
+
+
+
+  // const userR = await User.find((err, res) => {
+  //   if (err) {
+  //       console.log('Error:', err);
+  //       result(err, null);
+  //   }
+  //   else {
+  //       console.log('Usuario obtenido:', res);
+  //       result(null, res);
+  //   }
+  // }
+  // );
   }
   
   
@@ -80,19 +94,19 @@ User.findDeliveryMen = async (result) => {
         roles: [{
           id : 1,
           name : "ADMIN",
-          image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/image_1708694165987?alt=media&token=41d42d49-64f7-4c3e-b10e-eb31797cd84d",
+          image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
           route : "/restaurant/orders/list"
         },
         {
           id : 2,
           name : "REPARTIDOR",
-          image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/image_1708694165987?alt=media&token=41d42d49-64f7-4c3e-b10e-eb31797cd84d",
+          image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/delivery.png?alt=media&token=ceb780de-a6fa-4466-a227-1c984bced734",
           route : "/delivery/orders/list"
         },
-        {
+      {
           id : 3,
           name : "CLIENTE",
-          image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/image_1708694165987?alt=media&token=41d42d49-64f7-4c3e-b10e-eb31797cd84d",
+          image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user.png?alt=media&token=7af6485c-405f-4952-8875-f010f182ee8e",
           route : "/client/products/list"
         }
       ],

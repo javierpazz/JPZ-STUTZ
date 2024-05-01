@@ -4,10 +4,10 @@ const invoiceSchema = new mongoose.Schema(
   {
     invoiceItems: [
       {
-        slug: { type: String, required: true },
+        slug: { type: String },
         name: { type: String, required: true },
         quantity: { type: Number, required: true },
-        image: { type: String, required: true },
+        image: { type: String },
         price: { type: Number, required: true },
         product: {
           type: mongoose.Schema.Types.ObjectId,
@@ -43,7 +43,13 @@ const invoiceSchema = new mongoose.Schema(
     taxPrice: { type: Number },
     totalPrice: { type: Number },
     totalBuy: { type: Number },
+    id_client: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    id_delivery: { type: mongoose.Schema.Types.ObjectId, ref: 'Delivery' },
+    id_address: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address',
+    },
     supplier: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Supplier',
@@ -67,6 +73,9 @@ const invoiceSchema = new mongoose.Schema(
     cotDat: { type: Date },
     ordYes: { type: String },
     staOrd: { type: String },
+    status: { type: String},
+    lat: { type: Number },
+    lng: { type: Number },
   },
   {
     timestamps: true,
@@ -74,6 +83,7 @@ const invoiceSchema = new mongoose.Schema(
 );
 
 const Invoice = mongoose.model('Invoice', invoiceSchema);
+const db = require('../config/config');
 
 Invoice.findByStatus = async (status, result) => {
 

@@ -15,27 +15,22 @@ const addressSchema = new mongoose.Schema(
 
 const Address = mongoose.model('Address', addressSchema);
 
-
-
-
+const db = require('../config/config');
 
 Address.findByUser = async (id_userR, result) => {
-        const data = await Address.find({id_user : id_userR }, 
-            (err, data) => {
-                if (err) {
-                    console.log('Error:', err);
-                    result(err, null);
-                }
-                else {
-                    result(null, data);
-                }
-            }
-    
-        )
+
+    try {
+      const data = await Address.find({id_user : id_userR });
+      console.log('Addresses:', data);
+      result(null, data);
+    } catch (error) {
+      let err = '';
+      err = error;
+      console.log('Error:', err);
+      result(err, null);
     }
-           
-
-
+    };
+  
 
 
 Address.create = async (address, result) => {

@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 const storage = require('../utils/cloud_storage');
+const { generateToken } = require ('../utils.js');
 
 module.exports = {
 
@@ -48,8 +49,8 @@ module.exports = {
 
             const isPasswordValid = await bcrypt.compare(password, myUser.password);
             if (isPasswordValid) {
-                const token = jwt.sign({id: myUser._id, email: myUser.email}, keys.secretOrKey, {});
-
+                // const token = jwt.sign({id: myUser._id, email: myUser.email}, keys.secretOrKey, {});
+                const token = generateToken(myUser);
                 const data = {
                     _id: myUser._id,
                     name: myUser.name,
@@ -57,7 +58,7 @@ module.exports = {
                     email: myUser.email,
                     phone: myUser.phone,
                     image: myUser.image,
-                    session_token: `JWT ${token}`,
+                    session_token: token,
                     roles: myUser.roles
                 }
 
@@ -129,8 +130,11 @@ module.exports = {
 
         
             user.id = data;
-            const token = jwt.sign({id: user.id, email: user.email}, keys.secretOrKey, {});
-            user.session_token = `JWT ${token}`;
+            // const token = jwt.sign({id: user.id, email: user.email}, keys.secretOrKey, {});
+            // user.session_token = `JWT ${token}`;
+            const token = generateToken(user);
+            user.session_token = token;
+
 
             // Rol.create(user.id, 3, (err, data) => {
                 

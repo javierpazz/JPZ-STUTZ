@@ -11,5 +11,5 @@ const configurationSchema = new mongoose.Schema(
 );
 
 const Configuration = mongoose.model('Configuration', configurationSchema);
-
+const db = require('../config/config');
 module.exports = Configuration;

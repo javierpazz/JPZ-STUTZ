@@ -18,7 +18,7 @@ const uploadRouter = require ('./routes/uploadRoutes.js');
 const invoiceRouter = require ('./routes/invoiceRoutes.js');
 const receiptRouter = require ('./routes/receiptRoutes.js');
 
-
+const ordersSocket = require('./sockets/ordersSocket');
 /*
 * IMPORTAR RUTAS
 */
@@ -32,15 +32,15 @@ const orderRoutesMob = require('./routes/mob/orderRoutes.js');
 
 dotenv.config();
 
-mongoose
-  // .connect(process.env.MONGODB_URI)
-  .connect(`${process.env.MONGODB_URI}`)
-  .then(() => {
-    console.log('connected to db');
-  })
-  .catch((err) => {
-    console.log(err.message);
-  });
+// mongoose
+//   // .connect(process.env.MONGODB_URI)
+//   .connect(`${process.env.MONGODB_URI}`)
+//   .then(() => {
+//     console.log('connected to db');
+//   })
+//   .catch((err) => {
+//     console.log(err.message);
+//   });
 
 const app = express();
 
@@ -58,6 +58,7 @@ app.get('/api/keys/google', (req, res) => {
   res.send({ key: process.env.GOOGLE_API_KEY || '' });
 });
 
+
 const upload = multer({
   storage: multer.memoryStorage()
 });
@@ -68,7 +69,7 @@ const upload = multer({
 */
 usersRoutesMob(app, upload);
 categoriesRoutesMob(app ,upload);
-// addressRoutes(app);
+addressRoutesMob(app);
 productRoutesMob(app ,upload);
 orderRoutesMob(app);
 // mercadoPagoRoutes(app);
@@ -103,10 +104,12 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message });
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
 const httpServer = http.Server(app);
 const io = new Server(httpServer, { cors: { origin: '*' } });
+ordersSocket(io);
+
 const users = [];
 
 io.on("connection", (socket) => {

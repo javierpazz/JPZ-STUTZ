@@ -11,4 +11,6 @@ const stateOrdSchema = new mongoose.Schema(
 );
 
 const StateOrd = mongoose.model('StateOrd', stateOrdSchema);
+const db = require('../config/config');
+
 module.exports = StateOrd;
