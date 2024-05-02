@@ -32,15 +32,15 @@ const orderRoutesMob = require('./routes/mob/orderRoutes.js');
 
 dotenv.config();
 
-// mongoose
-//   // .connect(process.env.MONGODB_URI)
-//   .connect(`${process.env.MONGODB_URI}`)
-//   .then(() => {
-//     console.log('connected to db');
-//   })
-//   .catch((err) => {
-//     console.log(err.message);
-//   });
+mongoose
+  // .connect(process.env.MONGODB_URI)
+  .connect(`${process.env.MONGODB_URI}`)
+  .then(() => {
+    console.log('connected to db');
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
 
 const app = express();
 

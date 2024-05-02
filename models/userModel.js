@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
 
 const User = mongoose.model('User', userSchema);
 
-const db = require('../config/config');
+// const db = require('../config/config');
 
 User.findDeliveryMen = async (result) => {
 

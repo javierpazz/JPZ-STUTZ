@@ -14,7 +14,7 @@ const categorySchema = new mongoose.Schema(
 const Category = mongoose.model('Category', categorySchema);
 
 
-const db = require('../config/config');
+// const db = require('../config/config');
 
 
 Category.getAll = async (result) => {
