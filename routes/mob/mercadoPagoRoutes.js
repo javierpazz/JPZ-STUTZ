@@ -1,8 +1,8 @@
-const mercadoPagoController = require('../controllers/mercadoPagoController');
-const passport = require('passport');
+const mercadoPagoController = require('../../controllers/mercadoPagoController');
+const { isAuth } = require ('../../utils');
 
 module.exports = (app) => {
 
-    app.post('/api/mob/payments/create',  passport.authenticate('jwt', { session: false }), mercadoPagoController.createPayment);
+    app.post('/api/mob/payments/create', mercadoPagoController.createPayment);
 
 }

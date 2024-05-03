@@ -1,4 +1,5 @@
 const usersController = require('../../controllers/usersController');
+const { isAuth } = require ('../../utils');
 
 module.exports = (app, upload) => {
 
@@ -7,7 +8,7 @@ module.exports = (app, upload) => {
     // PUT -> ACTUALIZAR DATOS
     // DELETE -> ELIMINAR DATOS
 
-     app.get('/api/mob/users/findDeliveryMen', usersController.findDeliveryMen);
+    app.get('/api/mob/users/findDeliveryMen', usersController.findDeliveryMen);
 
     app.post('/api/mob/users/create', usersController.register);
     app.post('/api/mob/users/createWithImage', upload.array('image', 1), usersController.registerWithImage);

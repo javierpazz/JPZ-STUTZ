@@ -1,4 +1,5 @@
 const addressController = require('../../controllers/addressController');
+const { isAuth } = require ('../../utils');
 
 module.exports = (app) => {
 

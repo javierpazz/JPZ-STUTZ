@@ -1,4 +1,5 @@
 const OrdersController = require('../../controllers/ordersController');
+const { isAuth } = require ('../../utils');
 
 module.exports = (app) => {
 
