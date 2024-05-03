@@ -33,8 +33,8 @@ const orderRoutesMob = require('./routes/mob/orderRoutes.js');
 dotenv.config();
 
 mongoose
-  // .connect(process.env.MONGODB_URI)
-  .connect(`${process.env.MONGODB_URI}`)
+  .connect(process.env.MONGODB_URI)
+  // .connect(`${process.env.MONGODB_URI}`)
   .then(() => {
     console.log('connected to db');
   })
