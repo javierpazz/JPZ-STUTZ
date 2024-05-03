@@ -1,5 +1,4 @@
 const OrdersController = require('../../controllers/ordersController');
-const { isAuth } = require ('../../utils');
 
 module.exports = (app) => {
 
@@ -9,11 +8,11 @@ module.exports = (app) => {
     // DELETE -> ELIMINAR DATOS
 
     
-    app.get('/api/mob/orders/findByStatus/:status',isAuth, OrdersController.findByStatus);
-    app.get('/api/mob/orders/findByDeliveryAndStatus/:id_delivery/:status',isAuth, OrdersController.findByDeliveryAndStatus);
-    app.get('/api/mob/orders/findByClientAndStatus/:id_client/:status',isAuth, OrdersController.findByClientAndStatus);
-    app.post('/api/mob/orders/create',isAuth, OrdersController.create);
-    app.put('/api/mob/orders/updateToDispatched',isAuth, OrdersController.updateToDispatched);
-    app.put('/api/mob/orders/updateToOnTheWay',isAuth, OrdersController.updateToOnTheWay);
-    app.put('/api/mob/orders/updateToDelivered',isAuth, OrdersController.updateToDelivered);
+    app.get('/api/mob/orders/findByStatus/:status', OrdersController.findByStatus);
+    app.get('/api/mob/orders/findByDeliveryAndStatus/:id_delivery/:status', OrdersController.findByDeliveryAndStatus);
+    app.get('/api/mob/orders/findByClientAndStatus/:id_client/:status', OrdersController.findByClientAndStatus);
+    app.post('/api/mob/orders/create', OrdersController.create);
+    app.put('/api/mob/orders/updateToDispatched', OrdersController.updateToDispatched);
+    app.put('/api/mob/orders/updateToOnTheWay', OrdersController.updateToOnTheWay);
+    app.put('/api/mob/orders/updateToDelivered', OrdersController.updateToDelivered);
 }

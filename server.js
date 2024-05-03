@@ -18,7 +18,7 @@ const uploadRouter = require ('./routes/uploadRoutes.js');
 const invoiceRouter = require ('./routes/invoiceRoutes.js');
 const receiptRouter = require ('./routes/receiptRoutes.js');
 
-const ordersSocket = require('./sockets/ordersSocket');
+
 /*
 * IMPORTAR RUTAS
 */
@@ -57,7 +57,6 @@ app.get('/api/keys/paypal', (req, res) => {
 app.get('/api/keys/google', (req, res) => {
   res.send({ key: process.env.GOOGLE_API_KEY || '' });
 });
-
 
 const upload = multer({
   storage: multer.memoryStorage()
@@ -108,8 +107,6 @@ const port = process.env.PORT || 3000;
 
 const httpServer = http.Server(app);
 const io = new Server(httpServer, { cors: { origin: '*' } });
-ordersSocket(io);
-
 const users = [];
 
 io.on("connection", (socket) => {

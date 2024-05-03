@@ -11,5 +11,5 @@ const valueeSchema = new mongoose.Schema(
 );
 
 const Valuee = mongoose.model('Valuee', valueeSchema);
-// const db = require('../config/config');
+const db = require('../config/config');
 module.exports = Valuee;
