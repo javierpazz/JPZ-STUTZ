@@ -3,6 +3,6 @@ const { isAuth } = require ('../../utils');
 
 module.exports = (app) => {
 
-    app.post('/api/mob/payments/create', mercadoPagoController.createPayment);
+    app.post('/api/mob/payments/create', isAuth, mercadoPagoController.createPayment);
 
 }

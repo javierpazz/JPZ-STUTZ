@@ -38,7 +38,7 @@ const productSchema = new mongoose.Schema(
 
 const Product = mongoose.model('Product', productSchema);
 
-// const db = require('../config/config');
+const db = require('../config/config');
 
 Product.findByCategory = async (id_categoryR, result) => {
 

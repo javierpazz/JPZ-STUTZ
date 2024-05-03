@@ -83,7 +83,7 @@ const invoiceSchema = new mongoose.Schema(
 );
 
 const Invoice = mongoose.model('Invoice', invoiceSchema);
-// const db = require('../config/config');
+const db = require('../config/config');
 
 Invoice.findByStatus = async (status, result) => {
 
