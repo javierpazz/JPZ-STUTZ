@@ -6,7 +6,6 @@ const db = async() => {
         
         // await mongoose.connect( 'mongodb://127.0.0.1:27017/sdb1');
         // await mongoose.connect( 'mongodb://127.0.0.1:27017/sdb', {
-        await mongoose.connect( 'mongodb+srv://admin:admin123456@chatapp.fe0krcf.mongodb.net/sdba');
         // // await mongoose.connect( 'mongodb+srv://admin:admin123456@chatapp.fe0krcf.mongodb.net/sdb', {
         //     useNewUrlParser: true, 
         //     useUnifiedTopology: true,

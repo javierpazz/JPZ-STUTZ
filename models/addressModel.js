@@ -15,7 +15,7 @@ const addressSchema = new mongoose.Schema(
 
 const Address = mongoose.model('Address', addressSchema);
 
-const db = require('../config/config');
+// const db = require('../config/config');
 
 Address.findByUser = async (id_userR, result) => {
 

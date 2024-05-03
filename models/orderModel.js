@@ -54,6 +54,6 @@ const orderSchema = new mongoose.Schema(
 );
 
 const Order = mongoose.model('Order', orderSchema);
-const db = require('../config/config');
+// const db = require('../config/config');
 
 export default Order;

@@ -38,6 +38,6 @@ const receiptSchema = new mongoose.Schema(
 
 const Receipt = mongoose.model('Receipt', receiptSchema);
 
-const db = require('../config/config');
+// const db = require('../config/config');
 
 module.exports = Receipt;

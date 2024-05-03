@@ -5,12 +5,12 @@ const data = {
     {
       name: 'Tintos',
       description: 'Tintos',
-      image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/image_1708694165987?alt=media&token=41d42d49-64f7-4c3e-b10e-eb31797cd84d",
+      image : 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg?alt=media&token=4f21d3c6-bbba-408f-b4bb-63fad0282ec7',
       },
       {
         name: 'Blancos',
         description: 'Blancos',
-        image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/image_1708694165987?alt=media&token=41d42d49-64f7-4c3e-b10e-eb31797cd84d",
+        image : 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
         },
       ],
    users: [
@@ -20,23 +20,24 @@ const data = {
       email: 'admin@example.com',
       phone: '1',
       password: bcrypt.hashSync('123456'),
+      image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
       isAdmin: true,
       roles: [{
         id : 1,
         name : "ADMIN",
-        image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/image_1708694165987?alt=media&token=41d42d49-64f7-4c3e-b10e-eb31797cd84d",
+        image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
         route : "/restaurant/orders/list"
       },
       {
         id : 2,
         name : "REPARTIDOR",
-        image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/image_1708694165987?alt=media&token=41d42d49-64f7-4c3e-b10e-eb31797cd84d",
+        image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/delivery.png?alt=media&token=ceb780de-a6fa-4466-a227-1c984bced734",
         route : "/delivery/orders/list"
       },
       {
         id : 3,
         name : "CLIENTE",
-        image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/image_1708694165987?alt=media&token=41d42d49-64f7-4c3e-b10e-eb31797cd84d",
+        image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user.png?alt=media&token=7af6485c-405f-4952-8875-f010f182ee8e",
         route : "/client/products/list"
       }
     ],
@@ -47,25 +48,52 @@ const data = {
       email: 'user@example.com',
       phone: '2',
       password: bcrypt.hashSync('123456'),
+      image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
       isAdmin: false,
-    },
+      roles: [{
+        id : 1,
+        name : "ADMIN",
+        image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
+        route : "/restaurant/orders/list"
+      },
+      {
+        id : 2,
+        name : "REPARTIDOR",
+        image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/delivery.png?alt=media&token=ceb780de-a6fa-4466-a227-1c984bced734",
+        route : "/delivery/orders/list"
+      },
+    {
+        id : 3,
+        name : "CLIENTE",
+        image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user.png?alt=media&token=7af6485c-405f-4952-8875-f010f182ee8e",
+        route : "/client/products/list"
+      }
+    ],
+      },
     {
       name: 'Oo',
       lastname: 'Oo',
       email: 'Oo@oo.com',
       phone: '3',
       password: bcrypt.hashSync('123456'),
+      image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
       isAdmin: false,
     roles: [{
       id : 1,
       name : "ADMIN",
-      image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/image_1708694165987?alt=media&token=41d42d49-64f7-4c3e-b10e-eb31797cd84d",
+      image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
       route : "/restaurant/orders/list"
     },
     {
+      id : 2,
+      name : "REPARTIDOR",
+      image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/delivery.png?alt=media&token=ceb780de-a6fa-4466-a227-1c984bced734",
+      route : "/delivery/orders/list"
+    },
+  {
       id : 3,
       name : "CLIENTE",
-      image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/image_1708694165987?alt=media&token=41d42d49-64f7-4c3e-b10e-eb31797cd84d",
+      image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user.png?alt=media&token=7af6485c-405f-4952-8875-f010f182ee8e",
       route : "/client/products/list"
     }
   ],
