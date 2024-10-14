@@ -175,7 +175,7 @@ module.exports = {
             }
         }
 
-        User.update(user, (err, data) => {
+        User.updateS(user, (err, data) => {
 
         
             if (err) {
