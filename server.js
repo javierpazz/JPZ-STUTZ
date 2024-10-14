@@ -38,7 +38,7 @@ console.log(`"${process.env.MONGODB_URI}"`);
 mongoose
   // .connect(process.env.MONGODB_URI)
   // .connect(`"${process.env.MONGODB_URI}"`)
-  .connect("mongodb+srv://admin:admin123456@chatapp.fe0krcf.mongodb.net/sdb")
+  .connect("mongodb+srv://admin:admin123456@stutzapp.nf44trs.mongodb.net/sdb")
   .then(() => {
     console.log('connected to db');
   })
