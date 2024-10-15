@@ -31,9 +31,9 @@ const orderRoutesMob = require('./routes/mob/orderRoutes.js');
 
 
 dotenv.config();
-// console.log("kiki");
-// console.log(process.env.MONGODB_URI);
-// console.log(`"${process.env.MONGODB_URI}"`);
+console.log("kiki");
+console.log(process.env.MONGODB_URI);
+console.log(`"${process.env.MONGODB_URI}"`);
 
 mongoose
   .connect(process.env.MONGODB_URI)
