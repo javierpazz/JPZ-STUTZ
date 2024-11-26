@@ -50,16 +50,16 @@ orderRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const newOrder = new Invoice({
-      invoiceItems: req.body.invoiceItems.map((x) => ({
+      orderItems: req.body.orderItems.map((x) => ({
         ...x,
         product: x._id,
       })),
       shippingAddress: req.body.shippingAddress,
       paymentMethod: req.body.paymentMethod,
-      itemsPrice: req.body.itemsPrice,
+      subTotal: req.body.subTotal,
       shippingPrice: req.body.shippingPrice,
-      taxPrice: req.body.taxPrice,
-      totalPrice: req.body.totalPrice,
+      tax: req.body.tax,
+      total: req.body.total,
       user: req.user._id,
       ordYes: req.body.ordYes,
       staOrd: req.body.staOrd,
@@ -76,21 +76,21 @@ orderRouter.get(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const producIO = await Invoice.aggregate([
-      { $unwind: '$invoiceItems' },
+      { $unwind: '$orderItems' },
 
       {
         $set: {
           salio1: {
-            $cond: [{ $eq: ['$salbuy', 'SALE'] }, '$invoiceItems.quantity', 0],
+            $cond: [{ $eq: ['$salbuy', 'SALE'] }, '$orderItems.quantity', 0],
           },
           entro1: {
-            $cond: [{ $eq: ['$salbuy', 'BUY'] }, '$invoiceItems.quantity', 0],
+            $cond: [{ $eq: ['$salbuy', 'BUY'] }, '$orderItems.quantity', 0],
           },
         },
       },
       {
         $group: {
-          _id: '$invoiceItems.name',
+          _id: '$orderItems.name',
           salio: { $sum: '$salio1' },
           entro: { $sum: '$entro1' },
         },
@@ -111,7 +111,7 @@ orderRouter.get(
       {
         $set: {
           docDat: '$recDat',
-          importeRec: '$totalPrice',
+          importeRec: '$total',
           importeRecB: '$totalBuy',
         },
       },
@@ -127,7 +127,7 @@ orderRouter.get(
             {
               $set: {
                 docDat: '$invDat',
-                importeInv: '$totalPrice',
+                importeInv: '$total',
                 importeInvB: '$totalBuy',
               },
             },
@@ -154,7 +154,7 @@ orderRouter.get(
         $group: {
           _id: null,
           numOrders: { $sum: 1 },
-          totalSales: { $sum: '$totalPrice' },
+          totalSales: { $sum: '$total' },
         },
       },
     ]);
@@ -171,7 +171,7 @@ orderRouter.get(
         $group: {
           _id: { $dateToString: { format: '%Y-%m-%d', date: '$invDat' } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: '$total' },
           buys: { $sum: '$totalBuy' },
         },
       },
@@ -181,7 +181,7 @@ orderRouter.get(
       {
         $group: {
           _id: { $dateToString: { format: '%Y-%m-%d', date: '$recDat' } },
-          inputs: { $sum: '$totalPrice' },
+          inputs: { $sum: '$total' },
           outputs: { $sum: '$totalBuy' },
         },
       },

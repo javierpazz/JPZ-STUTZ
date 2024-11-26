@@ -102,6 +102,7 @@ userRouter.post(
           name: user.name,
           email: user.email,
           isAdmin: user.isAdmin,
+          role: user.role,
           token: generateToken(user),
         });
         return;
@@ -118,6 +119,7 @@ userRouter.post(
       name: req.body.name,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password),
+      role:'client',
     });
     const user = await newUser.save();
     res.send({
@@ -126,6 +128,7 @@ userRouter.post(
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user),
+      role:user.isAdmin,
     });
   })
 );

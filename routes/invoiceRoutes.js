@@ -81,15 +81,15 @@ invoiceRouter.get(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const invoices = await Invoice.aggregate([
-      { $unwind: '$invoiceItems' },
+      { $unwind: '$orderItems' },
 
       {
         $set: {
           salio: {
-            $cond: [{ $eq: ['$salbuy', 'SALE'] }, '$invoiceItems.quantity', 0],
+            $cond: [{ $eq: ['$salbuy', 'SALE'] }, '$orderItems.quantity', 0],
           },
           entro: {
-            $cond: [{ $eq: ['$salbuy', 'BUY'] }, '$invoiceItems.quantity', 0],
+            $cond: [{ $eq: ['$salbuy', 'BUY'] }, '$orderItems.quantity', 0],
           },
         },
       },
@@ -117,7 +117,7 @@ invoiceRouter.get(
       {
         $set: {
           docDat: '$recDat',
-          importeRec: '$totalPrice',
+          importeRec: '$total',
         },
       },
       {
@@ -167,7 +167,7 @@ invoiceRouter.get(
       {
         $set: {
           docDat: '$recDat',
-          importeRec: '$totalPrice',
+          importeRec: '$total',
         },
       },
       {
@@ -251,16 +251,16 @@ invoiceRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const newInvoice = new Invoice({
-      invoiceItems: req.body.invoiceItems.map((x) => ({
+      orderItems: req.body.orderItems.map((x) => ({
         ...x,
         product: x._id,
       })),
       shippingAddress: req.body.shippingAddress,
       paymentMethod: req.body.paymentMethod,
-      itemsPrice: req.body.itemsPrice,
+      subTotal: req.body.subTotal,
       shippingPrice: req.body.shippingPrice,
-      taxPrice: req.body.taxPrice,
-      totalPrice: req.body.totalPrice,
+      tax: req.body.tax,
+      total: req.body.total,
       totalBuy: req.body.totalBuy,
       user: req.body.codUse,
       supplier: req.body.codSup,
@@ -288,7 +288,7 @@ invoiceRouter.get(
         $group: {
           _id: null,
           numInvoices: { $sum: 1 },
-          totalSales: { $sum: '$totalPrice' },
+          totalSales: { $sum: '$total' },
         },
       },
     ]);
@@ -305,7 +305,7 @@ invoiceRouter.get(
         $group: {
           _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
           invoices: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: '$total' },
         },
       },
       { $sort: { _id: 1 } },

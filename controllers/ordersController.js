@@ -1,5 +1,5 @@
 
-const Order = require('../models/invoiceModel');
+const Order111 = require('../models/invoiceModel');
 
 
 
@@ -24,7 +24,7 @@ module.exports = {
                     client : d.id_client,
                     delivery : d.id_client,
                     address : d.id_address,
-                    products : d.invoiceItems,
+                    products : d.orderItems,
                     status: d.status,
                     _id : d._id,
                     timestamp : d.createdAt,
@@ -58,7 +58,7 @@ module.exports = {
                     client : d.id_client,
                     delivery : d.id_delivery,
                     address : d.id_address,
-                    products : d.invoiceItems,
+                    products : d.orderItems,
                     status: d.status,
                     _id : d._id,
                     timestamp : d.createdAt,
@@ -91,7 +91,7 @@ module.exports = {
                     client : d.id_client,
                     delivery : d.id_client,
                     address : d.id_address,
-                    products : d.invoiceItems,
+                    products : d.orderItems,
                     status: d.status,
                     _id : d._id,
                     timestamp : d.createdAt,

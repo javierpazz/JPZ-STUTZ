@@ -101,8 +101,8 @@ receiptRouter.post(
         ...x,
         valuee: x._id,
       })),
-      itemsPrice: req.body.itemsPrice,
-      totalPrice: req.body.totalPrice,
+      subTotal: req.body.subTotal,
+      total: req.body.total,
       totalBuy: req.body.totalBuy,
       user: req.body.codUse,
       supplier: req.body.codSup,
@@ -127,7 +127,7 @@ receiptRouter.get(
         $group: {
           _id: null,
           numReceipts: { $sum: 1 },
-          totalSales: { $sum: '$totalPrice' },
+          totalSales: { $sum: '$total' },
         },
       },
     ]);
@@ -144,7 +144,7 @@ receiptRouter.get(
         $group: {
           _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
           receipts: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: '$total' },
         },
       },
       { $sort: { _id: 1 } },

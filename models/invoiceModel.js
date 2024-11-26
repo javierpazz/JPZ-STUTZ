@@ -1,15 +1,16 @@
 const mongoose = require ('mongoose');
 
-const invoiceSchema = new mongoose.Schema(
+const orderSchema = new mongoose.Schema(
   {
-    invoiceItems: [
+    orderItems: [
       {
         slug: { type: String },
-        name: { type: String, required: true },
+        title: { type: String, required: true },
         quantity: { type: Number, required: true },
         image: { type: String },
         price: { type: Number, required: true },
-        product: {
+        size : { type: String },
+        _id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Product',
           required: true,
@@ -38,10 +39,10 @@ const invoiceSchema = new mongoose.Schema(
       update_time: String,
       email_address: String,
     },
-    itemsPrice: { type: Number },
+    subTotal: { type: Number },
     shippingPrice: { type: Number },
-    taxPrice: { type: Number },
-    totalPrice: { type: Number },
+    tax: { type: Number },
+    total: { type: Number },
     totalBuy: { type: Number },
     id_client: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -82,7 +83,7 @@ const invoiceSchema = new mongoose.Schema(
   }
 );
 
-const Invoice = mongoose.model('Invoice', invoiceSchema);
+const Invoice = mongoose.model('Order', orderSchema);
 // const db = require('../config/config');
 
 Invoice.findByStatus = async (status, result) => {
@@ -139,7 +140,7 @@ Invoice.findByClientAndStatus = async (id_client, status, result) => {
 Invoice.create = async (order, result) => {
 
   const newInvoice = new Invoice({
-      invoiceItems: order.products.map((x) => ({
+      orderItems: order.products.map((x) => ({
         ...x,
         product: x._id,
       })),
@@ -153,10 +154,10 @@ Invoice.create = async (order, result) => {
       timestamp: Date.now(), 
 //
       // shippingAddress: order.shippingAddress,
-      // itemsPrice: order.itemsPrice,
+      // subTotal: order.subTotal,
       // shippingPrice: order.shippingPrice,
-      // taxPrice: order.taxPrice,
-      // totalPrice: order.totalPrice,
+      // tax: order.tax,
+      // total: order.total,
       shippingAddress: {
           fullName: 'kiki',
           address: 'pasaje ant 423',
@@ -175,10 +176,10 @@ Invoice.create = async (order, result) => {
     
 
       // shippingAddress: order.shippingAddress,
-      itemsPrice: order.itemsPrice,
+      subTotal: order.subTotal,
       shippingPrice: order.shippingPrice,
-      taxPrice: order.taxPrice,
-      totalPrice: order.totalPrice,
+      tax: order.tax,
+      total: order.total,
       ordYes: 'Y',
       staOrd: "NUEVA",
 //

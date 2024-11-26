@@ -16,16 +16,21 @@ productRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newProduct = new Product({
-      name: 'sample name ' + Date.now(),
+      title: 'sample name ' + Date.now(),
       slug: 'sample-name-' + Date.now(),
       image: '/images/p1.jpg',
       price: 0,
       category: 'sample category',
       brand: 'sample brand',
-      countInStock: 0,
+      inStock: 0,
       rating: 0,
       numReviews: 0,
       description: 'sample description',
+      sizes: ['XS'],
+      images: [
+        '/images/p1.jpg',
+        '/images/p1.jpg',
+    ],
     });
     const product = await newProduct.save();
     res.send({ message: 'Product Created', product });
@@ -40,7 +45,7 @@ productRouter.put(
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
-      product.countInStock = product.countInStock + req.body.quantitys;
+      product.inStock = product.inStock + req.body.quantitys;
       await product.save();
       res.send({ message: 'Product Updated' });
     } else {
@@ -57,7 +62,7 @@ productRouter.put(
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
-      product.countInStock = product.countInStock - req.body.quantitys;
+      product.inStock = product.inStock - req.body.quantitys;
       await product.save();
       res.send({ message: 'Product Updated' });
     } else {
@@ -74,14 +79,14 @@ productRouter.put(
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
-      product.name = req.body.name;
+      product.title = req.body.title;
       product.slug = req.body.slug;
       product.price = req.body.price;
       product.image = req.body.image;
       product.images = req.body.images;
       product.category = req.body.category;
       product.brand = req.body.brand;
-      product.countInStock = req.body.countInStock;
+      product.inStock = req.body.inStock;
       product.description = req.body.description;
       await product.save();
       res.send({ message: 'Product Updated' });
@@ -154,7 +159,7 @@ productRouter.get(
     const pageSize = query.pageSize || PAGE_SIZE;
 
     const products = await Product.find()
-      .sort({ name: 1 })
+      .sort({ title: 1 })
       .skip(pageSize * (page - 1))
       .limit(pageSize);
     const countProducts = await Product.countDocuments();
@@ -182,7 +187,7 @@ productRouter.get(
     const queryFilter =
       searchQuery && searchQuery !== 'all'
         ? {
-            name: {
+            title: {
               $regex: searchQuery,
               $options: 'i',
             },

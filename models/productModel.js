@@ -13,7 +13,7 @@ const reviewSchema = new mongoose.Schema(
 
 const productSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    title: { type: String, required: true },
     slug: { type: String },
     // slug: { type: String, required: true, unique: true },
     image: { type: String },
@@ -26,10 +26,17 @@ const productSchema = new mongoose.Schema(
     id_category: { type: String },    
     description: { type: String, required: true },
     price: { type: Number },
-    countInStock: { type: Number },
+    inStock: { type: Number },
     rating: { type: Number },
     numReviews: { type: Number },
     reviews: [reviewSchema],
+    sizes: [{
+      type: String,
+      enum: {
+          values: ['XS','S','M','L','XL','XXL','XXXL'],
+          message: '{VALUE} no es un tamaño válido'
+      }
+  }],
   },
   {
     timestamps: true,
@@ -58,7 +65,7 @@ Product.findByCategory = async (id_categoryR, result) => {
  Product.create = async (product, result) => {
  
      const newProduct = new Product({
-         name: product.name,
+         title: product.title,
          description: product.description,
          price: product.price,
          image1: product.image1,
@@ -89,7 +96,7 @@ Product.findByCategory = async (id_categoryR, result) => {
  
    const productR = await Product.findById(product._id); 
    if (productR) {
-       productR.name = product.name,
+       productR.title = product.title,
        productR.description = product.description,
        productR.price = product.price,
        productR.image1 = product.image1,

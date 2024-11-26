@@ -76,7 +76,7 @@ export const payOrderEmailTemplate = (order) => {
   <tfoot>
   <tr>
   <td colspan="2">Items Price:</td>
-  <td align="right"> $${order.itemsPrice.toFixed(2)}</td>
+  <td align="right"> $${order.subTotal.toFixed(2)}</td>
   </tr>
   <tr>
   <td colspan="2">Shipping Price:</td>
@@ -84,7 +84,7 @@ export const payOrderEmailTemplate = (order) => {
   </tr>
   <tr>
   <td colspan="2"><strong>Total Price:</strong></td>
-  <td align="right"><strong> $${order.totalPrice.toFixed(2)}</strong></td>
+  <td align="right"><strong> $${order.total.toFixed(2)}</strong></td>
   </tr>
   <tr>
   <td colspan="2">Payment Method:</td>
@@ -123,7 +123,7 @@ export const payInvoiceEmailTemplate = (invoice) => {
   <td><strong align="right">Price</strong></td>
   </thead>
   <tbody>
-  ${invoice.invoiceItems
+  ${invoice.orderItems
     .map(
       (item) => `
     <tr>
@@ -138,7 +138,7 @@ export const payInvoiceEmailTemplate = (invoice) => {
   <tfoot>
   <tr>
   <td colspan="2">Items Price:</td>
-  <td align="right"> $${invoice.itemsPrice.toFixed(2)}</td>
+  <td align="right"> $${invoice.subTotal.toFixed(2)}</td>
   </tr>
   <tr>
   <td colspan="2">Shipping Price:</td>
@@ -146,7 +146,7 @@ export const payInvoiceEmailTemplate = (invoice) => {
   </tr>
   <tr>
   <td colspan="2"><strong>Total Price:</strong></td>
-  <td align="right"><strong> $${invoice.totalPrice.toFixed(2)}</strong></td>
+  <td align="right"><strong> $${invoice.total.toFixed(2)}</strong></td>
   </tr>
   <tr>
   <td colspan="2">Payment Method:</td>
@@ -200,7 +200,7 @@ export const payReceiptEmailTemplate = (receipt) => {
   <tfoot>
   <tr>
   <td colspan="2">Items Price:</td>
-  <td align="right"> $${receipt.itemsPrice.toFixed(2)}</td>
+  <td align="right"> $${receipt.subTotal.toFixed(2)}</td>
   </tr>
   <tr>
   <td colspan="2">Shipping Price:</td>
@@ -208,7 +208,7 @@ export const payReceiptEmailTemplate = (receipt) => {
   </tr>
   <tr>
   <td colspan="2"><strong>Total Price:</strong></td>
-  <td align="right"><strong> $${receipt.totalPrice.toFixed(2)}</strong></td>
+  <td align="right"><strong> $${receipt.total.toFixed(2)}</strong></td>
   </tr>
   <tr>
   <td colspan="2">Payment Method:</td>

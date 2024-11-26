@@ -16,6 +16,7 @@ const generateToken = (user) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      role: user.role,
     },
     process.env.JWT_SECRET,
     {
@@ -42,7 +43,7 @@ const isAuth = (req, res, next) => {
 };
 
 const isAdmin = (req, res, next) => {
-  if (req.user && req.user.isAdmin) {
+  if (req.user && req.user.role == 'admin') {
     next();
   } else {
     res.status(401).send({ message: 'Invalid Admin Token' });
@@ -84,7 +85,7 @@ const payOrderEmailTemplate = (order) => {
   <tfoot>
   <tr>
   <td colspan="2">Items Price:</td>
-  <td align="right"> $${order.itemsPrice.toFixed(2)}</td>
+  <td align="right"> $${order.subTotal.toFixed(2)}</td>
   </tr>
   <tr>
   <td colspan="2">Shipping Price:</td>
@@ -92,7 +93,7 @@ const payOrderEmailTemplate = (order) => {
   </tr>
   <tr>
   <td colspan="2"><strong>Total Price:</strong></td>
-  <td align="right"><strong> $${order.totalPrice.toFixed(2)}</strong></td>
+  <td align="right"><strong> $${order.total.toFixed(2)}</strong></td>
   </tr>
   <tr>
   <td colspan="2">Payment Method:</td>
@@ -131,7 +132,7 @@ const payInvoiceEmailTemplate = (invoice) => {
   <td><strong align="right">Price</strong></td>
   </thead>
   <tbody>
-  ${invoice.invoiceItems
+  ${invoice.orderItems
     .map(
       (item) => `
     <tr>
@@ -146,7 +147,7 @@ const payInvoiceEmailTemplate = (invoice) => {
   <tfoot>
   <tr>
   <td colspan="2">Items Price:</td>
-  <td align="right"> $${invoice.itemsPrice.toFixed(2)}</td>
+  <td align="right"> $${invoice.subTotal.toFixed(2)}</td>
   </tr>
   <tr>
   <td colspan="2">Shipping Price:</td>
@@ -154,7 +155,7 @@ const payInvoiceEmailTemplate = (invoice) => {
   </tr>
   <tr>
   <td colspan="2"><strong>Total Price:</strong></td>
-  <td align="right"><strong> $${invoice.totalPrice.toFixed(2)}</strong></td>
+  <td align="right"><strong> $${invoice.total.toFixed(2)}</strong></td>
   </tr>
   <tr>
   <td colspan="2">Payment Method:</td>
@@ -208,7 +209,7 @@ const payReceiptEmailTemplate = (receipt) => {
   <tfoot>
   <tr>
   <td colspan="2">Items Price:</td>
-  <td align="right"> $${receipt.itemsPrice.toFixed(2)}</td>
+  <td align="right"> $${receipt.subTotal.toFixed(2)}</td>
   </tr>
   <tr>
   <td colspan="2">Shipping Price:</td>
@@ -216,7 +217,7 @@ const payReceiptEmailTemplate = (receipt) => {
   </tr>
   <tr>
   <td colspan="2"><strong>Total Price:</strong></td>
-  <td align="right"><strong> $${receipt.totalPrice.toFixed(2)}</strong></td>
+  <td align="right"><strong> $${receipt.total.toFixed(2)}</strong></td>
   </tr>
   <tr>
   <td colspan="2">Payment Method:</td>

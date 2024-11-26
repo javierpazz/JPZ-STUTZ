@@ -14,8 +14,8 @@ const receiptSchema = new mongoose.Schema(
         },
       },
     ],
-    itemsPrice: { type: Number },
-    totalPrice: { type: Number },
+    subTotal: { type: Number },
+    total: { type: Number },
     totalBuy: { type: Number },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     supplier: {
