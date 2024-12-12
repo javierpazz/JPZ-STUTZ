@@ -30,6 +30,21 @@ const productSchema = new mongoose.Schema(
     rating: { type: Number },
     numReviews: { type: Number },
     reviews: [reviewSchema],
+    tags: [{ type: String }],
+    type: {
+      type: String,
+      enum: {
+          values: ['shirts','pants','hoodies','hats'],
+          message: '{VALUE} no es un tipo válido'
+      }
+    },
+    gender: {
+      type: String,
+      enum: {
+          values: ['men','women','kid','unisex'],
+          message: '{VALUE} no es un genero válido'
+      }
+    },
     sizes: [{
       type: String,
       enum: {

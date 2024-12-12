@@ -29,7 +29,7 @@ productRouter.post(
       sizes: ['XS'],
       images: [
         '/images/p1.jpg',
-        '/images/p1.jpg',
+        '/images/p2.jpg',
     ],
     });
     const product = await newProduct.save();
@@ -178,7 +178,7 @@ productRouter.get(
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
-    const category = query.category || '';
+    const type = query.category || '';
     const price = query.price || '';
     const rating = query.rating || '';
     const order = query.order || '';
@@ -193,7 +193,7 @@ productRouter.get(
             },
           }
         : {};
-    const categoryFilter = category && category !== 'all' ? { category } : {};
+    const categoryFilter = type && type !== 'all' ? { type } : {};
     const ratingFilter =
       rating && rating !== 'all'
         ? {
@@ -253,7 +253,7 @@ productRouter.get(
 productRouter.get(
   '/categories',
   expressAsyncHandler(async (req, res) => {
-    const categories = await Product.find().distinct('category');
+    const categories = await Product.find().distinct('type');
     res.send(categories);
   })
 );

@@ -19,10 +19,15 @@ const orderSchema = new mongoose.Schema(
     ],
     shippingAddress: {
       fullName: { type: String },
+      firstName : { type: String },
+      lastName  : { type: String },
       address: { type: String },
+      address2  : { type: String },
       city: { type: String },
       postalCode: { type: String },
+      zip       : { type: String },
       country: { type: String },
+      phone     : { type: String },
       location: {
         lat: Number,
         lng: Number,
@@ -39,6 +44,7 @@ const orderSchema = new mongoose.Schema(
       update_time: String,
       email_address: String,
     },
+    numberOfItems: { type: Number },
     subTotal: { type: Number },
     shippingPrice: { type: Number },
     tax: { type: Number },

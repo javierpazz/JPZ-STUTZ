@@ -68,6 +68,25 @@ const upload = multer({
 });
 
 
+// Rutas
+app.use('/api/tes/user', require('./routes/tes/auth') );
+app.use('/api/tes/admin', require('./routes/tes/admadmin') );
+app.use('/api/tes/admin/users', require('./routes/tes/admusers') );
+app.use('/api/tes/admin/products', require('./routes/tes/admproducts') );
+// app.use('/api/admin/upload', require('./tes/routes/admproductsupload') );
+app.use('/api/tes/admin/orders', require('./routes/tes/admorders') );
+app.use('/api/tes/seed', require('./routes/tes/seed') );
+//ooo app.use('/api/search', require('./tes/routes/searchPro') );
+//ooo app.use('/api/productbyslug', require('./tes/routes/productbyslug') );
+//ooo app.use('/api/productbysear', require('./tes/routes/productbysear') );
+//ooo app.use('/api/product', require('./tes/routes/product') );
+app.use('/api/tes/products', require('./routes/tes/products') );
+app.use('/api/tes/orders', require('./routes/tes/orders') );
+//ooo app.use('/api/orderbyid', require('./tes/routes/orderbyid') );
+//ooo app.use('/api/ordersbyus', require('./tes/routes/ordersbyus') );
+
+
+
 /*
 * LLAMADO DE LAS RUTAS
 */
