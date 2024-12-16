@@ -56,6 +56,7 @@ orderRouter.post(
       })),
       shippingAddress: req.body.shippingAddress,
       paymentMethod: req.body.paymentMethod,
+      numberOfItems: req.body.numberOfItems,
       subTotal: req.body.subTotal,
       shippingPrice: req.body.shippingPrice,
       tax: req.body.tax,

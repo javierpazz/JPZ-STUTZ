@@ -2,7 +2,6 @@ const express = require ('express');
 const multer = require ('multer');
 const streamifier = require ('streamifier');
 const { v2 : cloudinary } = require ('cloudinary');
-const { isAdmin, isAuth } = require ('../utils.js');
 
 const upload = multer();
 
@@ -10,8 +9,6 @@ const uploadRouter = express.Router();
 
 uploadRouter.post(
   '/',
-  isAuth,
-  isAdmin,
   upload.single('file'),
   async (req, res) => {
     cloudinary.config({
@@ -32,7 +29,9 @@ uploadRouter.post(
       });
     };
     const result = await streamUpload(req);
-    res.send(result);
+    const imageUrl = result.secure_url;
+    res.status(200).json({ message: imageUrl });
+    // res.send(result);
   }
 );
 

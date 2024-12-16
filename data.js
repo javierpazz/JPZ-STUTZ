@@ -22,6 +22,7 @@ const data = {
       password: bcrypt.hashSync('123456'),
       image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
       isAdmin: true,
+      role: "admin",
       roles: [{
         id : 1,
         name : "ADMIN",
@@ -50,6 +51,7 @@ const data = {
       password: bcrypt.hashSync('123456'),
       image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
       isAdmin: false,
+      role: "client",
       roles: [{
         id : 1,
         name : "ADMIN",
@@ -78,7 +80,8 @@ const data = {
       password: bcrypt.hashSync('123456'),
       image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
       isAdmin: false,
-    roles: [{
+      role: "client",
+      roles: [{
       id : 1,
       name : "ADMIN",
       image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
@@ -106,16 +109,16 @@ const data = {
       title: 'Malbec',
       slug: 'Malbec',
       category: 'Tinto',
-      image: '/uploads/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg', // 679px × 829px
+      image: '/products/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg', // 679px × 829px
       images: [
-        '/uploads/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg',
-        '/uploads/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg',
+        '/products/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg',
+        '/products/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg',
     ],
       image1: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg?alt=media&token=4f21d3c6-bbba-408f-b4bb-63fad0282ec7',
       image2: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg?alt=media&token=4f21d3c6-bbba-408f-b4bb-63fad0282ec7',
       image3: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg?alt=media&token=4f21d3c6-bbba-408f-b4bb-63fad0282ec7',
       id_category: "6630f13dd6d68d5c088be2cd",
-      price: 5000,
+      price: 9800,
       inStock: 100,
       brand: 'Stutz',
       rating: 4.5,
@@ -127,16 +130,16 @@ const data = {
       title: 'Cabernet',
       slug: 'Cabernet',
       category: 'Tinto',
-      image: '/uploads/img_0cda786daa25d10fde5dd4d7af369ebf.jpg', // 679px × 829px
+      image: '/products/img_0cda786daa25d10fde5dd4d7af369ebf.jpg', // 679px × 829px
       images: [
-        '/uploads/img_0cda786daa25d10fde5dd4d7af369ebf.jpg',
-        '/uploads/img_0cda786daa25d10fde5dd4d7af369ebf.jpg',
+        '/products/img_0cda786daa25d10fde5dd4d7af369ebf.jpg',
+        '/products/img_0cda786daa25d10fde5dd4d7af369ebf.jpg',
     ],
       image1: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0cda786daa25d10fde5dd4d7af369ebf.jpg?alt=media&token=3ce32eb6-e982-407c-ba48-ae3804e7ff3a',
       image2: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0cda786daa25d10fde5dd4d7af369ebf.jpg?alt=media&token=3ce32eb6-e982-407c-ba48-ae3804e7ff3a',
       image3: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0cda786daa25d10fde5dd4d7af369ebf.jpg?alt=media&token=3ce32eb6-e982-407c-ba48-ae3804e7ff3a',
       id_category: "6630f13dd6d68d5c088be2cd",
-      price: 5500,
+      price: 10200,
       inStock: 100,
       brand: 'Stutz',
       rating: 5,
@@ -148,16 +151,16 @@ const data = {
       title: 'Tannat',
       slug: 'Tannat',
       category: 'Tinto',
-      image: '/uploads/img_0cda786daa25d10fde5dd4d7af369ebf.jpg', // 679px × 829px
+      image: '/products/img_0cda786daa25d10fde5dd4d7af369ebf.jpg', // 679px × 829px
       images: [
-        '/uploads/img_0cda786daa25d10fde5dd4d7af369ebf.jpg',
-        '/uploads/img_0cda786daa25d10fde5dd4d7af369ebf.jpg',
+        '/products/img_0cda786daa25d10fde5dd4d7af369ebf.jpg',
+        '/products/img_0cda786daa25d10fde5dd4d7af369ebf.jpg',
     ],
       image1: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_5b3c26aba0774671aab572bcadde3bd0.jpg?alt=media&token=3a258879-a1b4-4cb2-9c3d-b77196747c99',
       image2: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_5b3c26aba0774671aab572bcadde3bd0.jpg?alt=media&token=3a258879-a1b4-4cb2-9c3d-b77196747c99',
       image3: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_5b3c26aba0774671aab572bcadde3bd0.jpg?alt=media&token=3a258879-a1b4-4cb2-9c3d-b77196747c99',
       id_category: "6630f13dd6d68d5c088be2cd",
-      price: 5000,
+      price: 10200,
       inStock: 100,
       brand: 'Stutz',
       rating: 5,
@@ -169,16 +172,16 @@ const data = {
       title: 'Torrontes',
       slug: 'Torrontes',
       category: 'Blanco',
-      image: '/uploads/img_0700be14742225ca421f2db276f77bab.jpg', // 679px × 829px
+      image: '/products/img_0700be14742225ca421f2db276f77bab.jpg', // 679px × 829px
       images: [
-        '/uploads/img_0700be14742225ca421f2db276f77bab.jpg',
-        '/uploads/img_0700be14742225ca421f2db276f77bab.jpg',
+        '/products/img_0700be14742225ca421f2db276f77bab.jpg',
+        '/products/img_0700be14742225ca421f2db276f77bab.jpg',
     ],
       image1: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
       image2: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
       image3: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
       id_category: "6630f13dd6d68d5c088be2cd",
-      price: 4500,
+      price: 9500,
       inStock: 100,
       brand: 'Stutz',
       rating: 4,
@@ -190,16 +193,16 @@ const data = {
       title: 'Torrontes Tardio',
       slug: 'Torrontes-Tardio',
       category: 'Blanco',
-      image: '/uploads/img_0700be14742225ca421f2db276f77bab.jpg', // 679px × 829px
+      image: '/products/img_0700be14742225ca421f2db276f77bab.jpg', // 679px × 829px
       images: [
-        '/uploads/img_0700be14742225ca421f2db276f77bab.jpg',
-        '/uploads/img_0700be14742225ca421f2db276f77bab.jpg',
+        '/products/img_0700be14742225ca421f2db276f77bab.jpg',
+        '/products/img_0700be14742225ca421f2db276f77bab.jpg',
     ],
       image1: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
       image2: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
       image3: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
       id_category: "6630f13dd6d68d5c088be2cd",
-      price: 4500,
+      price: 9500,
       inStock: 750,
       brand: 'Stutz',
       rating: 4,
@@ -211,16 +214,16 @@ const data = {
       title: 'Garnacha',
       slug: 'Garnacha',
       category: 'Tinto',
-      image: '/uploads/img_8055978bfc4ac981a51189c1ab67283a.jpg', // 679px × 829px
+      image: '/products/img_8055978bfc4ac981a51189c1ab67283a.jpg', // 679px × 829px
       images: [
-        '/uploads/img_8055978bfc4ac981a51189c1ab67283a.jpg',
-        '/uploads/img_8055978bfc4ac981a51189c1ab67283a.jpg',
+        '/products/img_8055978bfc4ac981a51189c1ab67283a.jpg',
+        '/products/img_8055978bfc4ac981a51189c1ab67283a.jpg',
     ],
       image1: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_8055978bfc4ac981a51189c1ab67283a.jpg?alt=media&token=8380bc0b-6689-4e1a-9c64-8c5b468aad0a',
       image2: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_8055978bfc4ac981a51189c1ab67283a.jpg?alt=media&token=8380bc0b-6689-4e1a-9c64-8c5b468aad0a',
       image3: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_8055978bfc4ac981a51189c1ab67283a.jpg?alt=media&token=8380bc0b-6689-4e1a-9c64-8c5b468aad0a',
       id_category: "6630f13dd6d68d5c088be2cd",
-      price: 5500,
+      price: 12000,
       inStock: 100,
       brand: 'Stutz',
       rating: 5,

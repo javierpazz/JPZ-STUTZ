@@ -18,7 +18,7 @@ productRouter.post(
     const newProduct = new Product({
       title: 'sample name ' + Date.now(),
       slug: 'sample-name-' + Date.now(),
-      image: '/images/p1.jpg',
+      // image: '/images/p1.jpg',
       price: 0,
       category: 'sample category',
       brand: 'sample brand',
@@ -27,10 +27,7 @@ productRouter.post(
       numReviews: 0,
       description: 'sample description',
       sizes: ['XS'],
-      images: [
-        '/images/p1.jpg',
-        '/images/p2.jpg',
-    ],
+      images: [],
     });
     const product = await newProduct.save();
     res.send({ message: 'Product Created', product });
@@ -178,7 +175,7 @@ productRouter.get(
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
-    const type = query.category || '';
+    const category = query.category || '';
     const price = query.price || '';
     const rating = query.rating || '';
     const order = query.order || '';
@@ -193,7 +190,7 @@ productRouter.get(
             },
           }
         : {};
-    const categoryFilter = type && type !== 'all' ? { type } : {};
+    const categoryFilter = category && category !== 'all' ? { category } : {};
     const ratingFilter =
       rating && rating !== 'all'
         ? {
@@ -253,7 +250,7 @@ productRouter.get(
 productRouter.get(
   '/categories',
   expressAsyncHandler(async (req, res) => {
-    const categories = await Product.find().distinct('type');
+    const categories = await Product.find().distinct('category');
     res.send(categories);
   })
 );
