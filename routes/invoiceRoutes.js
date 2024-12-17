@@ -106,12 +106,11 @@ invoiceRouter.get(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const factura = 'SALE';
-    const invoices = await Invoice.find();
-
+    const orders = await Invoice.find();
     const ctacte = await Receipt.aggregate([
       {
         $match: {
-          $and: [{ user: ObjectId(req.params.userId) }, { salbuy: factura }],
+          $and: [{ user: new ObjectId(req.params.userId) }, { salbuy: factura }],
         },
       },
       {
@@ -122,12 +121,12 @@ invoiceRouter.get(
       },
       {
         $unionWith: {
-          coll: 'invoices',
+          coll: 'orders',
           pipeline: [
             {
               $match: {
                 $and: [
-                  { user: ObjectId(req.params.userId) },
+                  { user: new ObjectId(req.params.userId) },
                   { salbuy: factura },
                 ],
               },
@@ -141,7 +140,7 @@ invoiceRouter.get(
         },
       },
     ]);
-
+    
     res.send(ctacte);
   })
 );
@@ -153,13 +152,13 @@ invoiceRouter.get(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const factura = 'BUY';
-    const invoices = await Invoice.find();
+    const orders = await Invoice.find();
 
     const ctacte = await Receipt.aggregate([
       {
         $match: {
           $and: [
-            { supplier: ObjectId(req.params.suppliId) },
+            { supplier: new ObjectId(req.params.suppliId) },
             { salbuy: factura },
           ],
         },
@@ -172,12 +171,12 @@ invoiceRouter.get(
       },
       {
         $unionWith: {
-          coll: 'invoices',
+          coll: 'orders',
           pipeline: [
             {
               $match: {
                 $and: [
-                  { supplier: ObjectId(req.params.suppliId) },
+                  { supplier: new ObjectId(req.params.suppliId) },
                   { salbuy: factura },
                 ],
               },
