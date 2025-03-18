@@ -4,6 +4,12 @@ const configurationSchema = new mongoose.Schema(
   {
     codCon: { type: Number, required: true },
     name: { type: String, required: true },
+    domcomer: { type: String, required: true },
+    cuit: { type: String, required: true },
+    coniva: { type: String, required: true },
+    poriva: { type: String, required: true },
+    ib: { type: String, required: true },
+    feciniact: { type: String, required: true },
   },
   {
     timestamps: true,

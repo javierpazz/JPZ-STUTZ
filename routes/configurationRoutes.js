@@ -17,7 +17,13 @@ configurationRouter.post(
   expressAsyncHandler(async (req, res) => {
     const newConfiguration = new Configuration({
       codCon: 0,
-      name: 'sample name ' + Date.now(),
+      name: ' ',
+      domcomer: ' ',
+      cuit: ' ',
+      coniva: ' ',
+      poriva: 0.00,
+      ib: ' ',
+      feciniact: ' ',
     });
     const configuration = await newConfiguration.save();
     res.send({ message: 'Configuration Created', configuration });
@@ -34,6 +40,12 @@ configurationRouter.put(
     if (configuration) {
       configuration.codCon = req.body.codCon;
       configuration.name = req.body.name;
+      configuration.domcomer = req.body.domcomer;
+      configuration.cuit = req.body.cuit;
+      configuration.coniva = req.body.coniva;
+      configuration.poriva = req.body.poriva;
+      configuration.ib = req.body.ib;
+      configuration.feciniact = req.body.feciniact;
       await configuration.save();
       res.send({ message: 'Configuration Updated' });
     } else {
@@ -62,7 +74,7 @@ const PAGE_SIZE = 10;
 configurationRouter.get(
   '/admin',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;

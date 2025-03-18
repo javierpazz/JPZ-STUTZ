@@ -23,6 +23,7 @@ productRouter.post(
       category: 'sample category',
       brand: 'sample brand',
       inStock: 0,
+      minStock: 0,
       rating: 0,
       numReviews: 0,
       description: 'sample description',
@@ -37,12 +38,12 @@ productRouter.post(
 productRouter.put(
   '/upstock/:id',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
-      product.inStock = product.inStock + req.body.quantitys;
+      product.inStock = product.inStock + +req.body.quantitys;
       await product.save();
       res.send({ message: 'Product Updated' });
     } else {
@@ -59,7 +60,7 @@ productRouter.put(
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
-      product.inStock = product.inStock - req.body.quantitys;
+      product.inStock = product.inStock - +req.body.quantitys;
       await product.save();
       res.send({ message: 'Product Updated' });
     } else {
@@ -84,6 +85,7 @@ productRouter.put(
       product.category = req.body.category;
       product.brand = req.body.brand;
       product.inStock = req.body.inStock;
+      product.minStock = req.body.minStock;
       product.description = req.body.description;
       await product.save();
       res.send({ message: 'Product Updated' });

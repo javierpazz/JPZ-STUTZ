@@ -67,10 +67,7 @@ invoiceRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const invoices = await Invoice.find({ salbuy: 'SALE' }).populate(
-      'user',
-      'name'
-    );
+    const invoices = await Invoice.find({ salbuy: 'SALE' });
     res.send(invoices);
   })
 );
@@ -110,7 +107,7 @@ invoiceRouter.get(
     const ctacte = await Receipt.aggregate([
       {
         $match: {
-          $and: [{ user: new ObjectId(req.params.userId) }, { salbuy: factura }],
+          $and: [{ id_client: new ObjectId(req.params.userId) }, { salbuy: factura }],
         },
       },
       {
@@ -126,7 +123,7 @@ invoiceRouter.get(
             {
               $match: {
                 $and: [
-                  { user: new ObjectId(req.params.userId) },
+                  { id_client: new ObjectId(req.params.userId) },
                   { salbuy: factura },
                 ],
               },
@@ -207,7 +204,7 @@ invoiceRouter.get(
     const pageSize = query.pageSize || PAGE_SIZE;
 
     const invoices = await Invoice.find({ salbuy: 'SALE' })
-      .populate('user', 'name')
+      .populate('id_client', 'nameCus')
       .populate('supplier', 'name')
       .skip(pageSize * (page - 1))
       .limit(pageSize);
@@ -262,8 +259,12 @@ invoiceRouter.post(
       total: req.body.total,
       totalBuy: req.body.totalBuy,
       user: req.body.codUse,
+      id_client: req.body.codCus,
+      id_config: req.body.codCon,
+      codConNum: req.body.codConNum,
       supplier: req.body.codSup,
       remNum: req.body.remNum,
+      remDat: req.body.remDat,
       invNum: req.body.invNum,
       invDat: req.body.invDat,
       recNum: req.body.recNum,

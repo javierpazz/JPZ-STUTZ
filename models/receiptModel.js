@@ -17,6 +17,9 @@ const receiptSchema = new mongoose.Schema(
     subTotal: { type: Number },
     total: { type: Number },
     totalBuy: { type: Number },
+    id_client: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer' },
+    id_config: { type: mongoose.Schema.Types.ObjectId, ref: 'Configuration' },
+    codConNum: { type: Number },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     supplier: {
       type: mongoose.Schema.Types.ObjectId,

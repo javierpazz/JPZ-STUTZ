@@ -21,10 +21,7 @@ receiptRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const receipts = await Receipt.find({ salbuy: 'SALE' }).populate(
-      'user',
-      'name'
-    );
+    const receipts = await Receipt.find({ salbuy: 'SALE' });
     res.send(receipts);
   })
 );
@@ -78,7 +75,7 @@ receiptRouter.get(
     const pageSize = query.pageSize || PAGE_SIZE;
 
     const receipts = await Receipt.find({ salbuy: 'SALE' })
-      .populate('user', 'name')
+      .populate('id_client', 'nameCus')
       .populate('supplier', 'name')
       .skip(pageSize * (page - 1))
       .limit(pageSize);
@@ -104,7 +101,10 @@ receiptRouter.post(
       subTotal: req.body.subTotal,
       total: req.body.total,
       totalBuy: req.body.totalBuy,
-      user: req.body.codUse,
+      // user: req.body.codUse,
+      id_client: req.body.codCus,
+      id_config: req.body.codCon,
+      codConNum: req.body.codConNum,
       supplier: req.body.codSup,
       recNum: req.body.recNum,
       recDat: req.body.recDat,

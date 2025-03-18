@@ -64,7 +64,13 @@ userRouter.put(
     if (user) {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
+      user.password = bcrypt.hashSync(req.body.password) || user.password;
       user.isAdmin = Boolean(req.body.isAdmin);
+      if (req.body.isAdmin) {
+        user.role="admin"
+      }else {
+        user.role="client"
+      }
       const updatedUser = await user.save();
       res.send({ message: 'User Updated', user: updatedUser });
     } else {
@@ -128,7 +134,7 @@ userRouter.post(
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user),
-      role:user.isAdmin,
+      role:user.role,
     });
   })
 );
@@ -144,6 +150,11 @@ userRouter.put(
       if (req.body.password) {
         user.password = bcrypt.hashSync(req.body.password, 8);
       }
+      if (isAdmin) {
+        user.role="admin"
+      }else {
+        user.role="client"
+      }
 
       const updatedUser = await user.save();
       res.send({
@@ -152,6 +163,7 @@ userRouter.put(
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
         token: generateToken(updatedUser),
+        role: updatedUser.role,
       });
     } else {
       res.status(404).send({ message: 'User not found' });

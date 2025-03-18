@@ -50,7 +50,9 @@ const orderSchema = new mongoose.Schema(
     tax: { type: Number },
     total: { type: Number },
     totalBuy: { type: Number },
-    id_client: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    id_client: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer' },
+    id_config: { type: mongoose.Schema.Types.ObjectId, ref: 'Configuration' },
+    codConNum: { type: Number },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     id_delivery: { type: mongoose.Schema.Types.ObjectId, ref: 'Delivery' },
     id_address: {
@@ -66,6 +68,7 @@ const orderSchema = new mongoose.Schema(
     isDelivered: { type: Boolean, default: false },
     deliveredAt: { type: Date },
     remNum: { type: Number },
+    remDat: { type: Date },
     invNum: { type: Number },
     invDat: { type: Date },
     recNum: { type: Number },

@@ -17,8 +17,8 @@ supplierRouter.post(
   expressAsyncHandler(async (req, res) => {
     const newSupplier = new Supplier({
       codSup: 0,
-      name: 'sample name ' + Date.now(),
-      email: 'email ?????????????',
+      name: ' ',
+      email: ' ',
     });
     const supplier = await newSupplier.save();
     res.send({ message: 'Supplier Created', supplier });
@@ -64,7 +64,7 @@ const PAGE_SIZE = 10;
 supplierRouter.get(
   '/admin',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;
