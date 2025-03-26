@@ -2,9 +2,9 @@ const mongoose = require ('mongoose');
 
 const supplierSchema = new mongoose.Schema(
   {
-    codSup: { type: Number, required: true },
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    codSup: { type: String},
+    name: { type: String, unique: true },
+    email: { type: String},
   },
   {
     timestamps: true,

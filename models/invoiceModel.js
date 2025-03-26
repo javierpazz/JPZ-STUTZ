@@ -53,6 +53,7 @@ const orderSchema = new mongoose.Schema(
     id_client: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer' },
     id_config: { type: mongoose.Schema.Types.ObjectId, ref: 'Configuration' },
     codConNum: { type: Number },
+    codCom: { type: mongoose.Schema.Types.ObjectId, ref: 'Comprobante' },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     id_delivery: { type: mongoose.Schema.Types.ObjectId, ref: 'Delivery' },
     id_address: {

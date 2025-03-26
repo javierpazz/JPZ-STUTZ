@@ -2,9 +2,9 @@ const mongoose = require ('mongoose');
 
 const comprobanteSchema = new mongoose.Schema(
   {
-    codCom: { type: Number, required: true },
-    nameCom: { type: String, required: true },
-    claCom: { type: String, required: true },
+    codCom: { type: String },
+    nameCom: { type: String },
+    claCom: { type: String },
     isHaber: { type: Boolean, default: true, required: true },
     noDisc: { type: Boolean, default: true, required: true },
     toDisc: { type: Boolean, default: false, required: true },

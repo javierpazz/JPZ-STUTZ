@@ -13,6 +13,8 @@ const reviewSchema = new mongoose.Schema(
 
 const productSchema = new mongoose.Schema(
   {
+
+    codPro: { type: String, required: true },
     title: { type: String, required: true },
     slug: { type: String },
     // slug: { type: String, required: true, unique: true },

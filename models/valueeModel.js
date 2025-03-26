@@ -2,8 +2,8 @@ const mongoose = require ('mongoose');
 
 const valueeSchema = new mongoose.Schema(
   {
-    codVal: { type: Number, required: true },
-    desVal: { type: String, required: true },
+    codVal: { type: String, unique: true  },
+    desVal: { type: String, unique: true },
   },
   {
     timestamps: true,

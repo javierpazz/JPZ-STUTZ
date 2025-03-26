@@ -262,6 +262,7 @@ invoiceRouter.post(
       id_client: req.body.codCus,
       id_config: req.body.codCon,
       codConNum: req.body.codConNum,
+      codCom: req.body.codCom,
       supplier: req.body.codSup,
       remNum: req.body.remNum,
       remDat: req.body.remDat,

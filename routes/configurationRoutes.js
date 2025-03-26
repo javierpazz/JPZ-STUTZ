@@ -17,13 +17,13 @@ configurationRouter.post(
   expressAsyncHandler(async (req, res) => {
     const newConfiguration = new Configuration({
       codCon: 0,
-      name: ' ',
-      domcomer: ' ',
-      cuit: ' ',
-      coniva: ' ',
+      name: '_',
+      domcomer: '',
+      cuit: '',
+      coniva: '',
       poriva: 0.00,
-      ib: ' ',
-      feciniact: ' ',
+      ib: '',
+      feciniact: '',
     });
     const configuration = await newConfiguration.save();
     res.send({ message: 'Configuration Created', configuration });

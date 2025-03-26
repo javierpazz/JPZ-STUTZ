@@ -41,12 +41,12 @@ customerRouter.post(
   // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newCustomer = new Customer({
-      codCus: 0,
-      nameCus: ' ',
-      emailCus: ' ',
-      domcomer: ' ',
-      cuit: ' ',
-      coniva: ' ',
+      codCus: '',
+      nameCus: '',
+      emailCus: '',
+      domcomer: '',
+      cuit: '',
+      coniva: '',
     });
     const customer = await newCustomer.save();
     res.send({ message: 'Customer Created', customer });

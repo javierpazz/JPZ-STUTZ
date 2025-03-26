@@ -2,12 +2,12 @@ const mongoose = require ('mongoose');
 
 const customerSchema = new mongoose.Schema(
   {
-    codCus: { type: Number, required: true },
-    nameCus: { type: String, required: true, unique: true },
-    emailCus: { type: String, required: true },
-    domcomer: { type: String, required: true },
-    cuit: { type: String, required: true },
-    coniva: { type: String, required: true },
+    codCus: { type: String },
+    nameCus: { type: String, unique: true },
+    emailCus: { type: String },
+    domcomer: { type: String },
+    cuit: { type: String },
+    coniva: { type: String },
   },
   {
     timestamps: true,

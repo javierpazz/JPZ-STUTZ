@@ -16,17 +16,18 @@ productRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newProduct = new Product({
-      title: 'sample name ' + Date.now(),
-      slug: 'sample-name-' + Date.now(),
+      codPro: 'Codigo',
+      title: 'Nombre',
+      slug: '',
       // image: '/images/p1.jpg',
       price: 0,
-      category: 'sample category',
-      brand: 'sample brand',
+      category: 'Categoria',
+      brand: 'Marca',
       inStock: 0,
       minStock: 0,
       rating: 0,
       numReviews: 0,
-      description: 'sample description',
+      description: 'Descripcion',
       sizes: ['XS'],
       images: [],
     });
@@ -77,6 +78,7 @@ productRouter.put(
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
+      product.codPro = req.body.codPro;
       product.title = req.body.title;
       product.slug = req.body.slug;
       product.price = req.body.price;

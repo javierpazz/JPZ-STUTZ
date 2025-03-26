@@ -16,9 +16,9 @@ comprobanteRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newComprobante = new Comprobante({
-      codCom: 0,
-      nameCom: ' ',
-      claCom: ' ',
+      codCom: '',
+      nameCom: '',
+      claCom: '',
     });
     const comprobante = await newComprobante.save();
     res.send({ message: 'Comprobante Created', comprobante });
