@@ -2,8 +2,8 @@ const mongoose = require ('mongoose');
 
 const comprobanteSchema = new mongoose.Schema(
   {
-    codCom: { type: String },
-    nameCom: { type: String },
+    codCom: { type: String, unique: true  },
+    nameCom: { type: String, unique: true  },
     claCom: { type: String },
     isHaber: { type: Boolean, default: true, required: true },
     noDisc: { type: Boolean, default: true, required: true },

@@ -14,8 +14,9 @@ const reviewSchema = new mongoose.Schema(
 const productSchema = new mongoose.Schema(
   {
 
-    codPro: { type: String, required: true },
-    title: { type: String, required: true },
+    codPro: { type: String, unique: true , required: true },
+    codigoPro: { type: String, unique: true , required: true },
+    title: { type: String, unique: true , required: true },
     slug: { type: String },
     // slug: { type: String, required: true, unique: true },
     image: { type: String },
@@ -30,6 +31,7 @@ const productSchema = new mongoose.Schema(
     price: { type: Number },
     inStock: { type: Number },
     minStock: { type: Number },
+    porIva: { type: Number },
     rating: { type: Number },
     numReviews: { type: Number },
     reviews: [reviewSchema],

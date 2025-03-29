@@ -1,6 +1,107 @@
 const bcrypt = require ('bcryptjs');
 
 const data = {
+  comprobante: [
+    {
+    codCom: '1',
+    nameCom: 'FACTURA A',
+    claCom: '1',
+    isHaber: 'false',
+    noDisc: 'false',
+    toDisc: 'true',
+    itDisc: 'false',
+    },
+    {
+    codCom: '2',
+    nameCom: 'FACTURA B',
+    claCom: '2',
+    isHaber: 'false',
+    noDisc: 'false',
+    toDisc: 'false',
+    itDisc: 'true',
+    },
+    {
+    codCom: '3',
+    nameCom: 'FACTURA C',
+    claCom: '3',
+    isHaber: 'false',
+    noDisc: 'true',
+    toDisc: 'false',
+    itDisc: 'false',
+    },
+  ],
+
+  valuee: [
+    {
+    codVal: '1',
+    desVal: 'EFECTIVO',
+    },
+    {
+    codVal: '2',
+    desVal: 'CHEQUE',
+    },
+    {
+    codVal: '3',
+    desVal: 'TARJETA',
+    },
+    ],
+
+  supplier: [
+        {
+        codSup: '1',
+        name: 'PROOVEDOR 1',
+        email: 'proovedor1@email.com',
+        },
+        {
+        codSup: '2',
+        name: 'PROOVEDOR 2',
+        email: 'proovedor2@email.com',
+        },
+    ],
+
+  customer: [
+      {
+        codCus: '1',
+        nameCus: 'CLIENTE 1',
+        emailCus: 'cliente1@email.com',
+        domcomer: 'DIRECCION CLIENTE 1 ',
+        cuit: '20-20202020-2',
+        coniva: 'RESP INSCRIPTO',
+        },
+        {
+          codCus: '2',
+          nameCus: 'CLIENTE 2',
+          emailCus: 'cliente2@email.com',
+          domcomer: 'DIRECCION CLIENTE 2',
+          cuit: '20-20202020-2',
+          coniva: 'RESP INSCRIPTO',
+          },
+    ],
+
+
+
+  configuration: [
+      {
+        codCon: '0001',
+        name: 'STUTZ',
+        domcomer: 'DIRECCION STUTZ',
+        cuit: '20-20202020-2',
+        coniva: 'RESP. INSCRIPTO',
+        ib: '87654321',
+        feciniact: '12/07/2021',
+        },
+        {
+          codCon: '0002',
+          name: 'SUPER MAYO',
+          domcomer: 'DIRECCION SUPER MAYO',
+          cuit: '20-20202020-2',
+          coniva: 'RESP. INSCRIPTO',
+          ib: '87654321',
+          feciniact: '12/07/2021',
+          },
+      ],
+
+
   categories: [
     {
       name: 'Tintos',
@@ -15,8 +116,8 @@ const data = {
       ],
    users: [
     {
-      name: 'Basir',
-      lastname: 'Basir',
+      name: 'Javier',
+      lastname: 'Javier',
       email: 'admin@example.com',
       phone: '1',
       password: bcrypt.hashSync('123456'),
@@ -44,8 +145,8 @@ const data = {
     ],
     },
     {
-      name: 'John',
-      lastname: 'John',
+      name: 'Juan',
+      lastname: 'Juan',
       email: 'user@example.com',
       phone: '2',
       password: bcrypt.hashSync('123456'),
@@ -106,7 +207,8 @@ const data = {
   products: [
     {
       // _id: '1',
-      codPro: '1',
+      codPro: 'A',
+      codigoPro: '1',
       title: 'Malbec',
       slug: 'Malbec',
       category: 'Tinto',
@@ -121,6 +223,8 @@ const data = {
       id_category: "6630f13dd6d68d5c088be2cd",
       price: 9800,
       inStock: 1000,
+      minStock: 10,
+      porIva: 21,
       brand: 'Stutz',
       rating: 4.5,
       numReviews: 700,
@@ -128,7 +232,8 @@ const data = {
     },
     {
       // _id: '1',
-      codPro: '2',
+      codPro: 'B',
+      codigoPro: '2',
       title: 'Cabernet',
       slug: 'Cabernet',
       category: 'Tinto',
@@ -143,6 +248,8 @@ const data = {
       id_category: "6630f13dd6d68d5c088be2cd",
       price: 10200,
       inStock: 1000,
+      minStock: 10,
+      porIva: 21,
       brand: 'Stutz',
       rating: 5,
       numReviews: 105,
@@ -150,7 +257,8 @@ const data = {
     },
     {
       // _id: '1',
-      codPro: '3',
+      codPro: 'C',
+      codigoPro: '3',
       title: 'Tannat',
       slug: 'Tannat',
       category: 'Tinto',
@@ -165,6 +273,8 @@ const data = {
       id_category: "6630f13dd6d68d5c088be2cd",
       price: 10200,
       inStock: 1000,
+      minStock: 10,
+      porIva: 21,
       brand: 'Stutz',
       rating: 5,
       numReviews: 1140,
@@ -172,7 +282,8 @@ const data = {
     },
     {
       // _id: '1',
-      codPro: '4',
+      codPro: 'D',
+      codigoPro: '4',
       title: 'Torrontes',
       slug: 'Torrontes',
       category: 'Blanco',
@@ -187,6 +298,8 @@ const data = {
       id_category: "6630f13dd6d68d5c088be2cd",
       price: 9500,
       inStock: 1000,
+      minStock: 10,
+      porIva: 21,
       brand: 'Stutz',
       rating: 4,
       numReviews: 458,
@@ -194,7 +307,8 @@ const data = {
     },
     {
       // _id: '1',
-      codPro: '5',
+      codPro: 'E',
+      codigoPro: '5',
       title: 'Torrontes Tardio',
       slug: 'Torrontes-Tardio',
       category: 'Blanco',
@@ -209,6 +323,8 @@ const data = {
       id_category: "6630f13dd6d68d5c088be2cd",
       price: 9500,
       inStock: 1000,
+      minStock: 10,
+      porIva: 21,
       brand: 'Stutz',
       rating: 4,
       numReviews: 345,
@@ -216,7 +332,8 @@ const data = {
     },
     {
       // _id: '1',
-      codPro: '6',
+      codPro: 'F',
+      codigoPro: '6',
       title: 'Garnacha',
       slug: 'Garnacha',
       category: 'Tinto',
@@ -231,6 +348,8 @@ const data = {
       id_category: "6630f13dd6d68d5c088be2cd",
       price: 12000,
       inStock: 1000,
+      minStock: 10,
+      porIva: 21,
       brand: 'Stutz',
       rating: 5,
       numReviews: 40,

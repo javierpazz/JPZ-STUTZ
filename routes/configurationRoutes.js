@@ -16,12 +16,11 @@ configurationRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newConfiguration = new Configuration({
-      codCon: 0,
-      name: '_',
+      codCon: '',
+      name: '',
       domcomer: '',
       cuit: '',
       coniva: '',
-      poriva: 0.00,
       ib: '',
       feciniact: '',
     });
@@ -43,7 +42,6 @@ configurationRouter.put(
       configuration.domcomer = req.body.domcomer;
       configuration.cuit = req.body.cuit;
       configuration.coniva = req.body.coniva;
-      configuration.poriva = req.body.poriva;
       configuration.ib = req.body.ib;
       configuration.feciniact = req.body.feciniact;
       await configuration.save();

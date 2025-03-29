@@ -16,7 +16,8 @@ productRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newProduct = new Product({
-      codPro: 'Codigo',
+      codPro: 'Codigo Barra',
+      codigoPro: 'Codigo Propio',
       title: 'Nombre',
       slug: '',
       // image: '/images/p1.jpg',
@@ -25,6 +26,7 @@ productRouter.post(
       brand: 'Marca',
       inStock: 0,
       minStock: 0,
+      porIva: 0,
       rating: 0,
       numReviews: 0,
       description: 'Descripcion',
@@ -79,6 +81,7 @@ productRouter.put(
     const product = await Product.findById(productId);
     if (product) {
       product.codPro = req.body.codPro;
+      product.codigoPro = req.body.codigoPro;
       product.title = req.body.title;
       product.slug = req.body.slug;
       product.price = req.body.price;
@@ -88,6 +91,7 @@ productRouter.put(
       product.brand = req.body.brand;
       product.inStock = req.body.inStock;
       product.minStock = req.body.minStock;
+      product.porIva = req.body.porIva;
       product.description = req.body.description;
       await product.save();
       res.send({ message: 'Product Updated' });
