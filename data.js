@@ -10,6 +10,8 @@ const data = {
     noDisc: 'false',
     toDisc: 'true',
     itDisc: 'false',
+    interno: 'false',
+    numInt: 0,
     },
     {
     codCom: '2',
@@ -19,6 +21,8 @@ const data = {
     noDisc: 'false',
     toDisc: 'false',
     itDisc: 'true',
+    interno: 'false',
+    numInt: 0,
     },
     {
     codCom: '3',
@@ -28,8 +32,21 @@ const data = {
     noDisc: 'true',
     toDisc: 'false',
     itDisc: 'false',
+    interno: 'false',
+    numInt: 0,
     },
-  ],
+    {
+      codCom: '4',
+      nameCom: 'COMP NO FISCAL',
+      claCom: '4',
+      isHaber: 'false',
+      noDisc: 'true',
+      toDisc: 'false',
+      itDisc: 'false',
+      interno: 'true',
+      numInt: 0,
+      },
+    ],
 
   valuee: [
     {
@@ -58,6 +75,18 @@ const data = {
         email: 'proovedor2@email.com',
         },
     ],
+  encargado: [
+        {
+        codEnc: '1',
+        name: 'ENCARGADO 1',
+        email: 'encargado1@email.com',
+      },
+      {
+        codEnc: '2',
+        name: 'ENCARGADO 2',
+        email: 'encargado2@email.com',
+        },
+    ],
 
   customer: [
       {
@@ -83,24 +112,30 @@ const data = {
   configuration: [
       {
         codCon: '0001',
-        name: 'STUTZ',
-        domcomer: 'DIRECCION STUTZ',
+        name: 'FARMACIA',
+        domcomer: 'DIRECCION FARMACIA',
         cuit: '20-20202020-2',
         coniva: 'RESP. INSCRIPTO',
         ib: '87654321',
         feciniact: '12/07/2021',
-        },
-        {
-          codCon: '0002',
-          name: 'SUPER MAYO',
-          domcomer: 'DIRECCION SUPER MAYO',
-          cuit: '20-20202020-2',
-          coniva: 'RESP. INSCRIPTO',
-          ib: '87654321',
-          feciniact: '12/07/2021',
-          },
+        numIntRem: 0,
+        numIntRec: 0,
+        numIntCaj: 0,
+      },
+      {
+        codCon: '0002',
+        name: 'SUPER MAYO',
+        domcomer: 'DIRECCION SUPER MAYO',
+        cuit: '20-20202020-2',
+        coniva: 'RESP. INSCRIPTO',
+        ib: '87654321',
+        feciniact: '12/07/2021',
+        numIntRem: 0,
+        numIntRec: 0,
+        numIntCaj: 0,
+      },
       ],
-
+      
 
   categories: [
     {

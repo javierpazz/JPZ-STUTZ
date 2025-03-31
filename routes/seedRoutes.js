@@ -8,6 +8,7 @@ const Customer =require ('../models/customerModel.js');
 const Supplier =require ('../models/supplierModel.js');
 const Valuee =require ('../models/valueeModel.js');
 const Comprobante =require ('../models/comprobanteModel.js');
+const Encargado =require ('../models/encargadoModel.js');
 
 const seedRouter = express.Router();
 
@@ -28,6 +29,8 @@ seedRouter.get('/', async (req, res) => {
   const createdValuee = await Valuee.insertMany(data.valuee);
   await Comprobante.remove({});
   const createdComprobante = await Comprobante.insertMany(data.comprobante);
+  await Encargado.remove({});
+  const createdEncargado = await Encargado.insertMany(data.encargado);
   res.send({ createdProducts, createdUsers, createdCategories });
 });
 

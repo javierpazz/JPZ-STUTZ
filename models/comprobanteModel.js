@@ -9,6 +9,9 @@ const comprobanteSchema = new mongoose.Schema(
     noDisc: { type: Boolean, default: true, required: true },
     toDisc: { type: Boolean, default: false, required: true },
     itDisc: { type: Boolean, default: false, required: true },
+    interno: { type: Boolean, default: false, required: true },
+    numInt: { type: Number },
+    codComCon: { type: String, unique: true  },
 
   },
   {

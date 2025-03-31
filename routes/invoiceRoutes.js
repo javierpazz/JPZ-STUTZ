@@ -5,6 +5,8 @@ const Invoice = require ('../models/invoiceModel.js');
 const Receipt = require ('../models/receiptModel.js');
 const User = require ('../models/userModel.js');
 const Product = require ('../models/productModel.js');
+const Configuration = require ('../models/configurationModel.js');
+const Comprobante = require ('../models/comprobanteModel.js');
 const { isAuth, isAdmin, mailgun, payInvoiceEmailTemplate } = require ('../utils.js');
 
 const invoiceRouter = express.Router();
@@ -246,6 +248,21 @@ invoiceRouter.post(
   '/',
   isAuth,
   expressAsyncHandler(async (req, res) => {
+      //////////  numera factura /////////////////
+      
+      if (req.body.invNum > 0)
+        {invNumero = req.body.invNum }
+        else {
+          const comproId = req.body.codCom;
+          const comprobante = await Comprobante.findById(comproId);
+          if (comprobante) {
+            comprobante.numInt = comprobante.numInt + 1;
+            await comprobante.save();
+          }
+          invNumero = comprobante.numInt;
+        };
+        //////////  numera factura /////////////////
+  
     const newInvoice = new Invoice({
       orderItems: req.body.orderItems.map((x) => ({
         ...x,
@@ -266,6 +283,63 @@ invoiceRouter.post(
       supplier: req.body.codSup,
       remNum: req.body.remNum,
       remDat: req.body.remDat,
+      //////////  numera factura /////////////////
+      invNum: invNumero,
+      //////////  numera factura /////////////////
+      invDat: req.body.invDat,
+      recNum: req.body.recNum,
+      recDat: req.body.recDat,
+      desVal: req.body.desVal,
+      notes: req.body.notes,
+      salbuy: req.body.salbuy,
+    });
+    const invoice = await newInvoice.save();
+    res.status(201).send({ message: 'New Invoice Created', invoice });
+  })
+);
+
+invoiceRouter.post(
+  '/rem/',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+
+    //////////  numera remito /////////////////
+      
+      if (req.body.remNum > 0)
+      {remNumero = req.body.remNum }
+      else {
+        const configId = req.body.codCon;
+        const configuracion = await Configuration.findById(configId);
+        if (configuracion) {
+          configuracion.numIntRem = configuracion.numIntRem + 1;
+          await configuracion.save();
+        }
+        remNumero = configuracion.numIntRem;
+      };
+      //////////  numera remito /////////////////
+
+    const newInvoice = new Invoice({
+      orderItems: req.body.orderItems.map((x) => ({
+        ...x,
+        product: x._id,
+      })),
+      shippingAddress: req.body.shippingAddress,
+      paymentMethod: req.body.paymentMethod,
+      subTotal: req.body.subTotal,
+      shippingPrice: req.body.shippingPrice,
+      tax: req.body.tax,
+      total: req.body.total,
+      totalBuy: req.body.totalBuy,
+      user: req.body.codUse,
+      id_client: req.body.codCus,
+      id_config: req.body.codCon,
+      codConNum: req.body.codConNum,
+      codCom: req.body.codCom,
+      supplier: req.body.codSup,
+      //////////  numera remito /////////////////
+      remNum: remNumero,
+      //////////  numera remito /////////////////
+      remDat: req.body.remDat,
       invNum: req.body.invNum,
       invDat: req.body.invDat,
       recNum: req.body.recNum,
@@ -278,6 +352,8 @@ invoiceRouter.post(
     res.status(201).send({ message: 'New Invoice Created', invoice });
   })
 );
+
+
 
 invoiceRouter.get(
   '/summary',

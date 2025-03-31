@@ -19,6 +19,9 @@ comprobanteRouter.post(
       codCom: '',
       nameCom: '',
       claCom: '',
+      interno: 'false',
+      numInt: 0,
+      codComCon: '',
     });
     const comprobante = await newComprobante.save();
     res.send({ message: 'Comprobante Created', comprobante });
@@ -40,6 +43,9 @@ comprobanteRouter.put(
       comprobante.noDisc = Boolean(req.body.noDisc);
       comprobante.toDisc = Boolean(req.body.toDisc);
       comprobante.itDisc = Boolean(req.body.itDisc);
+      comprobante.interno = Boolean(req.body.interno);
+      comprobante.numInt = req.body.numInt;
+      comprobante.codComCon = req.body.codComCon;
       await comprobante.save();
       res.send({ message: 'Comprobante Updated' });
     } else {

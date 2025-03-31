@@ -3,6 +3,7 @@ const expressAsyncHandler = require ('express-async-handler');
 const Receipt = require ('../models/receiptModel.js');
 const User = require ('../models/userModel.js');
 const Product = require ('../models/productModel.js');
+const Configuration = require ('../models/configurationModel.js');
 const { isAuth, isAdmin, mailgun, payReceiptEmailTemplate } = require ('../utils.js');
 
 const receiptRouter = express.Router();
@@ -90,9 +91,70 @@ receiptRouter.get(
 );
 
 receiptRouter.post(
+  '/caja/',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+      //////////  numera compCaja /////////////////
+      
+      if (req.body.cajNum > 0)
+        {cajNumero = req.body.cajNum }
+        else {
+          const configId = req.body.codCon;
+          const configuracion = await Configuration.findById(configId);
+          if (configuracion) {
+            configuracion.numIntCaj = configuracion.numIntCaj + 1;
+            await configuracion.save();
+          }
+          cajNumero = configuracion.numIntCaj;
+        };
+        //////////  numera compCaja /////////////////
+  
+    const newReceipt = new Receipt({
+      receiptItems: req.body.receiptItems.map((x) => ({
+        ...x,
+        valuee: x._id,
+      })),
+      subTotal: req.body.subTotal,
+      total: req.body.total,
+      totalBuy: req.body.totalBuy,
+      // user: req.body.codUse,
+      id_client: req.body.codCus,
+      id_config: req.body.codCon,
+      id_encarg: req.body.codEnc,
+      codConNum: req.body.codConNum,
+      supplier: req.body.codSup,
+      //////////  numera compCaja /////////////////
+      cajNum: cajNumero,
+      //////////  numera compCaja /////////////////
+      cajDat: req.body.cajDat,
+      desVal: req.body.desVal,
+      notes: req.body.notes,
+      salbuy: req.body.salbuy,
+    });
+    const receipt = await newReceipt.save();
+    res.status(201).send({ message: 'New receipt Created', receipt });
+  })
+);
+
+receiptRouter.post(
   '/',
   isAuth,
   expressAsyncHandler(async (req, res) => {
+      //////////  numera remito /////////////////
+      
+      if (req.body.recNum > 0)
+        {recNumero = req.body.recNum }
+        else {
+          const configId = req.body.codCon;
+          const configuracion = await Configuration.findById(configId);
+          if (configuracion) {
+            configuracion.numIntRec = configuracion.numIntRec + 1;
+            await configuracion.save();
+          }
+          recNumero = configuracion.numIntRec;
+        };
+        //////////  numera remito /////////////////
+  
     const newReceipt = new Receipt({
       receiptItems: req.body.receiptItems.map((x) => ({
         ...x,
@@ -106,7 +168,9 @@ receiptRouter.post(
       id_config: req.body.codCon,
       codConNum: req.body.codConNum,
       supplier: req.body.codSup,
-      recNum: req.body.recNum,
+      //////////  numera remito /////////////////
+      recNum: recNumero,
+      //////////  numera remito /////////////////
       recDat: req.body.recDat,
       desVal: req.body.desVal,
       notes: req.body.notes,
@@ -116,6 +180,8 @@ receiptRouter.post(
     res.status(201).send({ message: 'New receipt Created', receipt });
   })
 );
+
+
 
 receiptRouter.get(
   '/summary',

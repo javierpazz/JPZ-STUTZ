@@ -23,6 +23,10 @@ configurationRouter.post(
       coniva: '',
       ib: '',
       feciniact: '',
+      numIntRem: 0,
+      numIntRec: 0,
+
+
     });
     const configuration = await newConfiguration.save();
     res.send({ message: 'Configuration Created', configuration });
@@ -44,6 +48,8 @@ configurationRouter.put(
       configuration.coniva = req.body.coniva;
       configuration.ib = req.body.ib;
       configuration.feciniact = req.body.feciniact;
+      configuration.numIntRem = req.body.numIntRem;
+      configuration.numIntRec = req.body.numIntRec;
       await configuration.save();
       res.send({ message: 'Configuration Updated' });
     } else {

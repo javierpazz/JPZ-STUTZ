@@ -9,6 +9,10 @@ const configurationSchema = new mongoose.Schema(
     coniva: { type: String},
     ib: { type: String},
     feciniact: { type: String},
+    numIntRem: { type: Number },
+    numIntRec: { type: Number },
+    numIntCaj: { type: Number },
+
   },
   {
     timestamps: true,
