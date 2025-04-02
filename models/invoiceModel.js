@@ -10,6 +10,7 @@ const orderSchema = new mongoose.Schema(
         image: { type: String },
         price: { type: Number, required: true },
         size : { type: String },
+        porIva : { type: Number, required: true },
         _id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Product',

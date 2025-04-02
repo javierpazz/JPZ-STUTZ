@@ -400,6 +400,23 @@ invoiceRouter.get(
 );
 
 invoiceRouter.get(
+  '/:id',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const invoice = await Invoice.findById(req.params.id).populate(
+      'user',
+      'name'
+    );
+    if (invoice) {
+      res.send(invoice);
+    } else {
+      res.status(404).send({ message: 'Invoice Not Found' });
+    }
+  })
+);
+
+
+invoiceRouter.get(
   '/mine',
   isAuth,
   expressAsyncHandler(async (req, res) => {
