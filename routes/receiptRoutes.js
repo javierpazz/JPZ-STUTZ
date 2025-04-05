@@ -2,6 +2,7 @@ const express = require ('express');
 const expressAsyncHandler = require ('express-async-handler');
 const Receipt = require ('../models/receiptModel.js');
 const User = require ('../models/userModel.js');
+const Encargado = require ('../models/encargadoModel.js');
 const Product = require ('../models/productModel.js');
 const Configuration = require ('../models/configurationModel.js');
 const { isAuth, isAdmin, mailgun, payReceiptEmailTemplate } = require ('../utils.js');
@@ -54,6 +55,7 @@ receiptRouter.get(
     const receipts = await Receipt.find({ salbuy: 'BUY' })
       .populate('user', 'name')
       .populate('supplier', 'name')
+      .populate('id_encarg', 'name')
       .skip(pageSize * (page - 1))
       .limit(pageSize);
     const countReceipts = await Receipt.countDocuments({ salbuy: 'BUY' });
@@ -78,6 +80,7 @@ receiptRouter.get(
     const receipts = await Receipt.find({ salbuy: 'SALE' })
       .populate('id_client', 'nameCus')
       .populate('supplier', 'name')
+      .populate('id_encarg', 'name')
       .skip(pageSize * (page - 1))
       .limit(pageSize);
     const countReceipts = await Receipt.countDocuments({ salbuy: 'SALE' });
