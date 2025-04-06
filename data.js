@@ -1,5 +1,4 @@
 const bcrypt = require ('bcryptjs');
-
 const data = {
   comprobante: [
     {
@@ -12,8 +11,9 @@ const data = {
     itDisc: 'false',
     interno: 'false',
     numInt: 0,
-    },
-    {
+    codCon: 'poner codigo',
+  },
+  {
     codCom: '2',
     nameCom: 'FACTURA B',
     claCom: '2',
@@ -23,8 +23,9 @@ const data = {
     itDisc: 'true',
     interno: 'false',
     numInt: 0,
-    },
-    {
+    codCon: 'poner codigo',
+  },
+  {
     codCom: '3',
     nameCom: 'FACTURA C',
     claCom: '3',
@@ -34,17 +35,19 @@ const data = {
     itDisc: 'false',
     interno: 'false',
     numInt: 0,
-    },
-    {
-      codCom: '4',
-      nameCom: 'COMP NO FISCAL',
-      claCom: '4',
-      isHaber: 'false',
-      noDisc: 'true',
-      toDisc: 'false',
-      itDisc: 'false',
-      interno: 'true',
-      numInt: 0,
+    codCon: 'poner codigo',
+  },
+  {
+    codCom: '4',
+    nameCom: 'COMP NO FISCAL',
+    claCom: '4',
+    isHaber: 'false',
+    noDisc: 'true',
+    toDisc: 'false',
+    itDisc: 'false',
+    interno: 'true',
+    numInt: 0,
+    codCon: 'poner codigo',
       },
     ],
 

@@ -2,8 +2,8 @@ const mongoose = require ('mongoose');
 
 const comprobanteSchema = new mongoose.Schema(
   {
-    codCom: { type: String, unique: true  },
-    nameCom: { type: String, unique: true  },
+    codCom: { type: String },
+    nameCom: { type: String },
     claCom: { type: String },
     isHaber: { type: Boolean, default: true, required: true },
     noDisc: { type: Boolean, default: true, required: true },
@@ -11,7 +11,7 @@ const comprobanteSchema = new mongoose.Schema(
     itDisc: { type: Boolean, default: false, required: true },
     interno: { type: Boolean, default: false, required: true },
     numInt: { type: Number },
-    codComCon: { type: String, unique: true  },
+    codCon: { type: mongoose.Schema.Types.ObjectId, ref: 'Configuration' },
 
   },
   {

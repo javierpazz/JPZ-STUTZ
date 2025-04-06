@@ -21,14 +21,15 @@ seedRouter.get('/', async (req, res) => {
   const createdCategories = await Category.insertMany(data.categories);
   await Configuration.remove({});
   const createdConfiguration = await Configuration.insertMany(data.configuration);
+  // sedvalCon = createdConfiguration[0]._id;
   await Customer.remove({});
   const createdCustomer = await Customer.insertMany(data.customer);
   await Supplier.remove({});
   const createdSupplier = await Supplier.insertMany(data.supplier);
   await Valuee.remove({});
   const createdValuee = await Valuee.insertMany(data.valuee);
-  await Comprobante.remove({});
-  const createdComprobante = await Comprobante.insertMany(data.comprobante);
+  // await Comprobante.remove({});
+  // const createdComprobante = await Comprobante.insertMany(data.comprobante);
   await Encargado.remove({});
   const createdEncargado = await Encargado.insertMany(data.encargado);
   res.send({ createdProducts, createdUsers, createdCategories });

@@ -6,7 +6,10 @@ const { isAuth, isAdmin } = require ('../utils.js');
 const comprobanteRouter = express.Router();
 
 comprobanteRouter.get('/', async (req, res) => {
-  const comprobantes = await Comprobante.find().sort({ nameCom: 1 });
+  const { query } = req;
+  const comprobantes = await Comprobante.find({
+    codCon : query.id_config,
+    }).sort({ nameCom: 1 });
   res.send(comprobantes);
 });
 
@@ -18,8 +21,8 @@ comprobanteRouter.post(
     const newComprobante = new Comprobante({
       codCom: '',
       nameCom: '',
-      claCom: '',
-      interno: 'false',
+      // claCom: '',
+      interno: 'true',
       numInt: 0,
       codComCon: '',
     });
@@ -45,7 +48,7 @@ comprobanteRouter.put(
       comprobante.itDisc = Boolean(req.body.itDisc);
       comprobante.interno = Boolean(req.body.interno);
       comprobante.numInt = req.body.numInt;
-      comprobante.codComCon = req.body.codComCon;
+      comprobante.codCon = req.body.id_config;
       await comprobante.save();
       res.send({ message: 'Comprobante Updated' });
     } else {
@@ -80,7 +83,9 @@ comprobanteRouter.get(
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
 
-    const comprobantes = await Comprobante.find()
+    const comprobantes = await Comprobante.find({
+      codCon : query.id_config,
+      })
       .sort({ name: 1 })
       .skip(pageSize * (page - 1))
       .limit(pageSize);
