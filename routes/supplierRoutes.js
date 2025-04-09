@@ -1,6 +1,8 @@
 const express = require ('express');
 const expressAsyncHandler = require ('express-async-handler');
 const Supplier = require ('../models/supplierModel.js');
+const Invoice = require ('../models/invoiceModel.js');
+const Receipt = require ('../models/receiptModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
 
 const supplierRouter = express.Router();
@@ -13,12 +15,21 @@ supplierRouter.get('/', async (req, res) => {
 supplierRouter.post(
   '/',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newSupplier = new Supplier({
-      codSup: '',
-      name: '',
-      email: '',
+      codSup: req.body.codSup,
+      name: req.body.name,
+      email: req.body.email,
+      domcomer: req.body.domcomer,
+      cuit: req.body.cuit,
+      coniva: req.body.coniva,
+      // codSup: '',
+      // name: '',
+      // email: '',
+      // domcomer: '',
+      // cuit: '',
+      // coniva: '',
     });
     const supplier = await newSupplier.save();
     res.send({ message: 'Supplier Created', supplier });
@@ -28,7 +39,7 @@ supplierRouter.post(
 supplierRouter.put(
   '/:id',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const supplierId = req.params.id;
     const supplier = await Supplier.findById(supplierId);
@@ -36,6 +47,9 @@ supplierRouter.put(
       supplier.codSup = req.body.codSup;
       supplier.name = req.body.name;
       supplier.email = req.body.email;
+      supplier.domcomer = req.body.domcomer;
+      supplier.cuit = req.body.cuit;
+      supplier.coniva = req.body.coniva;
       await supplier.save();
       res.send({ message: 'Supplier Updated' });
     } else {
@@ -49,6 +63,18 @@ supplierRouter.delete(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+
+    const invoices = await Invoice.findOne({supplier: req.params.id });
+    if (invoices) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Facturas con este Proovedor' });
+      return;
+    }
+    const receipts = await Receipt.findOne({supplier: req.params.id })
+    if (receipts) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este Proovedor' });
+      return;
+    }
+
     const supplier = await Supplier.findById(req.params.id);
     if (supplier) {
       await supplier.remove();

@@ -12,6 +12,7 @@ const configurationSchema = new mongoose.Schema(
     numIntRem: { type: Number },
     numIntRec: { type: Number },
     numIntCaj: { type: Number },
+    numIntMov: { type: Number },
 
   },
   {

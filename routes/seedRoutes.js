@@ -1,6 +1,5 @@
 const express =require ('express');
 const Product =require ('../models/productModel.js');
-const data =require ('../data.js');
 const User =require ('../models/userModel.js');
 const Category =require ('../models/category.js');
 const Configuration =require ('../models/configurationModel.js');
@@ -9,30 +8,302 @@ const Supplier =require ('../models/supplierModel.js');
 const Valuee =require ('../models/valueeModel.js');
 const Comprobante =require ('../models/comprobanteModel.js');
 const Encargado =require ('../models/encargadoModel.js');
+const data =require ('../data.js');
 
 const seedRouter = express.Router();
 
 seedRouter.get('/', async (req, res) => {
-  await Product.remove({});
-  const createdProducts = await Product.insertMany(data.products);
   await User.remove({});
   const createdUsers = await User.insertMany(data.users);
   await Category.remove({});
   const createdCategories = await Category.insertMany(data.categories);
   await Configuration.remove({});
   const createdConfiguration = await Configuration.insertMany(data.configuration);
-  // sedvalCon = createdConfiguration[0]._id;
+  const CONFIG1 = createdConfiguration[0]._id;
+  const CONFIG2 = createdConfiguration[1]._id;
+
+////////////////con punto venta
+const data1 = {
+
+      comprobante: [
+        {
+        codCom: '1',
+        nameCom: 'FACTURA A',
+        claCom: '1',
+        isHaber: 'false',
+        noDisc: 'false',
+        toDisc: 'true',
+        itDisc: 'false',
+        interno: 'false',
+        numInt: 0,
+        codCon: CONFIG1,
+      },
+      {
+        codCom: '2',
+        nameCom: 'FACTURA B',
+        claCom: '2',
+        isHaber: 'false',
+        noDisc: 'false',
+        toDisc: 'false',
+        itDisc: 'true',
+        interno: 'false',
+        numInt: 0,
+        codCon: CONFIG1,
+      },
+      {
+        codCom: '3',
+        nameCom: 'FACTURA C',
+        claCom: '3',
+        isHaber: 'false',
+        noDisc: 'true',
+        toDisc: 'false',
+        itDisc: 'false',
+        interno: 'false',
+        numInt: 0,
+        codCon: CONFIG1,
+      },
+      {
+        codCom: '4',
+        nameCom: 'COMP NO FISCAL',
+        claCom: '4',
+        isHaber: 'false',
+        noDisc: 'true',
+        toDisc: 'false',
+        itDisc: 'false',
+        interno: 'true',
+        numInt: 0,
+        codCon: CONFIG1,
+          },
+        {
+        codCom: '1',
+        nameCom: 'FACTURA A',
+        claCom: '1',
+        isHaber: 'false',
+        noDisc: 'false',
+        toDisc: 'true',
+        itDisc: 'false',
+        interno: 'false',
+        numInt: 0,
+        codCon: CONFIG2,
+      },
+      {
+        codCom: '2',
+        nameCom: 'FACTURA B',
+        claCom: '2',
+        isHaber: 'false',
+        noDisc: 'false',
+        toDisc: 'false',
+        itDisc: 'true',
+        interno: 'false',
+        numInt: 0,
+        codCon: CONFIG2,
+      },
+      {
+        codCom: '3',
+        nameCom: 'FACTURA C',
+        claCom: '3',
+        isHaber: 'false',
+        noDisc: 'true',
+        toDisc: 'false',
+        itDisc: 'false',
+        interno: 'false',
+        numInt: 0,
+        codCon: CONFIG2,
+      },
+      {
+        codCom: '4',
+        nameCom: 'COMP NO FISCAL',
+        claCom: '4',
+        isHaber: 'false',
+        noDisc: 'true',
+        toDisc: 'false',
+        itDisc: 'false',
+        interno: 'true',
+        numInt: 0,
+        codCon: CONFIG2,
+          },
+        ],
+
+        products: [
+        {
+          // _id: '1',
+          codPro: 'A',
+          codigoPro: '1',
+          title: 'Malbec',
+          slug: 'Malbec',
+          category: 'Tinto',
+          image: '/products/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg', // 679px × 829px
+          images: [
+            '/products/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg',
+            '/products/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg',
+        ],
+          image1: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg?alt=media&token=4f21d3c6-bbba-408f-b4bb-63fad0282ec7',
+          image2: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg?alt=media&token=4f21d3c6-bbba-408f-b4bb-63fad0282ec7',
+          image3: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_37cbb451da834d20ac6a5c3a3eab24a7.jpg?alt=media&token=4f21d3c6-bbba-408f-b4bb-63fad0282ec7',
+          id_category: "6630f13dd6d68d5c088be2cd",
+          price: 9800,
+          priceBuy: 7000,
+          inStock: 1000,
+          minStock: 10,
+          porIva: 21,
+          brand: 'Stutz',
+          rating: 4.5,
+          numReviews: 700,
+          description: 'Vino Malbec Organico del Valle de Cafayate - Salta - Argentina',
+          id_config: CONFIG1
+        },
+        {
+          // _id: '1',
+          codPro: 'B',
+          codigoPro: '2',
+          title: 'Cabernet',
+          slug: 'Cabernet',
+          category: 'Tinto',
+          image: '/products/img_0cda786daa25d10fde5dd4d7af369ebf.jpg', // 679px × 829px
+          images: [
+            '/products/img_0cda786daa25d10fde5dd4d7af369ebf.jpg',
+            '/products/img_0cda786daa25d10fde5dd4d7af369ebf.jpg',
+        ],
+          image1: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0cda786daa25d10fde5dd4d7af369ebf.jpg?alt=media&token=3ce32eb6-e982-407c-ba48-ae3804e7ff3a',
+          image2: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0cda786daa25d10fde5dd4d7af369ebf.jpg?alt=media&token=3ce32eb6-e982-407c-ba48-ae3804e7ff3a',
+          image3: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0cda786daa25d10fde5dd4d7af369ebf.jpg?alt=media&token=3ce32eb6-e982-407c-ba48-ae3804e7ff3a',
+          id_category: "6630f13dd6d68d5c088be2cd",
+          price: 10200,
+          priceBuy: 8000,
+          inStock: 1000,
+          minStock: 10,
+          porIva: 21,
+          brand: 'Stutz',
+          rating: 5,
+          numReviews: 105,
+          description: 'Vino Cabernet Organico del Valle de Cafayate - Salta - Argentina',
+          id_config: CONFIG1
+        },
+        {
+          // _id: '1',
+          codPro: 'C',
+          codigoPro: '3',
+          title: 'Tannat',
+          slug: 'Tannat',
+          category: 'Tinto',
+          image: '/products/img_0cda786daa25d10fde5dd4d7af369ebf.jpg', // 679px × 829px
+          images: [
+            '/products/img_0cda786daa25d10fde5dd4d7af369ebf.jpg',
+            '/products/img_0cda786daa25d10fde5dd4d7af369ebf.jpg',
+        ],
+          image1: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_5b3c26aba0774671aab572bcadde3bd0.jpg?alt=media&token=3a258879-a1b4-4cb2-9c3d-b77196747c99',
+          image2: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_5b3c26aba0774671aab572bcadde3bd0.jpg?alt=media&token=3a258879-a1b4-4cb2-9c3d-b77196747c99',
+          image3: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_5b3c26aba0774671aab572bcadde3bd0.jpg?alt=media&token=3a258879-a1b4-4cb2-9c3d-b77196747c99',
+          id_category: "6630f13dd6d68d5c088be2cd",
+          price: 10200,
+          priceBuy: 8000,
+          inStock: 1000,
+          minStock: 10,
+          porIva: 21,
+          brand: 'Stutz',
+          rating: 5,
+          numReviews: 1140,
+          description: 'Vino Tannat Organico del Valle de Cafayate - Salta - Argentina',
+          id_config: CONFIG1
+        },
+        {
+          // _id: '1',
+          codPro: 'D',
+          codigoPro: '4',
+          title: 'Torrontes',
+          slug: 'Torrontes',
+          category: 'Blanco',
+          image: '/products/img_0700be14742225ca421f2db276f77bab.jpg', // 679px × 829px
+          images: [
+            '/products/img_0700be14742225ca421f2db276f77bab.jpg',
+            '/products/img_0700be14742225ca421f2db276f77bab.jpg',
+        ],
+          image1: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
+          image2: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
+          image3: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
+          id_category: "6630f13dd6d68d5c088be2cd",
+          price: 9500,
+          priceBuy: 7000,
+          inStock: 1000,
+          minStock: 10,
+          porIva: 21,
+          brand: 'Stutz',
+          rating: 4,
+          numReviews: 458,
+          description: 'Vino Torrontes Organico del Valle de Cafayate - Salta - Argentina',
+          id_config: CONFIG1
+        },
+        {
+          // _id: '1',
+          codPro: 'E',
+          codigoPro: '5',
+          title: 'Torrontes Tardio',
+          slug: 'Torrontes-Tardio',
+          category: 'Blanco',
+          image: '/products/img_0700be14742225ca421f2db276f77bab.jpg', // 679px × 829px
+          images: [
+            '/products/img_0700be14742225ca421f2db276f77bab.jpg',
+            '/products/img_0700be14742225ca421f2db276f77bab.jpg',
+        ],
+          image1: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
+          image2: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
+          image3: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_0700be14742225ca421f2db276f77bab.jpg?alt=media&token=4fecd43b-62de-4f10-9d2b-21e149804df6',
+          id_category: "6630f13dd6d68d5c088be2cd",
+          price: 9500,
+          priceBuy: 7000,
+          inStock: 1000,
+          minStock: 10,
+          porIva: 21,
+          brand: 'Stutz',
+          rating: 4,
+          numReviews: 345,
+          description: 'Vino Torrontes Tardio Organico del Valle de Cafayate - Salta - Argentina',
+          id_config: CONFIG1
+        },
+        {
+          // _id: '1',
+          codPro: 'F',
+          codigoPro: '6',
+          title: 'Garnacha',
+          slug: 'Garnacha',
+          category: 'Tinto',
+          image: '/products/img_8055978bfc4ac981a51189c1ab67283a.jpg', // 679px × 829px
+          images: [
+            '/products/img_8055978bfc4ac981a51189c1ab67283a.jpg',
+            '/products/img_8055978bfc4ac981a51189c1ab67283a.jpg',
+        ],
+          image1: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_8055978bfc4ac981a51189c1ab67283a.jpg?alt=media&token=8380bc0b-6689-4e1a-9c64-8c5b468aad0a',
+          image2: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_8055978bfc4ac981a51189c1ab67283a.jpg?alt=media&token=8380bc0b-6689-4e1a-9c64-8c5b468aad0a',
+          image3: 'https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/img_8055978bfc4ac981a51189c1ab67283a.jpg?alt=media&token=8380bc0b-6689-4e1a-9c64-8c5b468aad0a',
+          id_category: "6630f13dd6d68d5c088be2cd",
+          price: 12000,
+          priceBuy: 9000,
+          inStock: 1000,
+          minStock: 10,
+          porIva: 21,
+          brand: 'Stutz',
+          rating: 5,
+          numReviews: 40,
+          description: 'Vino Garnacha Organico del Valle de Cafayate - Salta - Argentina',
+          id_config: CONFIG1
+        },
+      ],
+        };
+////////////////con punto venta
+
   await Customer.remove({});
   const createdCustomer = await Customer.insertMany(data.customer);
   await Supplier.remove({});
   const createdSupplier = await Supplier.insertMany(data.supplier);
   await Valuee.remove({});
   const createdValuee = await Valuee.insertMany(data.valuee);
-  // await Comprobante.remove({});
-  // const createdComprobante = await Comprobante.insertMany(data.comprobante);
   await Encargado.remove({});
   const createdEncargado = await Encargado.insertMany(data.encargado);
-  res.send({ createdProducts, createdUsers, createdCategories });
+  await Comprobante.remove({});
+  const createdComprobante = await Comprobante.insertMany(data1.comprobante);
+  await Product.remove({});
+  const createdProducts = await Product.insertMany(data1.products);
+  res.send({  createdUsers, createdCategories });
 });
 
 module.exports = seedRouter;

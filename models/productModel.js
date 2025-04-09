@@ -14,9 +14,9 @@ const reviewSchema = new mongoose.Schema(
 const productSchema = new mongoose.Schema(
   {
 
-    codPro: { type: String, unique: true , required: true },
-    codigoPro: { type: String, unique: true , required: true },
-    title: { type: String, unique: true , required: true },
+    codPro: { type: String, required: true },
+    codigoPro: { type: String, required: true },
+    title: { type: String, required: true },
     slug: { type: String },
     // slug: { type: String, required: true, unique: true },
     image: { type: String },
@@ -26,9 +26,12 @@ const productSchema = new mongoose.Schema(
     image3: { type: String },
     brand: { type: String },
     category: { type: String },
+    id_config: { type: mongoose.Schema.Types.ObjectId, ref: 'Configuration' },
+    supplier: { type: mongoose.Schema.Types.ObjectId, ref: 'Supplier', },
     id_category: { type: String },    
     description: { type: String, required: true },
     price: { type: Number },
+    priceBuy: { type: Number },
     inStock: { type: Number },
     minStock: { type: Number },
     porIva: { type: Number },
@@ -62,7 +65,7 @@ const productSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
+productSchema.index({ codigoPro: 1, id_config: 1 }, { unique: true });
 const Product = mongoose.model('Product', productSchema);
 
 // const db = require('../config/config');

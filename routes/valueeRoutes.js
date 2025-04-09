@@ -16,8 +16,8 @@ valueeRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newValuee = new Valuee({
-      codVal: '',
-      desVal: '',
+      codVal: req.body.codVal,
+      desVal: req.body.desVal,
     });
     const valuee = await newValuee.save();
     res.send({ message: 'Valuee Created', valuee });

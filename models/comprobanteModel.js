@@ -18,6 +18,6 @@ const comprobanteSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
+comprobanteSchema.index({ codCom: 1, codCon: 1 }, { unique: true });
 const Comprobante = mongoose.model('Comprobante', comprobanteSchema);
 module.exports =  Comprobante;

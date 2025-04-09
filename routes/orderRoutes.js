@@ -5,6 +5,7 @@ const Receipt = require ('../models/receiptModel.js');
 const User = require ('../models/userModel.js');
 const Product = require ('../models/productModel.js');
 const { isAuth, isAdmin, mailgun, payOrderEmailTemplate } = require ('../utils.js');
+const { ObjectId } = require('mongodb');
 
 const orderRouter = express.Router();
 
@@ -76,7 +77,19 @@ orderRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const factura = 'SALE';
     const producIO = await Invoice.aggregate([
+      {
+        $match: {
+          $and: [
+             { salbuy: factura },
+             { id_config : new ObjectId(query.id_config)}
+            ],
+        },
+      },
+
+
       { $unwind: '$orderItems' },
 
       {
@@ -100,15 +113,18 @@ orderRouter.get(
     ]);
 
     /////////////////////////////////////////////////////////
-    const factura = 'SALE';
     const invoices = await Invoice.find();
 
     const ctacte = await Receipt.aggregate([
-      //      {
-      //        $match: {
-      //          salbuy: factura,
-      //        },
-      ////      },
+      {
+        $match: {
+          $and: [
+             { salbuy: factura },
+             { id_config : new ObjectId(query.id_config)}
+            ],
+        },
+      },
+
       {
         $set: {
           docDat: '$recDat',
@@ -120,12 +136,16 @@ orderRouter.get(
         $unionWith: {
           coll: 'invoices',
           pipeline: [
-            //            {
-            //              $match: {
-            //                salbuy: factura,
-            //              },
-            //            },
             {
+              $match: {
+                $and: [
+                   { salbuy: factura },
+                   { id_config : new ObjectId(query.id_config)}
+                  ],
+              },
+            },
+      
+                  {
               $set: {
                 docDat: '$invDat',
                 importeInv: '$total',
@@ -152,6 +172,16 @@ orderRouter.get(
 
     const orders = await Invoice.aggregate([
       {
+        $match: {
+          $and: [
+             { salbuy: factura },
+             { id_config : new ObjectId(query.id_config)}
+            ],
+        },
+      },
+
+
+      {
         $group: {
           _id: null,
           numOrders: { $sum: 1 },
@@ -169,6 +199,15 @@ orderRouter.get(
     ]);
     const dailyOrders = await Invoice.aggregate([
       {
+        $match: {
+          $and: [
+             { salbuy: factura },
+             { id_config : new ObjectId(query.id_config)}
+            ],
+        },
+      },
+
+      {
         $group: {
           _id: { $dateToString: { format: '%Y-%m-%d', date: '$invDat' } },
           orders: { $sum: 1 },
@@ -179,6 +218,15 @@ orderRouter.get(
       { $sort: { _id: 1 } },
     ]);
     const dailyMoney = await Receipt.aggregate([
+      {
+        $match: {
+          $and: [
+             { salbuy: factura },
+             { id_config : new ObjectId(query.id_config)}
+            ],
+        },
+      },
+
       {
         $group: {
           _id: { $dateToString: { format: '%Y-%m-%d', date: '$recDat' } },

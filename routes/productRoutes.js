@@ -1,6 +1,7 @@
 const express = require ('express');
 const expressAsyncHandler = require ('express-async-handler');
 const Product = require ('../models/productModel.js');
+const Invoice = require ('../models/invoiceModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
 
 const productRouter = express.Router();
@@ -10,28 +11,51 @@ productRouter.get('/', async (req, res) => {
   res.send(products);
 });
 
+productRouter.get('/xpv', async (req, res) => {
+  const { query } = req;
+  const products = await Product.find({id_config : query.id_config}).sort({ name: +1 });
+  res.send(products);
+});
+
+
 productRouter.post(
   '/',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newProduct = new Product({
-      codPro: 'Codigo Barra',
-      codigoPro: 'Codigo Propio',
-      title: 'Nombre',
-      slug: '',
-      // image: '/images/p1.jpg',
-      price: 0,
-      category: 'Categoria',
-      brand: 'Marca',
-      inStock: 0,
-      minStock: 0,
-      porIva: 0,
-      rating: 0,
-      numReviews: 0,
-      description: 'Descripcion',
-      sizes: ['XS'],
-      images: [],
+      codPro: req.body.codPro,
+      codigoPro: req.body.codigoPro,
+      title: req.body.title,
+      slug: req.body.slug,
+      price: req.body.price,
+      priceBuy: req.body.priceBuy,
+      image: req.body.image,
+      images: req.body.images,
+      id_config: req.body.id_config,
+      category: req.body.category,
+      brand: req.body.brand,
+      inStock: req.body.inStock,
+      minStock: req.body.minStock,
+      porIva: req.body.porIva,
+      description: req.body.description,
+
+      // codPro: 'Codigo Barra',
+      // codigoPro: 'Codigo Propio',
+      // title: 'Nombre',
+      // slug: '',
+      // // image: '/images/p1.jpg',
+      // price: 0,
+      // category: 'Categoria',
+      // brand: 'Marca',
+      // inStock: 0,
+      // minStock: 0,
+      // porIva: 0,
+      // rating: 0,
+      // numReviews: 0,
+      // description: 'Descripcion',
+      // sizes: ['XS'],
+      // images: [],
     });
     const product = await newProduct.save();
     res.send({ message: 'Product Created', product });
@@ -85,8 +109,10 @@ productRouter.put(
       product.title = req.body.title;
       product.slug = req.body.slug;
       product.price = req.body.price;
+      product.priceBuy = req.body.priceBuy,
       product.image = req.body.image;
       product.images = req.body.images;
+      // product.id_config = req.body.id_config,
       product.category = req.body.category;
       product.brand = req.body.brand;
       product.inStock = req.body.inStock;
@@ -162,12 +188,11 @@ productRouter.get(
     const { query } = req;
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
-
-    const products = await Product.find()
+    const products = await Product.find({id_config : query.id_config})
       .sort({ title: 1 })
       .skip(pageSize * (page - 1))
       .limit(pageSize);
-    const countProducts = await Product.countDocuments();
+    const countProducts = await Product.countDocuments({id_config : query.id_config});
     res.send({
       products,
       countProducts,

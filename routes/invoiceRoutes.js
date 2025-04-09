@@ -104,12 +104,16 @@ invoiceRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const { query } = req;
     const factura = 'SALE';
     const orders = await Invoice.find();
     const ctacte = await Receipt.aggregate([
       {
         $match: {
-          $and: [{ id_client: new ObjectId(req.params.userId) }, { salbuy: factura }],
+          $and: [{ id_client: new ObjectId(req.params.userId) },
+             { salbuy: factura },
+             { id_config : new ObjectId(query.id_config)}
+            ],
         },
       },
       {
@@ -127,6 +131,7 @@ invoiceRouter.get(
                 $and: [
                   { id_client: new ObjectId(req.params.userId) },
                   { salbuy: factura },
+                  { id_config : new ObjectId(query.id_config)},
                 ],
               },
             },
@@ -150,6 +155,7 @@ invoiceRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const { query } = req;
     const factura = 'BUY';
     const orders = await Invoice.find();
 
@@ -159,6 +165,7 @@ invoiceRouter.get(
           $and: [
             { supplier: new ObjectId(req.params.suppliId) },
             { salbuy: factura },
+            { id_config : new ObjectId(query.id_config)},
           ],
         },
       },
@@ -177,6 +184,7 @@ invoiceRouter.get(
                 $and: [
                   { supplier: new ObjectId(req.params.suppliId) },
                   { salbuy: factura },
+                  { id_config : new ObjectId(query.id_config)},
                 ],
               },
             },
@@ -204,13 +212,13 @@ invoiceRouter.get(
     const { query } = req;
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
-
-    const invoices = await Invoice.find({ salbuy: 'SALE' })
+    
+    const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'SALE', invNum: {$gt : 0} })
       .populate('id_client', 'nameCus')
       .populate('supplier', 'name')
       .skip(pageSize * (page - 1))
       .limit(pageSize);
-    const countInvoices = await Invoice.countDocuments({ salbuy: 'SALE' });
+    const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'SALE', invNum: {$gt : 0} });
     res.send({
       invoices,
       countInvoices,
@@ -229,12 +237,12 @@ invoiceRouter.get(
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
 
-    const invoices = await Invoice.find({ salbuy: 'BUY' })
+    const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'BUY', invNum: {$gt : 0} })
       .populate('user', 'name')
       .populate('supplier', 'name')
       .skip(pageSize * (page - 1))
       .limit(pageSize);
-    const countInvoices = await Invoice.countDocuments({ salbuy: 'BUY' });
+    const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'BUY', invNum: {$gt : 0} });
     res.send({
       invoices,
       countInvoices,
@@ -243,6 +251,103 @@ invoiceRouter.get(
     });
   })
 );
+
+///////////////////////remito
+invoiceRouter.get(
+  '/remitS',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    
+    const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'SALE', remNum : {$gt : 0} })
+      .populate('id_client', 'nameCus')
+      .populate('supplier', 'name')
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+    const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'SALE', remNum : {$gt : 0}});
+    res.send({
+      invoices,
+      countInvoices,
+      page,
+      pages: Math.ceil(countInvoices / pageSize),
+    });
+  })
+);
+
+invoiceRouter.get(
+  '/remitB',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+
+    const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'BUY', remNum : {$gt : 0} })
+      .populate('user', 'name')
+      .populate('supplier', 'name')
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+    const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'BUY', remNum : {$gt : 0} });
+    res.send({
+      invoices,
+      countInvoices,
+      page,
+      pages: Math.ceil(countInvoices / pageSize),
+    });
+  })
+);
+///////////////////////remito
+///////////////////////movim
+invoiceRouter.get(
+  '/movimS',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    
+    const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'SALE', movpvNum : {$gt : 0} })
+      .populate('id_config2', 'name')
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+    const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'SALE', movpvNum : {$gt : 0}});
+    res.send({
+      invoices,
+      countInvoices,
+      page,
+      pages: Math.ceil(countInvoices / pageSize),
+    });
+  })
+);
+
+invoiceRouter.get(
+  '/movimB',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+
+    const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'BUY', movpvNum : {$gt : 0} })
+      .populate('id_config2', 'name')
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+    const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'BUY', movpvNum : {$gt : 0} });
+    res.send({
+      invoices,
+      countInvoices,
+      page,
+      pages: Math.ceil(countInvoices / pageSize),
+    });
+  })
+);
+///////////////////////movim
 
 invoiceRouter.post(
   '/',
@@ -278,6 +383,7 @@ invoiceRouter.post(
       user: req.body.codUse,
       id_client: req.body.codCus,
       id_config: req.body.codCon,
+      user: req.body.user,
       codConNum: req.body.codConNum,
       codCom: req.body.codCom,
       supplier: req.body.codSup,
@@ -333,6 +439,10 @@ invoiceRouter.post(
       user: req.body.codUse,
       id_client: req.body.codCus,
       id_config: req.body.codCon,
+      user: req.body.user,
+      id_config2: req.body.codCon2,
+      movpvNum: req.body.movpvNum,
+      movpvDat: req.body.movpvDat,
       codConNum: req.body.codConNum,
       codCom: req.body.codCom,
       supplier: req.body.codSup,
@@ -353,6 +463,62 @@ invoiceRouter.post(
   })
 );
 
+invoiceRouter.post(
+  '/mov/',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+
+    //////////  numera movim /////////////////
+      
+      if (req.body.movpvNum > 0)
+      {movpvNumero = req.body.movpvNum }
+      else {
+        const configId = req.body.codCon;
+        const configuracion = await Configuration.findById(configId);
+        if (configuracion) {
+          configuracion.numIntMov = configuracion.numIntMov + 1;
+          await configuracion.save();
+        }
+        movpvNumero = configuracion.numIntMov;
+      };
+      //////////  numera movim /////////////////
+
+    const newInvoice = new Invoice({
+      orderItems: req.body.orderItems.map((x) => ({
+        ...x,
+        product: x._id,
+      })),
+      shippingAddress: req.body.shippingAddress,
+      paymentMethod: req.body.paymentMethod,
+      subTotal: req.body.subTotal,
+      shippingPrice: req.body.shippingPrice,
+      tax: req.body.tax,
+      total: req.body.total,
+      totalBuy: req.body.totalBuy,
+      user: req.body.user,
+      // user: req.body.codUse,
+      id_client: req.body.codCus,
+      id_config: req.body.codCon,
+      id_config2: req.body.codCon2,
+      codConNum: req.body.codConNum,
+      codCom: req.body.codCom,
+      supplier: req.body.codSup,
+      //////////  numera remito /////////////////
+      movpvNum: movpvNumero,
+      //////////  numera remito /////////////////
+      movpvDat: req.body.movpvDat,
+      invNum: req.body.invNum,
+      invDat: req.body.invDat,
+      recNum: req.body.recNum,
+      recDat: req.body.recDat,
+      desVal: req.body.desVal,
+      notes: req.body.notes,
+      salbuy: req.body.salbuy,
+    });
+    const invoice = await newInvoice.save();
+    res.status(201).send({ message: 'New Invoice Created', invoice });
+  })
+);
 
 
 invoiceRouter.get(
@@ -403,10 +569,10 @@ invoiceRouter.get(
   '/:id',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const invoice = await Invoice.findById(req.params.id).populate(
-      'user',
-      'name'
-    );
+    const invoice = await Invoice.findById(req.params.id)
+    .populate('id_client', 'codCus nameCus domcomer cuit coniva')
+    .populate('supplier', 'codSup name domcomer cuit coniva')
+    .populate('codCom', 'codCom nameCom noDisc toDisc itDisc');
     if (invoice) {
       res.send(invoice);
     } else {

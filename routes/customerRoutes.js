@@ -1,6 +1,8 @@
 const express = require ('express');
 const expressAsyncHandler = require ('express-async-handler');
 const Customer = require ('../models/customerModel.js');
+const Invoice = require ('../models/invoiceModel.js');
+const Receipt = require ('../models/receiptModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
 
 const customerRouter = express.Router();
@@ -41,12 +43,18 @@ customerRouter.post(
   // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newCustomer = new Customer({
-      codCus: '',
-      nameCus: '',
-      emailCus: '',
-      domcomer: '',
-      cuit: '',
-      coniva: '',
+      codCus: req.body.codCus,
+      nameCus: req.body.nameCus,
+      emailCus: req.body.emailCus,
+      domcomer: req.body.domcomer,
+      cuit: req.body.cuit,
+      coniva: req.body.coniva,
+      // codCus: '',
+      // nameCus: '',
+      // emailCus: '',
+      // domcomer: '',
+      // cuit: '',
+      // coniva: '',
     });
     const customer = await newCustomer.save();
     res.send({ message: 'Customer Created', customer });
@@ -56,7 +64,7 @@ customerRouter.post(
 customerRouter.put(
   '/:id',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const customerId = req.params.id;
     const customer = await Customer.findById(customerId);
@@ -80,6 +88,19 @@ customerRouter.delete(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+
+
+    const invoices = await Invoice.findOne({id_client: req.params.id });
+    if (invoices) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Facturas con este cliente' });
+      return;
+    }
+    const receipts = await Receipt.findOne({id_client: req.params.id })
+    if (receipts) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este cliente' });
+      return;
+    }
+
     const customer = await Customer.findById(req.params.id);
     if (customer) {
       await customer.remove();

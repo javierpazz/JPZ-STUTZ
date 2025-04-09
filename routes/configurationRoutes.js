@@ -1,6 +1,10 @@
 const express = require ('express');
 const expressAsyncHandler = require ('express-async-handler');
 const Configuration = require ('../models/configurationModel.js');
+const Invoice = require ('../models/invoiceModel.js');
+const Receipt = require ('../models/receiptModel.js');
+const Comprobante = require ('../models/comprobanteModel.js');
+const Product = require ('../models/productModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
 
 const configurationRouter = express.Router();
@@ -63,6 +67,32 @@ configurationRouter.delete(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+
+    const comprobantes = await Comprobante.findOne({codCon : req.params.id  })
+
+    if (comprobantes) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Comprobantes con este Punto de Venta' });
+      return;
+    }
+
+
+    const productos = await Product.findOne({id_config: req.params.id });
+    if (productos) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Productos con este Punto de Venta' });
+      return;
+    }
+
+    const invoices = await Invoice.findOne({id_config: req.params.id });
+    if (invoices) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Facturas con este Punto de Venta' });
+      return;
+    }
+    const receipts = await Receipt.findOne({id_config: req.params.id })
+    if (receipts) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este Punto de Venta' });
+      return;
+    }
+
     const configuration = await Configuration.findById(req.params.id);
     if (configuration) {
       await configuration.remove();

@@ -5,6 +5,9 @@ const supplierSchema = new mongoose.Schema(
     codSup: { type: String, unique: true },
     name: { type: String, unique: true },
     email: { type: String},
+    domcomer: { type: String },
+    cuit: { type: String },
+    coniva: { type: String },
   },
   {
     timestamps: true,

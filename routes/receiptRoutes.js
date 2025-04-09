@@ -52,13 +52,13 @@ receiptRouter.get(
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
 
-    const receipts = await Receipt.find({ salbuy: 'BUY' })
+    const receipts = await Receipt.find({  id_config : query.id_config, salbuy: 'BUY', recNum: {$gt : 0} })
       .populate('user', 'name')
       .populate('supplier', 'name')
       .populate('id_encarg', 'name')
       .skip(pageSize * (page - 1))
       .limit(pageSize);
-    const countReceipts = await Receipt.countDocuments({ salbuy: 'BUY' });
+    const countReceipts = await Receipt.countDocuments({ id_config : query.id_config, salbuy: 'BUY', recNum: {$gt : 0} });
     res.send({
       receipts,
       countReceipts,
@@ -77,13 +77,13 @@ receiptRouter.get(
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
 
-    const receipts = await Receipt.find({ salbuy: 'SALE' })
+    const receipts = await Receipt.find({  id_config : query.id_config, salbuy: 'SALE', recNum: {$gt : 0}})
       .populate('id_client', 'nameCus')
       .populate('supplier', 'name')
       .populate('id_encarg', 'name')
       .skip(pageSize * (page - 1))
       .limit(pageSize);
-    const countReceipts = await Receipt.countDocuments({ salbuy: 'SALE' });
+    const countReceipts = await Receipt.countDocuments({ id_config : query.id_config, salbuy: 'SALE', recNum: {$gt : 0} });
     res.send({
       receipts,
       countReceipts,
@@ -92,6 +92,60 @@ receiptRouter.get(
     });
   })
 );
+
+//////////////////caja
+receiptRouter.get(
+  '/cajaB',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+
+    const receipts = await Receipt.find({  id_config : query.id_config, salbuy: 'BUY', cajNum: {$gt : 0}})
+      .populate('user', 'name')
+      .populate('supplier', 'name')
+      .populate('id_encarg', 'name')
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+    const countReceipts = await Receipt.countDocuments({ id_config : query.id_config, salbuy: 'BUY', cajNum: {$gt : 0} });
+    res.send({
+      receipts,
+      countReceipts,
+      page,
+      pages: Math.ceil(countReceipts / pageSize),
+    });
+  })
+);
+
+receiptRouter.get(
+  '/cajaS',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+
+    const receipts = await Receipt.find({  id_config : query.id_config, salbuy: 'SALE', cajNum: {$gt : 0} })
+      .populate('id_client', 'nameCus')
+      .populate('supplier', 'name')
+      .populate('id_encarg', 'name')
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+    const countReceipts = await Receipt.countDocuments({ id_config : query.id_config, salbuy: 'SALE', cajNum: {$gt : 0} });
+    res.send({
+      receipts,
+      countReceipts,
+      page,
+      pages: Math.ceil(countReceipts / pageSize),
+    });
+  })
+);
+
+//////////////////caja
+
 
 receiptRouter.post(
   '/caja/',
@@ -121,6 +175,7 @@ receiptRouter.post(
       total: req.body.total,
       totalBuy: req.body.totalBuy,
       // user: req.body.codUse,
+      user: req.body.user,
       id_client: req.body.codCus,
       id_config: req.body.codCon,
       id_encarg: req.body.codEnc,
@@ -167,6 +222,7 @@ receiptRouter.post(
       total: req.body.total,
       totalBuy: req.body.totalBuy,
       // user: req.body.codUse,
+      user: req.body.user,
       id_client: req.body.codCus,
       id_config: req.body.codCon,
       codConNum: req.body.codConNum,
@@ -243,7 +299,10 @@ receiptRouter.get(
   '/:id',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const receipt = await Receipt.findById(req.params.id);
+    const receipt = await Receipt.findById(req.params.id)
+    .populate('id_client', 'codCus nameCus domcomer cuit coniva')
+    .populate('supplier', 'codSup name domcomer cuit coniva')
+    .populate('id_encarg', 'name');
     if (receipt) {
       res.send(receipt);
     } else {

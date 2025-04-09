@@ -1,6 +1,7 @@
 const express = require ('express');
 const expressAsyncHandler = require ('express-async-handler');
 const Encargado = require ('../models/encargadoModel.js');
+const Receipt = require ('../models/receiptModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
 
 const encargadoRouter = express.Router();
@@ -49,6 +50,14 @@ encargadoRouter.delete(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+
+
+    const receipts = await Receipt.findOne({id_encarg: req.params.id })
+    if (receipts) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos de Caja con este Encargado' });
+      return;
+    }
+
     const encargado = await Encargado.findById(req.params.id);
     if (encargado) {
       await encargado.remove();

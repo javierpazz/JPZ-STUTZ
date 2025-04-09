@@ -1,6 +1,7 @@
 const express = require ('express');
 const expressAsyncHandler = require ('express-async-handler');
 const Comprobante = require ('../models/comprobanteModel.js');
+const Invoice = require ('../models/invoiceModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
 
 const comprobanteRouter = express.Router();
@@ -19,12 +20,22 @@ comprobanteRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newComprobante = new Comprobante({
-      codCom: '',
-      nameCom: '',
-      // claCom: '',
-      interno: 'true',
-      numInt: 0,
-      codComCon: '',
+      codCom: req.body.codCom,
+      nameCom: req.body.nameCom,
+      claCom: req.body.claCom,
+      isHaber: Boolean(req.body.isHaber),
+      noDisc: Boolean(req.body.noDisc),
+      toDisc: Boolean(req.body.toDisc),
+      itDisc: Boolean(req.body.itDisc),
+      interno: Boolean(req.body.interno),
+      numInt: req.body.numInt,
+      codCon: req.body.id_config,
+      // codCom: '',
+      // nameCom: '',
+      // // claCom: '',
+      // interno: 'true',
+      // numInt: 0,
+      // codComCon: '',
     });
     const comprobante = await newComprobante.save();
     res.send({ message: 'Comprobante Created', comprobante });
@@ -62,6 +73,14 @@ comprobanteRouter.delete(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+
+
+    const invoices = await Invoice.findOne({codCom: req.params.id });
+    if (invoices) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este Comprobante' });
+      return;
+    }
+
     const comprobante = await Comprobante.findById(req.params.id);
     if (comprobante) {
       await comprobante.remove();
@@ -89,7 +108,9 @@ comprobanteRouter.get(
       .sort({ name: 1 })
       .skip(pageSize * (page - 1))
       .limit(pageSize);
-    const countComprobantes = await Comprobante.countDocuments();
+    const countComprobantes = await Comprobante.countDocuments({
+      codCon : query.id_config,
+      });
     res.send({
       comprobantes,
       countComprobantes,
