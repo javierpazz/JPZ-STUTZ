@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
     resetToken: { type: String },
     image: { type: String },
     isAdmin: { type: Boolean, default: false, required: true },
+    isActive: { type: Boolean, default: true, required: true },
     role : {
       type: String,
       enum: {

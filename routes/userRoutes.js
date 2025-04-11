@@ -64,8 +64,12 @@ userRouter.put(
     if (user) {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
-      user.password = bcrypt.hashSync(req.body.password) || user.password;
+      if (req.body.password) {
+        user.password = bcrypt.hashSync(req.body.password, 8);
+      }
+      // user.password = bcrypt.hashSync(req.body.password) || user.password;
       user.isAdmin = Boolean(req.body.isAdmin);
+      user.isActive = Boolean(req.body.isActive);
       if (req.body.isAdmin) {
         user.role="admin"
       }else {
@@ -101,7 +105,7 @@ userRouter.post(
   '/signin',
   expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
-    if (user) {
+    if (user && user.isActive) {
       if (bcrypt.compareSync(req.body.password, user.password)) {
         res.send({
           _id: user._id,
@@ -140,21 +144,21 @@ userRouter.post(
 );
 
 userRouter.put(
-  '/profile',
+  '/profile/:id',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.params.id);;
     if (user) {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
       if (req.body.password) {
         user.password = bcrypt.hashSync(req.body.password, 8);
       }
-      if (isAdmin) {
-        user.role="admin"
-      }else {
-        user.role="client"
-      }
+      // if (isAdmin) {
+      //   user.role="admin"
+      // }else {
+      //   user.role="client"
+      // }
 
       const updatedUser = await user.save();
       res.send({
