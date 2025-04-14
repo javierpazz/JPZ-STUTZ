@@ -21,6 +21,530 @@ invoiceRouter.get(
     res.send(invoices);
   })
 );
+invoiceRouter.get(
+  '/searchinvS',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = query.fech1 || '';
+    const fech2 = query.fech2 || '';
+    const customer = query.customer || '';
+    const comprobante = query.comprobante || '';
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+      // price && price !== 'all'
+      true
+        ? {
+            // 1-50
+            invDat: {
+              $gte: fech1,
+              $lte: fech2,
+            },
+          }
+        : {};
+
+
+    const customerFilter =
+      customer && customer !== 'all'
+        ? {
+          id_client: customer
+          }
+        : {};
+    const comprobanteFilter =
+      comprobante && comprobante !== 'all'
+        ? {
+          codCom: comprobante
+          }
+        : {};
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+    const sortOrder =
+      order === 'featured'
+        ? { featured: -1 }
+        : order === 'mayimporte'
+        ? { total: -1 }
+        : order === 'menimporte'
+        ? { total: 1 }
+        : order === 'newest'
+        ? { createdAt: -1 }
+        : { createdAt: 1 };
+
+    const invoices = await Invoice.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...customerFilter,
+       ...usuarioFilter,
+       ...comprobanteFilter,
+        salbuy: 'SALE', invNum: {$gt : 0} })
+      .populate('id_client', 'nameCus')
+      .populate('supplier', 'name')
+      .sort(sortOrder)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+
+    const countInvoices = await Invoice.countDocuments({ 
+      ...fechasFilter,
+      ...configuracionFilter,
+      ...customerFilter,
+      ...usuarioFilter,
+      ...comprobanteFilter,
+       salbuy: 'SALE', invNum: {$gt : 0} });
+    res.send({
+      invoices,
+      countInvoices,
+      page,
+      pages: Math.ceil(countInvoices / pageSize),
+    });
+  })
+);
+
+invoiceRouter.get(
+  '/searchinvB',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = query.fech1 || '';
+    const fech2 = query.fech2 || '';
+    const supplier = query.supplier || '';
+    const comprobante = query.comprobante || '';
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+      // price && price !== 'all'
+      true
+        ? {
+            // 1-50
+            invDat: {
+              $gte: fech1,
+              $lte: fech2,
+            },
+          }
+        : {};
+
+
+    const supplierFilter =
+      supplier && supplier !== 'all'
+        ? {
+          supplier: supplier
+          }
+        : {};
+    const comprobanteFilter =
+      comprobante && comprobante !== 'all'
+        ? {
+          codCom: comprobante
+          }
+        : {};
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+    const sortOrder =
+      order === 'featured'
+        ? { featured: -1 }
+        : order === 'mayimporte'
+        ? { totalBuy: -1 }
+        : order === 'menimporte'
+        ? { totalBuy: 1 }
+        : order === 'newest'
+        ? { createdAt: -1 }
+        : { createdAt: 1 };
+
+    const invoices = await Invoice.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...supplierFilter,
+       ...usuarioFilter,
+       ...comprobanteFilter,
+        salbuy: 'BUY', invNum: {$gt : 0} })
+      .populate('user', 'name')
+      .populate('supplier', 'name')
+      .sort(sortOrder)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+
+    const countInvoices = await Invoice.countDocuments({ 
+      ...fechasFilter,
+      ...configuracionFilter,
+      ...supplierFilter,
+      ...usuarioFilter,
+      ...comprobanteFilter,
+       salbuy: 'BUY', invNum: {$gt : 0} });
+    res.send({
+      invoices,
+      countInvoices,
+      page,
+      pages: Math.ceil(countInvoices / pageSize),
+    });
+  })
+);
+
+invoiceRouter.get(
+  '/searchremS',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = query.fech1 || '';
+    const fech2 = query.fech2 || '';
+    const customer = query.customer || '';
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+      // price && price !== 'all'
+      true
+        ? {
+            // 1-50
+            remDat: {
+              $gte: fech1,
+              $lte: fech2,
+            },
+          }
+        : {};
+
+
+    const customerFilter =
+      customer && customer !== 'all'
+        ? {
+          id_client: customer
+          }
+        : {};
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+    const sortOrder =
+      order === 'featured'
+        ? { featured: -1 }
+        : order === 'mayimporte'
+        ? { total: -1 }
+        : order === 'menimporte'
+        ? { total: 1 }
+        : order === 'newest'
+        ? { createdAt: -1 }
+        : { createdAt: 1 };
+
+    const invoices = await Invoice.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...customerFilter,
+       ...usuarioFilter,
+        salbuy: 'SALE', remNum: {$gt : 0} })
+      .populate('id_client', 'nameCus')
+      .populate('supplier', 'name')
+      .sort(sortOrder)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+
+    const countInvoices = await Invoice.countDocuments({ 
+      ...fechasFilter,
+      ...configuracionFilter,
+      ...customerFilter,
+      ...usuarioFilter,
+       salbuy: 'SALE', remNum: {$gt : 0} });
+    res.send({
+      invoices,
+      countInvoices,
+      page,
+      pages: Math.ceil(countInvoices / pageSize),
+    });
+  })
+);
+invoiceRouter.get(
+  '/searchremB',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = query.fech1 || '';
+    const fech2 = query.fech2 || '';
+    const supplier = query.supplier || '';
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+      // price && price !== 'all'
+      true
+        ? {
+            // 1-50
+            remDat: {
+              $gte: fech1,
+              $lte: fech2,
+            },
+          }
+        : {};
+
+
+    const supplierFilter =
+      supplier && supplier !== 'all'
+        ? {
+          supplier: supplier
+          }
+        : {};
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+    const sortOrder =
+      order === 'featured'
+        ? { featured: -1 }
+        : order === 'mayimporte'
+        ? { totalBuy: -1 }
+        : order === 'menimporte'
+        ? { totalBuy: 1 }
+        : order === 'newest'
+        ? { createdAt: -1 }
+        : { createdAt: 1 };
+
+    const invoices = await Invoice.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...supplierFilter,
+       ...usuarioFilter,
+        salbuy: 'BUY', remNum: {$gt : 0} })
+      .populate('user', 'name')
+      .populate('supplier', 'name')
+      .sort(sortOrder)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+
+    const countInvoices = await Invoice.countDocuments({ 
+      ...fechasFilter,
+      ...configuracionFilter,
+      ...supplierFilter,
+      ...usuarioFilter,
+       salbuy: 'BUY', remNum: {$gt : 0} });
+    res.send({
+      invoices,
+      countInvoices,
+      page,
+      pages: Math.ceil(countInvoices / pageSize),
+    });
+  })
+);
+
+invoiceRouter.get(
+  '/searchmovS',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = query.fech1 || '';
+    const fech2 = query.fech2 || '';
+    const customer = query.customer || '';
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+      // price && price !== 'all'
+      true
+        ? {
+            // 1-50
+            movpvDat: {
+              $gte: fech1,
+              $lte: fech2,
+            },
+          }
+        : {};
+
+
+    const customerFilter =
+      customer && customer !== 'all'
+        ? {
+          id_client: customer
+          }
+        : {};
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+    const sortOrder =
+      order === 'featured'
+        ? { featured: -1 }
+        : order === 'mayimporte'
+        ? { total: -1 }
+        : order === 'menimporte'
+        ? { total: 1 }
+        : order === 'newest'
+        ? { createdAt: -1 }
+        : { createdAt: 1 };
+
+    const invoices = await Invoice.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...customerFilter,
+       ...usuarioFilter,
+        salbuy: 'SALE', movpvNum: {$gt : 0} })
+      .populate('id_config2', 'name')
+      .sort(sortOrder)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+
+    const countInvoices = await Invoice.countDocuments({ 
+      ...fechasFilter,
+      ...configuracionFilter,
+      ...customerFilter,
+      ...usuarioFilter,
+       salbuy: 'SALE', movpvNum: {$gt : 0} });
+    res.send({
+      invoices,
+      countInvoices,
+      page,
+      pages: Math.ceil(countInvoices / pageSize),
+    });
+  })
+);
+invoiceRouter.get(
+  '/searchmovB',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = query.fech1 || '';
+    const fech2 = query.fech2 || '';
+    const supplier = query.supplier || '';
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+      // price && price !== 'all'
+      true
+        ? {
+            // 1-50
+            movpvDat: {
+              $gte: fech1,
+              $lte: fech2,
+            },
+          }
+        : {};
+
+
+    const supplierFilter =
+      supplier && supplier !== 'all'
+        ? {
+          supplier: supplier
+          }
+        : {};
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+    const sortOrder =
+      order === 'featured'
+        ? { featured: -1 }
+        : order === 'mayimporte'
+        ? { totalBuy: -1 }
+        : order === 'menimporte'
+        ? { totalBuy: 1 }
+        : order === 'newest'
+        ? { createdAt: -1 }
+        : { createdAt: 1 };
+
+    const invoices = await Invoice.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...supplierFilter,
+       ...usuarioFilter,
+        salbuy: 'BUY', movpvNum: {$gt : 0} })
+      .populate('id_config2', 'name')
+      .sort(sortOrder)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+
+    const countInvoices = await Invoice.countDocuments({ 
+      ...fechasFilter,
+      ...configuracionFilter,
+      ...supplierFilter,
+      ...usuarioFilter,
+       salbuy: 'BUY', movpvNum: {$gt : 0} });
+    res.send({
+      invoices,
+      countInvoices,
+      page,
+      pages: Math.ceil(countInvoices / pageSize),
+    });
+  })
+);
+
 
 invoiceRouter.get(
   '/StoAply/:userId',
@@ -204,150 +728,150 @@ invoiceRouter.get(
 
 const PAGE_SIZE = 10;
 
-invoiceRouter.get(
-  '/adminS',
-  isAuth,
-  isAdmin,
-  expressAsyncHandler(async (req, res) => {
-    const { query } = req;
-    const page = query.page || 1;
-    const pageSize = query.pageSize || PAGE_SIZE;
+// invoiceRouter.get(
+//   '/adminS',
+//   isAuth,
+//   isAdmin,
+//   expressAsyncHandler(async (req, res) => {
+//     const { query } = req;
+//     const page = query.page || 1;
+//     const pageSize = query.pageSize || PAGE_SIZE;
     
-    const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'SALE', invNum: {$gt : 0} })
-      .populate('id_client', 'nameCus')
-      .populate('supplier', 'name')
-      .skip(pageSize * (page - 1))
-      .limit(pageSize);
-    const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'SALE', invNum: {$gt : 0} });
-    res.send({
-      invoices,
-      countInvoices,
-      page,
-      pages: Math.ceil(countInvoices / pageSize),
-    });
-  })
-);
+//     const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'SALE', invNum: {$gt : 0} })
+//       .populate('id_client', 'nameCus')
+//       .populate('supplier', 'name')
+//       .skip(pageSize * (page - 1))
+//       .limit(pageSize);
+//     const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'SALE', invNum: {$gt : 0} });
+//     res.send({
+//       invoices,
+//       countInvoices,
+//       page,
+//       pages: Math.ceil(countInvoices / pageSize),
+//     });
+//   })
+// );
 
-invoiceRouter.get(
-  '/adminB',
-  isAuth,
-  isAdmin,
-  expressAsyncHandler(async (req, res) => {
-    const { query } = req;
-    const page = query.page || 1;
-    const pageSize = query.pageSize || PAGE_SIZE;
+// invoiceRouter.get(
+//   '/adminB',
+//   isAuth,
+//   isAdmin,
+//   expressAsyncHandler(async (req, res) => {
+//     const { query } = req;
+//     const page = query.page || 1;
+//     const pageSize = query.pageSize || PAGE_SIZE;
 
-    const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'BUY', invNum: {$gt : 0} })
-      .populate('user', 'name')
-      .populate('supplier', 'name')
-      .skip(pageSize * (page - 1))
-      .limit(pageSize);
-    const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'BUY', invNum: {$gt : 0} });
-    res.send({
-      invoices,
-      countInvoices,
-      page,
-      pages: Math.ceil(countInvoices / pageSize),
-    });
-  })
-);
+//     const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'BUY', invNum: {$gt : 0} })
+//       .populate('user', 'name')
+//       .populate('supplier', 'name')
+//       .skip(pageSize * (page - 1))
+//       .limit(pageSize);
+//     const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'BUY', invNum: {$gt : 0} });
+//     res.send({
+//       invoices,
+//       countInvoices,
+//       page,
+//       pages: Math.ceil(countInvoices / pageSize),
+//     });
+//   })
+// );
 
-///////////////////////remito
-invoiceRouter.get(
-  '/remitS',
-  isAuth,
-  isAdmin,
-  expressAsyncHandler(async (req, res) => {
-    const { query } = req;
-    const page = query.page || 1;
-    const pageSize = query.pageSize || PAGE_SIZE;
+// ///////////////////////remito
+// invoiceRouter.get(
+//   '/remitS',
+//   isAuth,
+//   isAdmin,
+//   expressAsyncHandler(async (req, res) => {
+//     const { query } = req;
+//     const page = query.page || 1;
+//     const pageSize = query.pageSize || PAGE_SIZE;
     
-    const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'SALE', remNum : {$gt : 0} })
-      .populate('id_client', 'nameCus')
-      .populate('supplier', 'name')
-      .skip(pageSize * (page - 1))
-      .limit(pageSize);
-    const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'SALE', remNum : {$gt : 0}});
-    res.send({
-      invoices,
-      countInvoices,
-      page,
-      pages: Math.ceil(countInvoices / pageSize),
-    });
-  })
-);
+//     const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'SALE', remNum : {$gt : 0} })
+//       .populate('id_client', 'nameCus')
+//       .populate('supplier', 'name')
+//       .skip(pageSize * (page - 1))
+//       .limit(pageSize);
+//     const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'SALE', remNum : {$gt : 0}});
+//     res.send({
+//       invoices,
+//       countInvoices,
+//       page,
+//       pages: Math.ceil(countInvoices / pageSize),
+//     });
+//   })
+// );
 
-invoiceRouter.get(
-  '/remitB',
-  isAuth,
-  isAdmin,
-  expressAsyncHandler(async (req, res) => {
-    const { query } = req;
-    const page = query.page || 1;
-    const pageSize = query.pageSize || PAGE_SIZE;
+// invoiceRouter.get(
+//   '/remitB',
+//   isAuth,
+//   isAdmin,
+//   expressAsyncHandler(async (req, res) => {
+//     const { query } = req;
+//     const page = query.page || 1;
+//     const pageSize = query.pageSize || PAGE_SIZE;
 
-    const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'BUY', remNum : {$gt : 0} })
-      .populate('user', 'name')
-      .populate('supplier', 'name')
-      .skip(pageSize * (page - 1))
-      .limit(pageSize);
-    const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'BUY', remNum : {$gt : 0} });
-    res.send({
-      invoices,
-      countInvoices,
-      page,
-      pages: Math.ceil(countInvoices / pageSize),
-    });
-  })
-);
-///////////////////////remito
-///////////////////////movim
-invoiceRouter.get(
-  '/movimS',
-  isAuth,
-  isAdmin,
-  expressAsyncHandler(async (req, res) => {
-    const { query } = req;
-    const page = query.page || 1;
-    const pageSize = query.pageSize || PAGE_SIZE;
+//     const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'BUY', remNum : {$gt : 0} })
+//       .populate('user', 'name')
+//       .populate('supplier', 'name')
+//       .skip(pageSize * (page - 1))
+//       .limit(pageSize);
+//     const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'BUY', remNum : {$gt : 0} });
+//     res.send({
+//       invoices,
+//       countInvoices,
+//       page,
+//       pages: Math.ceil(countInvoices / pageSize),
+//     });
+//   })
+// );
+// ///////////////////////remito
+// ///////////////////////movim
+// invoiceRouter.get(
+//   '/movimS',
+//   isAuth,
+//   isAdmin,
+//   expressAsyncHandler(async (req, res) => {
+//     const { query } = req;
+//     const page = query.page || 1;
+//     const pageSize = query.pageSize || PAGE_SIZE;
     
-    const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'SALE', movpvNum : {$gt : 0} })
-      .populate('id_config2', 'name')
-      .skip(pageSize * (page - 1))
-      .limit(pageSize);
-    const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'SALE', movpvNum : {$gt : 0}});
-    res.send({
-      invoices,
-      countInvoices,
-      page,
-      pages: Math.ceil(countInvoices / pageSize),
-    });
-  })
-);
+//     const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'SALE', movpvNum : {$gt : 0} })
+//       .populate('id_config2', 'name')
+//       .skip(pageSize * (page - 1))
+//       .limit(pageSize);
+//     const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'SALE', movpvNum : {$gt : 0}});
+//     res.send({
+//       invoices,
+//       countInvoices,
+//       page,
+//       pages: Math.ceil(countInvoices / pageSize),
+//     });
+//   })
+// );
 
-invoiceRouter.get(
-  '/movimB',
-  isAuth,
-  isAdmin,
-  expressAsyncHandler(async (req, res) => {
-    const { query } = req;
-    const page = query.page || 1;
-    const pageSize = query.pageSize || PAGE_SIZE;
+// invoiceRouter.get(
+//   '/movimB',
+//   isAuth,
+//   isAdmin,
+//   expressAsyncHandler(async (req, res) => {
+//     const { query } = req;
+//     const page = query.page || 1;
+//     const pageSize = query.pageSize || PAGE_SIZE;
 
-    const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'BUY', movpvNum : {$gt : 0} })
-      .populate('id_config2', 'name')
-      .skip(pageSize * (page - 1))
-      .limit(pageSize);
-    const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'BUY', movpvNum : {$gt : 0} });
-    res.send({
-      invoices,
-      countInvoices,
-      page,
-      pages: Math.ceil(countInvoices / pageSize),
-    });
-  })
-);
-///////////////////////movim
+//     const invoices = await Invoice.find({ id_config : query.id_config, salbuy: 'BUY', movpvNum : {$gt : 0} })
+//       .populate('id_config2', 'name')
+//       .skip(pageSize * (page - 1))
+//       .limit(pageSize);
+//     const countInvoices = await Invoice.countDocuments({ id_config : query.id_config, salbuy: 'BUY', movpvNum : {$gt : 0} });
+//     res.send({
+//       invoices,
+//       countInvoices,
+//       page,
+//       pages: Math.ceil(countInvoices / pageSize),
+//     });
+//   })
+// );
+// ///////////////////////movim
 
 invoiceRouter.post(
   '/',
@@ -818,5 +1342,7 @@ invoiceRouter.delete(
     }
   })
 );
+
+
 
 module.exports = invoiceRouter;
