@@ -29,8 +29,8 @@ invoiceRouter.get(
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
-    const fech1 = query.fech1 || '';
-    const fech2 = query.fech2 || '';
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
     const customer = query.customer || '';
     const comprobante = query.comprobante || '';
     const configuracion = query.configuracion || '';
@@ -38,16 +38,23 @@ invoiceRouter.get(
     const order = query.order || '';
 
     const fechasFilter =
-      // price && price !== 'all'
-      true
-        ? {
-            // 1-50
-            invDat: {
-              $gte: fech1,
-              $lte: fech2,
-            },
-          }
-        : {};
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    invDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    invDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    invDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
 
 
     const customerFilter =
@@ -123,8 +130,8 @@ invoiceRouter.get(
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
-    const fech1 = query.fech1 || '';
-    const fech2 = query.fech2 || '';
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
     const supplier = query.supplier || '';
     const comprobante = query.comprobante || '';
     const configuracion = query.configuracion || '';
@@ -132,16 +139,23 @@ invoiceRouter.get(
     const order = query.order || '';
 
     const fechasFilter =
-      // price && price !== 'all'
-      true
-        ? {
-            // 1-50
-            invDat: {
-              $gte: fech1,
-              $lte: fech2,
-            },
-          }
-        : {};
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    invDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    invDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    invDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
 
 
     const supplierFilter =
@@ -217,27 +231,35 @@ invoiceRouter.get(
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
-    const fech1 = query.fech1 || '';
-    const fech2 = query.fech2 || '';
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
     const customer = query.customer || '';
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
     const order = query.order || '';
 
     const fechasFilter =
-      // price && price !== 'all'
-      true
-        ? {
-            // 1-50
-            remDat: {
-              $gte: fech1,
-              $lte: fech2,
-            },
-          }
-        : {};
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    remDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    remDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    remDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
 
 
-    const customerFilter =
+
+     const customerFilter =
       customer && customer !== 'all'
         ? {
           id_client: customer
@@ -301,24 +323,32 @@ invoiceRouter.get(
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
-    const fech1 = query.fech1 || '';
-    const fech2 = query.fech2 || '';
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
     const supplier = query.supplier || '';
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
     const order = query.order || '';
 
     const fechasFilter =
-      // price && price !== 'all'
-      true
-        ? {
-            // 1-50
-            remDat: {
-              $gte: fech1,
-              $lte: fech2,
-            },
-          }
-        : {};
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    remDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    remDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    remDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
+
 
 
     const supplierFilter =
@@ -386,24 +416,33 @@ invoiceRouter.get(
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
-    const fech1 = query.fech1 || '';
-    const fech2 = query.fech2 || '';
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
     const customer = query.customer || '';
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
     const order = query.order || '';
 
     const fechasFilter =
-      // price && price !== 'all'
-      true
-        ? {
-            // 1-50
-            movpvDat: {
-              $gte: fech1,
-              $lte: fech2,
-            },
-          }
-        : {};
+    !fech1 && !fech2 ? {}
+  : !fech1 && fech2 ? {
+                movpvDat: {
+                  $lte: fech2,
+                },
+              }
+  : fech1 && !fech2 ? {
+                movpvDat: {
+                  $gte: fech1,
+                },
+              }
+  :                   {
+                movpvDat: {
+                  $gte: fech1,
+                  $lte: fech2,
+                },
+              };
+
+
 
 
     const customerFilter =
@@ -469,24 +508,32 @@ invoiceRouter.get(
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
-    const fech1 = query.fech1 || '';
-    const fech2 = query.fech2 || '';
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
     const supplier = query.supplier || '';
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
     const order = query.order || '';
 
     const fechasFilter =
-      // price && price !== 'all'
-      true
-        ? {
-            // 1-50
-            movpvDat: {
-              $gte: fech1,
-              $lte: fech2,
-            },
-          }
-        : {};
+    !fech1 && !fech2 ? {}
+  : !fech1 && fech2 ? {
+                movpvDat: {
+                  $lte: fech2,
+                },
+              }
+  : fech1 && !fech2 ? {
+                movpvDat: {
+                  $gte: fech1,
+                },
+              }
+  :                   {
+                movpvDat: {
+                  $gte: fech1,
+                  $lte: fech2,
+                },
+              };
+
 
 
     const supplierFilter =
@@ -630,13 +677,81 @@ invoiceRouter.get(
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const factura = 'SALE';
+
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+
+    const fechasInvFilter =
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    invDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    invDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    invDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
+
+    const fechasRecFilter =
+    !fech1 && !fech2 ? {}
+    : !fech1 && fech2 ? {
+                  recDat: {
+                    $lte: fech2,
+                  },
+                }
+    : fech1 && !fech2 ? {
+                  recDat: {
+                    $gte: fech1,
+                  },
+                }
+    :                   {
+                  recDat: {
+                    $gte: fech1,
+                    $lte: fech2,
+                  },
+                };
+
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+    const sortOrder =
+        order === 'newest'
+        ? { $sort: { docDat: -1 } }
+        : { $sort: { docDat: 1 } }
+
     const orders = await Invoice.find();
     const ctacte = await Receipt.aggregate([
       {
         $match: {
-          $and: [{ id_client: new ObjectId(req.params.userId) },
+          $and: [
+             fechasRecFilter,
              { salbuy: factura },
-             { id_config : new ObjectId(query.id_config)}
+             { id_client: new ObjectId(req.params.userId) },
+             { id_config : new ObjectId(query.configuracion)}
             ],
         },
       },
@@ -653,9 +768,10 @@ invoiceRouter.get(
             {
               $match: {
                 $and: [
+                  fechasInvFilter,
                   { id_client: new ObjectId(req.params.userId) },
                   { salbuy: factura },
-                  { id_config : new ObjectId(query.id_config)},
+                  { id_config : new ObjectId(query.configuracion)},
                 ],
               },
             },
@@ -667,6 +783,7 @@ invoiceRouter.get(
           ],
         },
       },
+      sortOrder
     ]);
     
     res.send(ctacte);
@@ -681,15 +798,82 @@ invoiceRouter.get(
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const factura = 'BUY';
-    const orders = await Invoice.find();
 
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+
+    const fechasInvFilter =
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    invDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    invDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    invDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
+
+    const fechasRecFilter =
+      !fech1 && !fech2 ? {}
+    : !fech1 && fech2 ? {
+                  recDat: {
+                    $lte: fech2,
+                  },
+                }
+    : fech1 && !fech2 ? {
+                  recDat: {
+                    $gte: fech1,
+                  },
+                }
+    :                   {
+                  recDat: {
+                    $gte: fech1,
+                    $lte: fech2,
+                  },
+                };
+
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+        const sortOrder =
+        order === 'newest'
+        ? { $sort: { docDat: -1 } }
+        : { $sort: { docDat: 1 } }
+
+
+    const orders = await Invoice.find();
     const ctacte = await Receipt.aggregate([
       {
         $match: {
           $and: [
+            fechasRecFilter,
             { supplier: new ObjectId(req.params.suppliId) },
             { salbuy: factura },
-            { id_config : new ObjectId(query.id_config)},
+            { id_config : new ObjectId(query.configuracion)},
           ],
         },
       },
@@ -706,9 +890,10 @@ invoiceRouter.get(
             {
               $match: {
                 $and: [
+                  fechasInvFilter,
                   { supplier: new ObjectId(req.params.suppliId) },
                   { salbuy: factura },
-                  { id_config : new ObjectId(query.id_config)},
+                  { id_config : new ObjectId(query.configuracion)},
                 ],
               },
             },
@@ -720,6 +905,7 @@ invoiceRouter.get(
           ],
         },
       },
+      sortOrder
     ]);
 
     res.send(ctacte);
@@ -1046,7 +1232,7 @@ invoiceRouter.post(
 
 
 invoiceRouter.get(
-  '/summary',
+  '/summary1111',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -1096,7 +1282,8 @@ invoiceRouter.get(
     const invoice = await Invoice.findById(req.params.id)
     .populate('id_client', 'codCus nameCus domcomer cuit coniva')
     .populate('supplier', 'codSup name domcomer cuit coniva')
-    .populate('codCom', 'codCom nameCom noDisc toDisc itDisc');
+    .populate('codCom', 'codCom nameCom noDisc toDisc itDisc')
+    .populate('id_config2', 'name domcomer cuit coniva ib feciniact');
     if (invoice) {
       res.send(invoice);
     } else {

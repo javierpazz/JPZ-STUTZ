@@ -43,6 +43,112 @@ receiptRouter.get(
 
 const PAGE_SIZE = 10;
 
+////////////////////////////
+
+receiptRouter.get(
+  '/searchcajSB',
+  isAuth,
+  // isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+      !fech1 && !fech2 ? {}
+    : !fech1 && fech2 ? {
+                  recDat: {
+                    $lte: fech2,
+                  },
+                }
+    : fech1 && !fech2 ? {
+                  recDat: {
+                    $gte: fech1,
+                  },
+                }
+    :                   {
+                  recDat: {
+                    $gte: fech1,
+                    $lte: fech2,
+                  },
+                };
+
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+
+    const recibos = await Receipt.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...usuarioFilter,
+    })
+        .sort({ user: 1, createdAt: 1 })
+        .populate('user', 'name')
+        .lean();
+  
+      // Agrupar y calcular el saldo acumulado
+      const resultado = [];
+      const agrupadoPorCliente = {};
+  
+      for (const r of recibos) {
+        const userId = r.user._id.toString();
+        const userNombre = r.user.name || 'Cliente sin nombre';
+  
+        if (!agrupadoPorCliente[userId]) {
+          agrupadoPorCliente[userId] = {
+            user: userNombre,
+            movimientos: [],
+            saldoTotal: 0,
+          };
+        }
+  
+        const movimiento = {
+          fecha: r.cajDat,
+          totalBuy: r.totalBuy || 0,
+          total: r.total || 0,
+          saldoMovimiento: (r.totalBuy || 0) - (r.total || 0),
+        };
+  
+        // Acumulado
+        const user = agrupadoPorCliente[userId];
+        user.saldoTotal += movimiento.saldoMovimiento;
+        movimiento.saldoAcumulado = user.saldoTotal;
+  
+        user.movimientos.push(movimiento);
+      }
+  
+      // Convertir el objeto agrupado a array final
+      for (const userId in agrupadoPorCliente) {
+        resultado.push({
+          user: userId,
+          nombreCliente: agrupadoPorCliente[userId].user,
+          movimientos: agrupadoPorCliente[userId].movimientos,
+          saldoTotal: agrupadoPorCliente[userId].saldoTotal,
+        });
+      }
+      res.send({
+        resultado,
+      });
+
+    })
+);
+
+
 receiptRouter.get(
   '/searchrecS',
   isAuth,
@@ -52,25 +158,31 @@ receiptRouter.get(
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
 
-    const fech1 = query.fech1 || '';
-    const fech2 = query.fech2 || '';
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
     const customer = query.customer || '';
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
     const order = query.order || '';
 
     const fechasFilter =
-      // price && price !== 'all'
-      true
-        ? {
-            // 1-50
-            recDat: {
-              $gte: fech1,
-              $lte: fech2,
-            },
-          }
-        : {};
-
+      !fech1 && !fech2 ? {}
+    : !fech1 && fech2 ? {
+                  recDat: {
+                    $lte: fech2,
+                  },
+                }
+    : fech1 && !fech2 ? {
+                  recDat: {
+                    $gte: fech1,
+                  },
+                }
+    :                   {
+                  recDat: {
+                    $gte: fech1,
+                    $lte: fech2,
+                  },
+                };
 
     const customerFilter =
       customer && customer !== 'all'
@@ -140,24 +252,32 @@ receiptRouter.get(
     const { query } = req;
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
-    const fech1 = query.fech1 || '';
-    const fech2 = query.fech2 || '';
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
     const supplier = query.supplier || '';
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
     const order = query.order || '';
 
     const fechasFilter =
-      // price && price !== 'all'
-      true
-        ? {
-            // 1-50
-            recDat: {
-              $gte: fech1,
-              $lte: fech2,
-            },
-          }
-        : {};
+      !fech1 && !fech2 ? {}
+    : !fech1 && fech2 ? {
+                  recDat: {
+                    $lte: fech2,
+                  },
+                }
+    : fech1 && !fech2 ? {
+                  recDat: {
+                    $gte: fech1,
+                  },
+                }
+    :                   {
+                  recDat: {
+                    $gte: fech1,
+                    $lte: fech2,
+                  },
+                };
+
     const supplierFilter =
         supplier && supplier !== 'all'
           ? {
@@ -226,30 +346,38 @@ receiptRouter.get(
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
 
-    const fech1 = query.fech1 || '';
-    const fech2 = query.fech2 || '';
-    const customer = query.customer || '';
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const encargado = query.encargado || '';
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
     const order = query.order || '';
 
     const fechasFilter =
-      // price && price !== 'all'
-      true
-        ? {
-            // 1-50
-            cajDat: {
-              $gte: fech1,
-              $lte: fech2,
-            },
-          }
-        : {};
+      !fech1 && !fech2 ? {}
+    : !fech1 && fech2 ? {
+                  cajDat: {
+                    $lte: fech2,
+                  },
+                }
+    : fech1 && !fech2 ? {
+                  cajDat: {
+                    $gte: fech1,
+                  },
+                }
+    :                   {
+                  cajDat: {
+                    $gte: fech1,
+                    $lte: fech2,
+                  },
+                };
 
 
-    const customerFilter =
-      customer && customer !== 'all'
+
+    const encargadoFilter =
+      encargado && encargado !== 'all'
         ? {
-          id_client: customer
+          id_encarg: encargado
           }
         : {};
     const configuracionFilter =
@@ -280,7 +408,7 @@ receiptRouter.get(
     const receipts = await Receipt.find({
       ...fechasFilter,
       ...configuracionFilter,
-       ...customerFilter,
+       ...encargadoFilter,
        ...usuarioFilter,
         salbuy: 'SALE', cajNum: {$gt : 0} })
       .populate('id_client', 'nameCus')
@@ -293,7 +421,7 @@ receiptRouter.get(
     const countReceipts = await Receipt.find({
       ...fechasFilter,
       ...configuracionFilter,
-       ...customerFilter,
+       ...encargadoFilter,
        ...usuarioFilter,
         salbuy: 'SALE', cajNum: {$gt : 0} });
 
@@ -314,28 +442,36 @@ receiptRouter.get(
     const { query } = req;
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
-    const fech1 = query.fech1 || '';
-    const fech2 = query.fech2 || '';
-    const supplier = query.supplier || '';
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const encargado = query.encargado || '';
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
     const order = query.order || '';
-
     const fechasFilter =
-      // price && price !== 'all'
-      true
-        ? {
-            // 1-50
-            cajDat: {
-              $gte: fech1,
-              $lte: fech2,
-            },
-          }
-        : {};
-    const supplierFilter =
-        supplier && supplier !== 'all'
+      !fech1 && !fech2 ? {}
+    : !fech1 && fech2 ? {
+                  cajDat: {
+                    $lte: fech2,
+                  },
+                }
+    : fech1 && !fech2 ? {
+                  cajDat: {
+                    $gte: fech1,
+                  },
+                }
+    :                   {
+                  cajDat: {
+                    $gte: fech1,
+                    $lte: fech2,
+                  },
+                };
+
+
+    const encargadoFilter =
+        encargado && encargado !== 'all'
           ? {
-            supplier: supplier
+            id_encarg: encargado
             }
           : {};
 
@@ -366,7 +502,7 @@ receiptRouter.get(
     const receipts = await Receipt.find({
       ...fechasFilter,
       ...configuracionFilter,
-       ...supplierFilter,
+       ...encargadoFilter,
        ...usuarioFilter,
         salbuy: 'BUY', cajNum: {$gt : 0} })
       .populate('user', 'name')
@@ -378,7 +514,7 @@ receiptRouter.get(
     const countReceipts = await Receipt.find({
       ...fechasFilter,
       ...configuracionFilter,
-       ...supplierFilter,
+       ...encargadoFilter,
        ...usuarioFilter,
         salbuy: 'BUY', cajNum: {$gt : 0} });
 

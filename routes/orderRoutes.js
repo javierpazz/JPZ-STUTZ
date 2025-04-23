@@ -78,13 +78,86 @@ orderRouter.get(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
-    const factura = 'SALE';
+
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const customer = query.customer || '';
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+    console.log(customer);
+    console.log(configuracion);
+    console.log(usuario);
+    const fechasFilter =
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    invDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    invDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    invDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
+
+     const fechasRecFilter =
+                  !fech1 && !fech2 ? {}
+                : !fech1 && fech2 ? {
+                              recDat: {
+                                $lte: fech2,
+                              },
+                            }
+                : fech1 && !fech2 ? {
+                              recDat: {
+                                $gte: fech1,
+                              },
+                            }
+                :                   {
+                              recDat: {
+                                $gte: fech1,
+                                $lte: fech2,
+                              },
+                            };
+          
+          
+          
+    const customerFilter =
+      customer && customer !== 'all'
+        ? {
+          // id_client: customer
+          id_client: new ObjectId(customer)
+          }
+        : {};
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          // id_config: configuracion
+          id_config: new ObjectId(configuracion)
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          // user: usuario
+          user: new ObjectId(usuario)
+          }
+        : {};
+
     const producIO = await Invoice.aggregate([
       {
         $match: {
           $and: [
-             { salbuy: factura },
-             { id_config : new ObjectId(query.id_config)}
+            fechasFilter,
+            configuracionFilter,
+            customerFilter,
+            usuarioFilter,
             ],
         },
       },
@@ -94,6 +167,7 @@ orderRouter.get(
 
       {
         $set: {
+          titlec: '$orderItems.title',
           salio1: {
             $cond: [{ $eq: ['$salbuy', 'SALE'] }, '$orderItems.quantity', 0],
           },
@@ -104,7 +178,7 @@ orderRouter.get(
       },
       {
         $group: {
-          _id: '$orderItems.name',
+          _id: '$titlec',
           salio: { $sum: '$salio1' },
           entro: { $sum: '$entro1' },
         },
@@ -113,14 +187,16 @@ orderRouter.get(
     ]);
 
     /////////////////////////////////////////////////////////
-    const invoices = await Invoice.find();
-
+    // const invoices = await Invoice.find();
     const ctacte = await Receipt.aggregate([
       {
         $match: {
           $and: [
-             { salbuy: factura },
-             { id_config : new ObjectId(query.id_config)}
+            {recNum: {$gt : 0}},
+            fechasRecFilter,
+            configuracionFilter,
+            customerFilter,
+            usuarioFilter,
             ],
         },
       },
@@ -134,18 +210,20 @@ orderRouter.get(
       },
       {
         $unionWith: {
-          coll: 'invoices',
+          coll: 'orders',
           pipeline: [
             {
               $match: {
                 $and: [
-                   { salbuy: factura },
-                   { id_config : new ObjectId(query.id_config)}
+                  {invNum: {$gt : 0}},
+                  fechasFilter,
+                  configuracionFilter,
+                  customerFilter,
+                  usuarioFilter,
                   ],
               },
             },
-      
-                  {
+            {
               $set: {
                 docDat: '$invDat',
                 importeInv: '$total',
@@ -174,8 +252,11 @@ orderRouter.get(
       {
         $match: {
           $and: [
-             { salbuy: factura },
-             { id_config : new ObjectId(query.id_config)}
+            {invNum: {$gt : 0}},
+            fechasFilter,
+            configuracionFilter,
+            customerFilter,
+            usuarioFilter,
             ],
         },
       },
@@ -201,8 +282,11 @@ orderRouter.get(
       {
         $match: {
           $and: [
-             { salbuy: factura },
-             { id_config : new ObjectId(query.id_config)}
+            {invNum: {$gt : 0}},
+            fechasFilter,
+            configuracionFilter,
+            customerFilter,
+            usuarioFilter,
             ],
         },
       },
@@ -221,8 +305,11 @@ orderRouter.get(
       {
         $match: {
           $and: [
-             { salbuy: factura },
-             { id_config : new ObjectId(query.id_config)}
+            {recNum: {$gt : 0}},
+            fechasRecFilter,
+            configuracionFilter,
+            customerFilter,
+            usuarioFilter,
             ],
         },
       },
