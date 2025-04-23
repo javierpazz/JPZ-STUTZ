@@ -63,21 +63,23 @@ receiptRouter.get(
     const fechasFilter =
       !fech1 && !fech2 ? {}
     : !fech1 && fech2 ? {
-                  recDat: {
-                    $lte: fech2,
-                  },
+      $or: [
+        { recDat: { $lte: fech2}},
+        { cajDat: { $lte: fech2}}
+          ] 
                 }
     : fech1 && !fech2 ? {
-                  recDat: {
-                    $gte: fech1,
-                  },
+      $or: [
+        { recDat: { $gte: fech1 } },
+        { cajDat: { $gte: fech1 } }
+          ]
                 }
-    :                   {
-                  recDat: {
-                    $gte: fech1,
-                    $lte: fech2,
-                  },
-                };
+    : {
+      $or: [
+        {  recDat: {$gte: fech1, $lte: fech2}},
+        {  cajDat: {$gte: fech1, $lte: fech2}}
+          ]
+        };
 
     const configuracionFilter =
       configuracion && configuracion !== 'all'
@@ -99,6 +101,9 @@ receiptRouter.get(
     })
         .sort({ user: 1, createdAt: 1 })
         .populate('user', 'name')
+        .populate('supplier', 'name')
+        .populate('id_client', 'nameCus')
+        .populate('id_encarg', 'name')
         .lean();
   
       // Agrupar y calcular el saldo acumulado
@@ -117,8 +122,24 @@ receiptRouter.get(
           };
         }
   
+        let compDesVar ="";
+        compDesVar = (r.recNum ) ? "Recibo/O.Pago" : "Ing./Egr. Caja";
+
+        if (r.supplier) {
+          descrip=r.supplier.name
+          }else {
+            if (r.id_client) {
+            descrip=r.id_client.nameCus
+            } else {
+              if (r.id_encarg) {descrip=r.id_encarg.name} else {}}}; 
+
+
+
         const movimiento = {
-          fecha: r.cajDat,
+          fecha: r.cajDat || r.recDat,
+          compDes: compDesVar,
+          descripcion: descrip,
+          compNum: r.cajNum || r.recNum,
           totalBuy: r.totalBuy || 0,
           total: r.total || 0,
           saldoMovimiento: (r.totalBuy || 0) - (r.total || 0),

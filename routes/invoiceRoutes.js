@@ -442,15 +442,6 @@ invoiceRouter.get(
                 },
               };
 
-
-
-
-    const customerFilter =
-      customer && customer !== 'all'
-        ? {
-          id_client: customer
-          }
-        : {};
     const configuracionFilter =
       configuracion && configuracion !== 'all'
         ? {
@@ -478,7 +469,6 @@ invoiceRouter.get(
     const invoices = await Invoice.find({
       ...fechasFilter,
       ...configuracionFilter,
-       ...customerFilter,
        ...usuarioFilter,
         salbuy: 'SALE', movpvNum: {$gt : 0} })
       .populate('id_config2', 'name')
@@ -849,14 +839,8 @@ invoiceRouter.get(
     const configuracionFilter =
       configuracion && configuracion !== 'all'
         ? {
-          id_config: configuracion
-          }
-        : {};
-    const usuarioFilter =
-      usuario && usuario !== 'all'
-        ? {
-          user: usuario
-          }
+          id_config : new ObjectId(configuracion)
+        }
         : {};
   
         const sortOrder =
@@ -871,9 +855,9 @@ invoiceRouter.get(
         $match: {
           $and: [
             fechasRecFilter,
+            configuracionFilter,
             { supplier: new ObjectId(req.params.suppliId) },
             { salbuy: factura },
-            { id_config : new ObjectId(query.configuracion)},
           ],
         },
       },
@@ -891,9 +875,9 @@ invoiceRouter.get(
               $match: {
                 $and: [
                   fechasInvFilter,
+                  configuracionFilter,
                   { supplier: new ObjectId(req.params.suppliId) },
                   { salbuy: factura },
-                  { id_config : new ObjectId(query.configuracion)},
                 ],
               },
             },
