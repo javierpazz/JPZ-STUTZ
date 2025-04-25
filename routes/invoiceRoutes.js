@@ -660,7 +660,7 @@ invoiceRouter.get(
 );
 
 invoiceRouter.get(
-  '/ctaS/:userId',
+  '/ctaS/:custId',
 
   isAuth,
   isAdmin,
@@ -718,13 +718,13 @@ invoiceRouter.get(
     const configuracionFilter =
       configuracion && configuracion !== 'all'
         ? {
-          id_config: configuracion
+          id_config: new ObjectId(configuracion)
           }
         : {};
     const usuarioFilter =
       usuario && usuario !== 'all'
         ? {
-          user: usuario
+          user: new ObjectId(usuario)
           }
         : {};
   
@@ -739,9 +739,11 @@ invoiceRouter.get(
         $match: {
           $and: [
              fechasRecFilter,
+             usuarioFilter,
+             configuracionFilter,
+             { id_client: new ObjectId(req.params.custId) },
              { salbuy: factura },
-             { id_client: new ObjectId(req.params.userId) },
-             { id_config : new ObjectId(query.configuracion)}
+             //  { id_config : new ObjectId(query.configuracion)}
             ],
         },
       },
@@ -759,9 +761,11 @@ invoiceRouter.get(
               $match: {
                 $and: [
                   fechasInvFilter,
-                  { id_client: new ObjectId(req.params.userId) },
+                  usuarioFilter,
+                  configuracionFilter,
+                  { id_client: new ObjectId(req.params.custId) },
                   { salbuy: factura },
-                  { id_config : new ObjectId(query.configuracion)},
+                  // { id_config : new ObjectId(query.configuracion)},
                 ],
               },
             },
@@ -842,7 +846,14 @@ invoiceRouter.get(
           id_config : new ObjectId(configuracion)
         }
         : {};
-  
+
+      const usuarioFilter =
+        usuario && usuario !== 'all'
+          ? {
+            user: new ObjectId(usuario)
+            }
+          : {};
+
         const sortOrder =
         order === 'newest'
         ? { $sort: { docDat: -1 } }
@@ -856,6 +867,7 @@ invoiceRouter.get(
           $and: [
             fechasRecFilter,
             configuracionFilter,
+            usuarioFilter,
             { supplier: new ObjectId(req.params.suppliId) },
             { salbuy: factura },
           ],
@@ -876,6 +888,7 @@ invoiceRouter.get(
                 $and: [
                   fechasInvFilter,
                   configuracionFilter,
+                  usuarioFilter,
                   { supplier: new ObjectId(req.params.suppliId) },
                   { salbuy: factura },
                 ],

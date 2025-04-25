@@ -3,6 +3,7 @@ const expressAsyncHandler = require ('express-async-handler');
 const Invoice = require ('../models/invoiceModel.js');
 const Receipt = require ('../models/receiptModel.js');
 const User = require ('../models/userModel.js');
+const Customer = require ('../models/customerModel.js');
 const Product = require ('../models/productModel.js');
 const { isAuth, isAdmin, mailgun, payOrderEmailTemplate } = require ('../utils.js');
 const { ObjectId } = require('mongodb');
@@ -85,9 +86,6 @@ orderRouter.get(
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
     const order = query.order || '';
-    console.log(customer);
-    console.log(configuracion);
-    console.log(usuario);
     const fechasFilter =
         !fech1 && !fech2 ? {}
       : !fech1 && fech2 ? {
@@ -253,6 +251,7 @@ orderRouter.get(
         $match: {
           $and: [
             {invNum: {$gt : 0}},
+            { salbuy: 'SALE' },
             fechasFilter,
             configuracionFilter,
             customerFilter,
@@ -278,6 +277,15 @@ orderRouter.get(
         },
       },
     ]);
+    const customers = await Customer.aggregate([
+      {
+        $group: {
+          _id: null,
+          numCustomers: { $sum: 1 },
+        },
+      },
+    ]);
+
     const dailyOrders = await Invoice.aggregate([
       {
         $match: {
@@ -335,6 +343,7 @@ orderRouter.get(
       producIO,
       ctacte,
       users,
+      customers,
       orders,
       dailyOrders,
       dailyMoney,
