@@ -56,6 +56,7 @@ const orderSchema = new mongoose.Schema(
     id_config2: { type: mongoose.Schema.Types.ObjectId, ref: 'Configuration' },
     codConNum: { type: String },
     codCom: { type: mongoose.Schema.Types.ObjectId, ref: 'Comprobante' },
+    isHaber: { type: Boolean}, 
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     id_delivery: { type: mongoose.Schema.Types.ObjectId, ref: 'Delivery' },
     id_address: {

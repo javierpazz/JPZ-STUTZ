@@ -102,6 +102,7 @@ invoiceRouter.get(
         salbuy: 'SALE', invNum: {$gt : 0} })
       .populate('id_client', 'nameCus')
       .populate('supplier', 'name')
+      .populate('codCom', 'nameCom')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
@@ -203,6 +204,7 @@ invoiceRouter.get(
         salbuy: 'BUY', invNum: {$gt : 0} })
       .populate('user', 'name')
       .populate('supplier', 'name')
+      .populate('codCom', 'nameCom')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
@@ -479,7 +481,6 @@ invoiceRouter.get(
     const countInvoices = await Invoice.countDocuments({ 
       ...fechasFilter,
       ...configuracionFilter,
-      ...customerFilter,
       ...usuarioFilter,
        salbuy: 'SALE', movpvNum: {$gt : 0} });
     res.send({
@@ -526,12 +527,6 @@ invoiceRouter.get(
 
 
 
-    const supplierFilter =
-      supplier && supplier !== 'all'
-        ? {
-          supplier: supplier
-          }
-        : {};
     const configuracionFilter =
       configuracion && configuracion !== 'all'
         ? {
@@ -559,7 +554,6 @@ invoiceRouter.get(
     const invoices = await Invoice.find({
       ...fechasFilter,
       ...configuracionFilter,
-       ...supplierFilter,
        ...usuarioFilter,
         salbuy: 'BUY', movpvNum: {$gt : 0} })
       .populate('id_config2', 'name')
@@ -570,7 +564,6 @@ invoiceRouter.get(
     const countInvoices = await Invoice.countDocuments({ 
       ...fechasFilter,
       ...configuracionFilter,
-      ...supplierFilter,
       ...usuarioFilter,
        salbuy: 'BUY', movpvNum: {$gt : 0} });
     res.send({
@@ -733,7 +726,7 @@ invoiceRouter.get(
         ? { $sort: { docDat: -1 } }
         : { $sort: { docDat: 1 } }
 
-    const orders = await Invoice.find();
+    const orders = await Invoice.find()
     const ctacte = await Receipt.aggregate([
       {
         $match: {
@@ -751,6 +744,7 @@ invoiceRouter.get(
         $set: {
           docDat: '$recDat',
           importeRec: '$total',
+          debe: '$total',
         },
       },
       {
@@ -772,6 +766,12 @@ invoiceRouter.get(
             {
               $set: {
                 docDat: '$invDat',
+                haber: {
+                  $cond: [{ $eq: ['$isHaber', true] }, '$total', 0],
+                },
+                debe: {
+                  $cond: [{ $eq: ['$isHaber', false] }, '$total', 0],
+                },
               },
             },
           ],
@@ -779,10 +779,519 @@ invoiceRouter.get(
       },
       sortOrder
     ]);
-    
     res.send(ctacte);
   })
 );
+
+invoiceRouter.get(
+  '/ctacus',
+
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const factura = 'SALE';
+
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const customer = query.customer || '';
+    const order = query.order || '';
+
+
+    const fechasInvFilter =
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    invDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    invDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    invDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
+
+    const fechasRecFilter =
+    !fech1 && !fech2 ? {}
+    : !fech1 && fech2 ? {
+                  recDat: {
+                    $lte: fech2,
+                  },
+                }
+    : fech1 && !fech2 ? {
+                  recDat: {
+                    $gte: fech1,
+                  },
+                }
+    :                   {
+                  recDat: {
+                    $gte: fech1,
+                    $lte: fech2,
+                  },
+                };
+
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: new ObjectId(configuracion)
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: new ObjectId(usuario)
+          }
+        : {};
+    const customerFilter =
+      customer && customer !== 'all'
+        ? {
+          id_client: new ObjectId(customer)
+          }
+        : {};
+  
+    const sortOrder =
+        // order === 'newest'
+        // ? { $sort: { id_client: -1, docDat: -1 } }
+        // : { $sort: { id_client: -1, docDat: 1 } }
+         { $sort: { id_client: -1, docDat: 1 } }
+
+    const orders = await Invoice.find()
+    .populate('user', 'name')
+    .populate('id_config', 'name')
+    .populate('id_client', 'codCus nameCus' )
+    .populate('codCom', 'nameCom ' );    
+    const ctacte = await Receipt.aggregate([
+      {
+        $match: {
+          $and: [
+             fechasRecFilter,
+             usuarioFilter,
+             customerFilter,
+             configuracionFilter,
+             { salbuy: factura },
+             //  { id_config : new ObjectId(query.configuracion)}
+            ],
+        },
+      },
+      {
+        $set: {
+          docDat: '$recDat',
+          importeRec: '$total',
+          debe: '$total',
+        },
+      },
+      {
+        $unionWith: {
+          coll: 'orders',
+          pipeline: [
+            {
+              $match: {
+                $and: [
+                  fechasInvFilter,
+                  usuarioFilter,
+                  customerFilter,
+                  configuracionFilter,
+                  { salbuy: factura },
+                  // { id_config : new ObjectId(query.configuracion)},
+                ],
+              },
+            },
+            {
+              $set: {
+                docDat: '$invDat',
+                haber: {
+                  $cond: [{ $eq: ['$isHaber', true] }, '$total', 0],
+                },
+                debe: {
+                  $cond: [{ $eq: ['$isHaber', false] }, '$total', 0],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: 'customers', // nombre de la colección (plural y minúscula en Mongo normalmente)
+          localField: 'id_client',  // el campo en receipt/order
+          foreignField: '_id',       // el campo en customer
+          as: 'customerInfo',        // nombre del array que va a traer la info
+        },
+      },
+      {
+        $unwind: { path: '$customerInfo', preserveNullAndEmptyArrays: true }, // para que no venga array
+      },
+      {
+        $lookup: {
+          from: 'comprobantes', // nombre de la colección (plural y minúscula en Mongo normalmente)
+          localField: 'codCom',  // el campo en receipt/order
+          foreignField: '_id',       // el campo en comprobante
+          as: 'comprobanteInfo',        // nombre del array que va a traer la info
+        },
+      },
+      {
+        $unwind: { path: '$comprobanteInfo', preserveNullAndEmptyArrays: true }, // para que no venga array
+      },
+      {
+        $lookup: {
+          from: 'users', // nombre de la colección (plural y minúscula en Mongo normalmente)
+          localField: 'user',  // el campo en receipt/order
+          foreignField: '_id',       // el campo en user
+          as: 'userInfo',        // nombre del array que va a traer la info
+        },
+      },
+      {
+        $unwind: { path: '$userInfo', preserveNullAndEmptyArrays: true }, // para que no venga array
+      },
+      {
+        $lookup: {
+          from: 'configurations', // nombre de la colección (plural y minúscula en Mongo normalmente)
+          localField: 'id_config',  // el campo en receipt/order
+          foreignField: '_id',       // el campo en configuration
+          as: 'configurationInfo',        // nombre del array que va a traer la info
+        },
+      },
+      {
+        $unwind: { path: '$configurationInfo', preserveNullAndEmptyArrays: true }, // para que no venga array
+      },
+      sortOrder
+    ]);
+    console.log(ctacte)
+///////////////////ordena para listar por cliente
+      // Agrupar y calcular el saldo acumulado
+      const resultado = [];
+      const agrupadoPorCustomer = {};
+  
+      for (const r of ctacte) {
+        const customerId = r.customerInfo._id.toString();
+        const codCust = r.customerInfo.codCus;
+        const customerNombre = r.customerInfo.nameCus || 'Cliente sin nombre';
+  
+        if (!agrupadoPorCustomer[customerId]) {
+          agrupadoPorCustomer[customerId] = {
+            codCust: codCust,
+            customer: customerNombre,
+            movimientos: [],
+            saldoTotal: 0,
+          };
+        }
+  
+        let descrip=""
+        if (r.comprobanteInfo?.nameCom) {
+          descrip=r.comprobanteInfo.nameCom;
+          }else {
+          descrip="RECIBO";
+            };
+
+
+        const movimiento = {
+          fecha: r.docDat,
+          compDes: descrip,
+          nameUse: r.userInfo.name,
+          nameCon: r.configurationInfo.name,
+          compNum: r.invNum || r.recNum,
+          totalBuy: r.debe || 0,
+          total: r.haber || 0,
+          saldoMovimiento:  (r.haber || 0) - (r.debe || 0) ,
+        };
+        // Acumulado
+        const customer = agrupadoPorCustomer[customerId];
+        customer.saldoTotal += movimiento.saldoMovimiento;
+        movimiento.saldoAcumulado = customer.saldoTotal;
+  
+        customer.movimientos.push(movimiento);
+      }
+  
+      // Convertir el objeto agrupado a array final
+      for (const customerId in agrupadoPorCustomer) {
+        resultado.push({
+          customer: customerId,
+          codCust: agrupadoPorCustomer[customerId].codCust,
+          nombreCliente: agrupadoPorCustomer[customerId].customer,
+          movimientos: agrupadoPorCustomer[customerId].movimientos,
+          saldoTotal: agrupadoPorCustomer[customerId].saldoTotal,
+        });
+      }
+
+///////////////////ordena para listar por cliente
+    res.send({
+      resultado,
+    });
+
+  })
+);
+
+
+////ki
+
+
+invoiceRouter.get(
+  '/ctasup',
+
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    console.log("ctasup")
+
+    const { query } = req;
+    const factura = 'BUY';
+
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const supplier = query.supplier || '';
+    // const customer = query.customer || '';
+    const order = query.order || '';
+
+
+    const fechasInvFilter =
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    invDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    invDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    invDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
+
+    const fechasRecFilter =
+    !fech1 && !fech2 ? {}
+    : !fech1 && fech2 ? {
+                  recDat: {
+                    $lte: fech2,
+                  },
+                }
+    : fech1 && !fech2 ? {
+                  recDat: {
+                    $gte: fech1,
+                  },
+                }
+    :                   {
+                  recDat: {
+                    $gte: fech1,
+                    $lte: fech2,
+                  },
+                };
+
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+      ? {
+        id_config: new ObjectId(configuracion)
+      }
+      : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+      ? {
+        user: new ObjectId(usuario)
+      }
+      : {};
+
+      const supplierFilter =
+          supplier && supplier !== 'all'
+          ? {
+            supplier: new ObjectId(supplier)
+          }
+          : {};
+          
+      const sortOrder =
+          // order === 'newest'
+          // ? { $sort: { supplier: -1, docDat: -1 } }
+          // : { $sort: { supplier: -1, docDat: 1 } }
+          { $sort: { supplier: -1, docDat: 1 } }
+
+    const orders = await Invoice.find()
+    .populate('user', 'name')
+    .populate('id_config', 'name')
+    .populate('supplier', 'codSup name')
+    .populate('codCom', 'nameCom ' );
+
+    const ctacte = await Receipt.aggregate([
+      {
+        $match: {
+          $and: [
+             fechasRecFilter,
+             usuarioFilter,
+             supplierFilter,
+             configuracionFilter,
+             { salbuy: factura },
+             //  { id_config : new ObjectId(query.configuracion)}
+            ],
+        },
+      },
+      {
+        $set: {
+          docDat: '$recDat',
+          importeRec: '$totalBuy',
+          haber: '$totalBuy',
+        },
+      },
+      {
+        $unionWith: {
+          coll: 'orders',
+          pipeline: [
+            {
+              $match: {
+                $and: [
+                  fechasInvFilter,
+                  usuarioFilter,
+                  supplierFilter,
+                  configuracionFilter,
+                  { salbuy: factura },
+                  // { id_config : new ObjectId(query.configuracion)},
+                ],
+              },
+            },
+            {
+              $set: {
+                docDat: '$invDat',
+                haber: {
+                  $cond: [{ $eq: ['$isHaber', true] }, '$totalBuy', 0],
+                },
+                debe: {
+                  $cond: [{ $eq: ['$isHaber', false] }, '$totalBuy', 0],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: 'suppliers', // nombre de la colección (plural y minúscula en Mongo normalmente)
+          localField: 'supplier',  // el campo en receipt/order
+          foreignField: '_id',       // el campo en supplier
+          as: 'supplierInfo',        // nombre del array que va a traer la info
+        },
+      },
+      {
+        $unwind: { path: '$supplierInfo', preserveNullAndEmptyArrays: true }, // para que no venga array
+      },
+      {
+        $lookup: {
+          from: 'comprobantes', // nombre de la colección (plural y minúscula en Mongo normalmente)
+          localField: 'codCom',  // el campo en receipt/order
+          foreignField: '_id',       // el campo en comprobante
+          as: 'comprobanteInfo',        // nombre del array que va a traer la info
+        },
+      },
+      {
+        $unwind: { path: '$comprobanteInfo', preserveNullAndEmptyArrays: true }, // para que no venga array
+      },
+      {
+        $lookup: {
+          from: 'users', // nombre de la colección (plural y minúscula en Mongo normalmente)
+          localField: 'user',  // el campo en receipt/order
+          foreignField: '_id',       // el campo en user
+          as: 'userInfo',        // nombre del array que va a traer la info
+        },
+      },
+      {
+        $unwind: { path: '$userInfo', preserveNullAndEmptyArrays: true }, // para que no venga array
+      },
+      {
+        $lookup: {
+          from: 'configurations', // nombre de la colección (plural y minúscula en Mongo normalmente)
+          localField: 'id_config',  // el campo en receipt/order
+          foreignField: '_id',       // el campo en configuration
+          as: 'configurationInfo',        // nombre del array que va a traer la info
+        },
+      },
+      {
+        $unwind: { path: '$configurationInfo', preserveNullAndEmptyArrays: true }, // para que no venga array
+      },
+      sortOrder
+    ]);
+    console.log(ctacte)
+///////////////////ordena para listar por cliente
+      // Agrupar y calcular el saldo acumulado
+      const resultado = [];
+      const agrupadoPorSupplier = {};
+  
+      for (const r of ctacte) {
+        const supplierId = r.supplierInfo._id.toString();
+        const codSupp = r.supplierInfo.codSup;
+        const supplierNombre = r.supplierInfo.name || 'Proovedor sin nombre';
+  
+        if (!agrupadoPorSupplier[supplierId]) {
+          agrupadoPorSupplier[supplierId] = {
+            codSupp: codSupp,
+            supplier: supplierNombre,
+            movimientos: [],
+            saldoTotal: 0,
+          };
+        }
+  
+        let descrip=""
+        if (r.comprobanteInfo?.nameCom) {
+          descrip=r.comprobanteInfo.nameCom;
+          }else {
+          descrip="ORDEN DE PAGO";
+            };
+
+
+        const movimiento = {
+          fecha: r.docDat,
+          compDes: descrip,
+          nameUse: r.userInfo.name,
+          nameCon: r.configurationInfo.name,
+          compNum: r.invNum || r.recNum,
+          totalBuy: r.debe || 0,
+          total: r.haber || 0,
+          saldoMovimiento:  (r.haber || 0) - (r.debe || 0) ,
+        };
+        // Acumulado
+        const supplier = agrupadoPorSupplier[supplierId];
+        supplier.saldoTotal += movimiento.saldoMovimiento;
+        movimiento.saldoAcumulado = supplier.saldoTotal;
+  
+        supplier.movimientos.push(movimiento);
+      }
+  
+      // Convertir el objeto agrupado a array final
+      for (const supplierId in agrupadoPorSupplier) {
+        resultado.push({
+          supplier: supplierId,
+          codSupp: agrupadoPorSupplier[supplierId].codSupp,
+          nombreSupplier: agrupadoPorSupplier[supplierId].supplier,
+          movimientos: agrupadoPorSupplier[supplierId].movimientos,
+          saldoTotal: agrupadoPorSupplier[supplierId].saldoTotal,
+        });
+      }
+
+///////////////////ordena para listar por cliente
+    res.send({
+      resultado,
+    });
+
+  })
+);
+
+////ki
+
+
+
 
 invoiceRouter.get(
   '/ctaB/:suppliId',
@@ -1074,46 +1583,49 @@ invoiceRouter.post(
           invNumero = comprobante.numInt;
         };
         //////////  numera factura /////////////////
-  
-    const newInvoice = new Invoice({
-      orderItems: req.body.orderItems.map((x) => ({
-        ...x,
-        product: x._id,
-      })),
-      shippingAddress: req.body.shippingAddress,
-      paymentMethod: req.body.paymentMethod,
-      subTotal: req.body.subTotal,
-      shippingPrice: req.body.shippingPrice,
-      tax: req.body.tax,
-      total: req.body.total,
-      totalBuy: req.body.totalBuy,
-      user: req.body.codUse,
-      id_client: req.body.codCus,
-      id_config: req.body.codCon,
-      user: req.body.user,
-      codConNum: req.body.codConNum,
-      codCom: req.body.codCom,
-      supplier: req.body.codSup,
-      remNum: req.body.remNum,
-      remDat: req.body.remDat,
-      //////////  numera factura /////////////////
-      invNum: invNumero,
-      //////////  numera factura /////////////////
-      invDat: req.body.invDat,
-      recNum: req.body.recNum,
-      recDat: req.body.recDat,
-      desVal: req.body.desVal,
-      notes: req.body.notes,
-      salbuy: req.body.salbuy,
-    });
-    const invoice = await newInvoice.save();
-    res.status(201).send({ message: 'New Invoice Created', invoice });
-  })
-);
-
-invoiceRouter.post(
-  '/rem/',
-  isAuth,
+        
+        const newInvoice = new Invoice({
+          orderItems: req.body.orderItems.map((x) => ({
+            ...x,
+            product: x._id,
+          })),
+          shippingAddress: req.body.shippingAddress,
+          paymentMethod: req.body.paymentMethod,
+          subTotal: req.body.subTotal,
+          shippingPrice: req.body.shippingPrice,
+          tax: req.body.tax,
+          total: req.body.total,
+          totalBuy: req.body.totalBuy,
+          user: req.body.codUse,
+          id_client: req.body.codCus,
+          id_config: req.body.codCon,
+          user: req.body.user,
+          codConNum: req.body.codConNum,
+          codCom: req.body.codCom,
+          supplier: req.body.codSup,
+          remNum: req.body.remNum,
+          remDat: req.body.remDat,
+          //////////  numera factura /////////////////
+          invNum: invNumero,
+          //////////  numera factura /////////////////
+          invDat: req.body.invDat,
+          recNum: req.body.recNum,
+          recDat: req.body.recDat,
+          desVal: req.body.desVal,
+          notes: req.body.notes,
+          salbuy: req.body.salbuy,
+          // //////////  Me fijo si es Compra o venta para ver haber o debe /////////////////
+          isHaber: (req.body.salbuy === "SALE") ? req.body.isHaber : !req.body.isHaber,
+          // //////////  Me fijo si es Compra o venta para ver haber o debe /////////////////
+        });
+        const invoice = await newInvoice.save();
+        res.status(201).send({ message: 'New Invoice Created', invoice });
+      })
+    );
+    
+    invoiceRouter.post(
+      '/rem/',
+      isAuth,
   expressAsyncHandler(async (req, res) => {
 
     //////////  numera remito /////////////////

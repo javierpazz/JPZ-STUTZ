@@ -46,9 +46,9 @@ const PAGE_SIZE = 10;
 ////////////////////////////
 
 receiptRouter.get(
-  '/searchcajSB',
+  '/searchingegrSB',
   isAuth,
-  // isAdmin,
+  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;
@@ -58,6 +58,7 @@ receiptRouter.get(
     const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
+    const encargado = query.encargado || '';
     const order = query.order || '';
 
     const fechasFilter =
@@ -93,11 +94,152 @@ receiptRouter.get(
           user: usuario
           }
         : {};
+    const encargadoFilter =
+      encargado && encargado !== 'all'
+          ? {
+            id_encarg: encargado
+            }
+          : {};
+  
+    const recibos = await Receipt.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...usuarioFilter,
+       ...encargadoFilter, cajNum: {$gt : 0}
+    })
+        .sort({ id_encarg: 1, createdAt: 1 })
+        .populate('user', 'name')
+        .populate('id_encarg', 'name')
+        .populate('id_config', 'name')
+        .lean();
+  
+      // Agrupar y calcular el saldo acumulado
+      const resultado = [];
+      const agrupadoPorEncargado = {};
+  
+      for (const r of recibos) {
+        const encargadoId = r.id_encarg._id.toString();
+        const encargadoNombre = r.id_encarg.name || 'Encargado sin nombre';
+  
+        if (!agrupadoPorEncargado[encargadoId]) {
+          agrupadoPorEncargado[encargadoId] = {
+            encargado: encargadoNombre,
+            movimientos: [],
+            saldoTotal: 0,
+          };
+        }
+  
+        let compDesVar ="";
+        compDesVar = (r.salbuy === "SALE" ) ? "INGRESO CAJA" : "RETIRO CAJA";
+
+        // if (r.supplier) {
+        //   descrip=r.supplier.name
+        //   }else {
+        //     if (r.id_client) {
+        //     descrip=r.id_client.nameCus
+        //     } else {
+        //       if (r.id_encarg) {descrip=r.id_encarg.name} else {}}}; 
+
+
+
+        const movimiento = {
+          fecha: r.cajDat || r.recDat,
+          compDes: compDesVar,
+          nameCus: r.user.name,
+          nameCon: r.id_config.name,
+          compNum: r.cajNum || r.recNum,
+          totalBuy: r.totalBuy || 0,
+          total: r.total || 0,
+          saldoMovimiento:  (r.total || 0) - (r.totalBuy || 0) ,
+        };
+        // Acumulado
+        const encargado = agrupadoPorEncargado[encargadoId];
+        encargado.saldoTotal += movimiento.saldoMovimiento;
+        movimiento.saldoAcumulado = encargado.saldoTotal;
+  
+        encargado.movimientos.push(movimiento);
+      }
+  
+      // Convertir el objeto agrupado a array final
+      for (const encargadoId in agrupadoPorEncargado) {
+        resultado.push({
+          encargado: encargadoId,
+          nombreCliente: agrupadoPorEncargado[encargadoId].encargado,
+          movimientos: agrupadoPorEncargado[encargadoId].movimientos,
+          saldoTotal: agrupadoPorEncargado[encargadoId].saldoTotal,
+        });
+      }
+      res.send({
+        resultado,
+      });
+
+    })
+);
+
+
+
+
+  receiptRouter.get(
+  '/searchcajSB',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const encargado = query.encargado || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+      !fech1 && !fech2 ? {}
+    : !fech1 && fech2 ? {
+      $or: [
+        { recDat: { $lte: fech2}},
+        { cajDat: { $lte: fech2}}
+          ] 
+                }
+    : fech1 && !fech2 ? {
+      $or: [
+        { recDat: { $gte: fech1 } },
+        { cajDat: { $gte: fech1 } }
+          ]
+                }
+    : {
+      $or: [
+        {  recDat: {$gte: fech1, $lte: fech2}},
+        {  cajDat: {$gte: fech1, $lte: fech2}}
+          ]
+        };
+
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+    const encargadoFilter =
+      encargado && encargado !== 'all'
+        ? {
+          id_encarg: encargado
+          }
+        : {};
 
     const recibos = await Receipt.find({
       ...fechasFilter,
       ...configuracionFilter,
        ...usuarioFilter,
+       ...encargadoFilter,
     })
         .sort({ user: 1, createdAt: 1 })
         .populate('user', 'name')
@@ -108,14 +250,14 @@ receiptRouter.get(
   
       // Agrupar y calcular el saldo acumulado
       const resultado = [];
-      const agrupadoPorCliente = {};
+      const agrupadoPorUser = {};
   
       for (const r of recibos) {
         const userId = r.user._id.toString();
-        const userNombre = r.user.name || 'Cliente sin nombre';
+        const userNombre = r.user.name || 'Usuario sin nombre';
   
-        if (!agrupadoPorCliente[userId]) {
-          agrupadoPorCliente[userId] = {
+        if (!agrupadoPorUser[userId]) {
+          agrupadoPorUser[userId] = {
             user: userNombre,
             movimientos: [],
             saldoTotal: 0,
@@ -123,7 +265,7 @@ receiptRouter.get(
         }
   
         let compDesVar ="";
-        compDesVar = (r.recNum ) ? "Recibo/O.Pago" : "Ing./Egr. Caja";
+        compDesVar = (r.recNum ) ? "Recibo/O.Pago" : "Ing./Ret. Caja";
 
         if (r.supplier) {
           descrip=r.supplier.name
@@ -142,11 +284,11 @@ receiptRouter.get(
           compNum: r.cajNum || r.recNum,
           totalBuy: r.totalBuy || 0,
           total: r.total || 0,
-          saldoMovimiento: (r.totalBuy || 0) - (r.total || 0),
+          saldoMovimiento:  (r.total || 0) - (r.totalBuy || 0),
         };
   
         // Acumulado
-        const user = agrupadoPorCliente[userId];
+        const user = agrupadoPorUser[userId];
         user.saldoTotal += movimiento.saldoMovimiento;
         movimiento.saldoAcumulado = user.saldoTotal;
   
@@ -154,12 +296,12 @@ receiptRouter.get(
       }
   
       // Convertir el objeto agrupado a array final
-      for (const userId in agrupadoPorCliente) {
+      for (const userId in agrupadoPorUser) {
         resultado.push({
           user: userId,
-          nombreCliente: agrupadoPorCliente[userId].user,
-          movimientos: agrupadoPorCliente[userId].movimientos,
-          saldoTotal: agrupadoPorCliente[userId].saldoTotal,
+          nombreCliente: agrupadoPorUser[userId].user,
+          movimientos: agrupadoPorUser[userId].movimientos,
+          saldoTotal: agrupadoPorUser[userId].saldoTotal,
         });
       }
       res.send({
@@ -223,7 +365,6 @@ receiptRouter.get(
           user: usuario
           }
         : {};
-  
     const sortOrder =
       order === 'featured'
         ? { featured: -1 }
@@ -278,6 +419,7 @@ receiptRouter.get(
     const supplier = query.supplier || '';
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
+    const encargado = query.encargado || '';
     const order = query.order || '';
 
     const fechasFilter =
@@ -318,7 +460,6 @@ receiptRouter.get(
           user: usuario
           }
         : {};
-  
     const sortOrder =
       order === 'featured'
         ? { featured: -1 }
