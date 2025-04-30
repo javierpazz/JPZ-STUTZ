@@ -24,7 +24,7 @@ invoiceRouter.get(
 invoiceRouter.get(
   '/searchinvS',
   isAuth,
-  // isAdmin,
+  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
@@ -126,7 +126,7 @@ invoiceRouter.get(
 invoiceRouter.get(
   '/searchinvB',
   isAuth,
-  // isAdmin,
+  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
@@ -228,7 +228,7 @@ invoiceRouter.get(
 invoiceRouter.get(
   '/searchremS',
   isAuth,
-  // isAdmin,
+  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
@@ -320,7 +320,7 @@ invoiceRouter.get(
 invoiceRouter.get(
   '/searchremB',
   isAuth,
-  // isAdmin,
+  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
@@ -413,7 +413,7 @@ invoiceRouter.get(
 invoiceRouter.get(
   '/searchmovS',
   isAuth,
-  // isAdmin,
+  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
@@ -494,7 +494,7 @@ invoiceRouter.get(
 invoiceRouter.get(
   '/searchmovB',
   isAuth,
-  // isAdmin,
+  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
@@ -1051,115 +1051,116 @@ invoiceRouter.get(
             ],
         },
       },
-        { 
-          $unwind: "$orderItems" 
-        },
-        {
-          $group: {
-            _id: {
-              configId: "$id_config",
-              title: "$orderItems.title"
-            },
-            totalQuantity: { $sum: "$orderItems.quantity" },
-            totalAmount: {
-              $sum: {
-                $multiply: [
-                  "$orderItems.quantity",
-                  "$orderItems.price"
-                ]
-              }
-            },
-            totalIngreso: {
-              $sum: {
-                $cond: [
-                  { $eq: ["$isHaber", true] },
-                  "$orderItems.quantity",
-                  0
-                ]
-              }
-            },
-            totalEgreso: {
-              $sum: {
-                $cond: [
-                  { $eq: ["$isHaber", false] },
-                  "$orderItems.quantity",
-                  0
-                ]
-              }
-            },
-            totalMontoIngreso: {
-              $sum: {
-                $cond: [
-                  { $eq: ["$isHaber", true] },
-                  { $multiply: ["$orderItems.quantity", "$orderItems.price"] },
-                  0
-                ]
-              }
-            },
-            totalMontoEgreso: {
-              $sum: {
-                $cond: [
-                  { $eq: ["$isHaber", false] },
-                  { $multiply: ["$orderItems.quantity", "$orderItems.price"] },
-                  0
-                ]
-              }
+
+      { 
+        $unwind: "$orderItems" 
+      },
+      {
+        $group: {
+          _id: {
+            clientId: "$id_client",
+            title: "$orderItems.title"
+          },
+          totalQuantity: { $sum: "$orderItems.quantity" },
+          totalAmount: {
+            $sum: {
+              $multiply: [
+                "$orderItems.quantity",
+                "$orderItems.price"
+              ]
+            }
+          },
+          totalIngreso: {
+            $sum: {
+              $cond: [
+                { $eq: ["$isHaber", true] },
+                "$orderItems.quantity",
+                0
+              ]
+            }
+          },
+          totalEgreso: {
+            $sum: {
+              $cond: [
+                { $eq: ["$isHaber", false] },
+                "$orderItems.quantity",
+                0
+              ]
+            }
+          },
+          totalMontoIngreso: {
+            $sum: {
+              $cond: [
+                { $eq: ["$isHaber", true] },
+                { $multiply: ["$orderItems.quantity", "$orderItems.price"] },
+                0
+              ]
+            }
+          },
+          totalMontoEgreso: {
+            $sum: {
+              $cond: [
+                { $eq: ["$isHaber", false] },
+                { $multiply: ["$orderItems.quantity", "$orderItems.price"] },
+                0
+              ]
             }
           }
-        },
-        {
-          $group: {
-            _id: "$_id.configId",
-            products: {
-              $push: {
-                title: "$_id.title",
-                totalQuantity: "$totalQuantity",
-                totalAmount: "$totalAmount",
-                totalIngreso: "$totalIngreso",
-                totalEgreso: "$totalEgreso",
-                totalMontoIngreso: "$totalMontoIngreso",
-                totalMontoEgreso: "$totalMontoEgreso",
-                saldo: {
-                  $subtract: ["$totalMontoIngreso", "$totalMontoEgreso"]
-                }            },
-            },
-            totalAmountClient: { $sum: "$totalMontoIngreso" },
-            totalAmountClientBuy: { $sum: "$totalMontoEgreso" },
+        }
+      },
+      {
+        $group: {
+          _id: "$_id.clientId",
+          products: {
+            $push: {
+              title: "$_id.title",
+              totalQuantity: "$totalQuantity",
+              totalAmount: "$totalAmount",
+              totalIngreso: "$totalIngreso",
+              totalEgreso: "$totalEgreso",
+              totalMontoIngreso: "$totalMontoIngreso",
+              totalMontoEgreso: "$totalMontoEgreso",
+              saldo: {
+                $subtract: ["$totalMontoIngreso", "$totalMontoEgreso"]
+              }            },
           },
+          totalAmountClient: { $sum: "$totalMontoIngreso" },
+          totalAmountClientBuy: { $sum: "$totalMontoEgreso" },
         },
-        {
-          $lookup: {
-            from: "configurations",
-            localField: "_id",
-            foreignField: "_id",
-            as: "configurations"
-          }
-        },
-        {
-          $unwind: {
-            path: "$configurations",
-            preserveNullAndEmptyArrays: true
-          }
-        },
-        {
-          $project: {
-            configId: "$configurations._id",
-            clientNameCus: "$configurations.name",
-            clientcodCus: "$configurations.codCon",
-            totalAmountClient: 1,
-            totalAmountClientBuy: 1,
-            products: 1
-          }
-        },
-        {
-          $sort: { clientNameCus: 1 }
-        },
-      ]);
-      res.send({
-        resultado,
-      });
-  
+      },
+      {
+        $lookup: {
+          from: "customers",
+          localField: "_id",
+          foreignField: "_id",
+          as: "customers"
+        }
+      },
+      {
+        $unwind: {
+          path: "$customers",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $project: {
+          clientId: "$customers._id",
+          clientNameCus: "$customers.nameCus",
+          clientcodCus: "$customers.codCus",
+          totalAmountClient: 1,
+          totalAmountClientBuy: 1,
+          products: 1
+        }
+      },
+      {
+        $sort: { clientNameCus: 1 }
+      },
+    ]);
+    res.send({
+      resultado,
+    });
 
+//////ffffffffffffffffffffff
   })
 );
 /////////////////proiye
@@ -1925,6 +1926,8 @@ invoiceRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    console.log("ctasup")
+
     const { query } = req;
     const factura = 'BUY';
 

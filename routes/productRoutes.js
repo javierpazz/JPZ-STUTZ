@@ -3,8 +3,44 @@ const expressAsyncHandler = require ('express-async-handler');
 const Product = require ('../models/productModel.js');
 const Invoice = require ('../models/invoiceModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
+const { ObjectId } = require('mongodb');
 
 const productRouter = express.Router();
+
+
+///////////////list
+productRouter.get('/list', async (req, res) => {
+  const { query } = req;
+  const configuracion = query.configuracion || '';
+
+  try {
+    const products = await Product.find(
+      {id_config: new ObjectId(configuracion)}
+    )
+      .populate('supplier', 'name') // trae solo supplier.name
+      .sort({ category: 1, codPro: 1 });
+
+    const result = products.map(prod => ({
+      codPro: prod.codPro,
+      title: prod.title,
+      supplier: prod.supplier?.name || 'N/A',
+      category: prod.category,
+      price: prod.price?.toFixed(2),
+      priceBuy: prod.priceBuy?.toFixed(2),
+      inStock: prod.inStock?.toFixed(2),
+      minStock: prod.minStock?.toFixed(2),
+      porIva: prod.porIva,
+    }));
+
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+  ///////////////list
+
 
 productRouter.get('/', async (req, res) => {
   const products = await Product.find().sort({ name: +1 });
@@ -16,6 +52,7 @@ productRouter.get('/xpv', async (req, res) => {
   const products = await Product.find({id_config : query.id_config}).sort({ name: +1 });
   res.send(products);
 });
+
 
 
 productRouter.post(
@@ -39,6 +76,7 @@ productRouter.post(
       minStock: req.body.minStock,
       porIva: req.body.porIva,
       description: req.body.description,
+      supplier: req.body.codSup,
 
       // codPro: 'Codigo Barra',
       // codigoPro: 'Codigo Propio',
@@ -61,6 +99,146 @@ productRouter.post(
     res.send({ message: 'Product Created', product });
   })
 );
+
+productRouter.put(
+  '/aumpre',
+  // isAuth,
+  // isAdmin,
+  expressAsyncHandler(async (req, res) => {
+  
+  
+    const porcen = req.query.porcen || '';
+    const codProd2 = req.query.codProd2 || '';
+    const codProd1 = req.query.codProd1 || '';
+    const supplier = req.query.supplier || '';
+    const category = req.query.category || '';
+    const configuracion = req.query.configuracion || '';
+
+    const productsFilter =
+    !codProd1 && !codProd2 ? {}
+  : !codProd1 && codProd2 ? {
+                codPro: {
+                  $lte: codProd2,
+                },
+              }
+  : codProd1 && !codProd2 ? {
+                codPro: {
+                  $gte: codProd1,
+                },
+              }
+  :                   {
+                codPro: {
+                  $gte: codProd1,
+                  $lte: codProd2,
+                },
+              };
+
+        const supplierFilter =
+              supplier && supplier !== 'all'
+                ? {
+                  supplier: new ObjectId(supplier)
+                  }
+                : {};
+        const categoryFilter =
+              category && category !== 'all'
+                ? {
+                  category: category
+                  }
+                : {};
+        
+
+    try {
+      const products = await Product.find({
+        // codPro: { $gte: codProd1, $lte: codProd2 },
+        ...productsFilter,
+        ...supplierFilter,
+        ...categoryFilter,
+        id_config : new ObjectId(configuracion) 
+      });
+      const updates = await Promise.all(
+        products.map(async (product) => {
+          product.price = parseFloat((product.price * (1 + porcen / 100)).toFixed(2));
+          return await product.save();
+        })
+      );
+      res.send({ message: 'Product Updated' });
+    } catch (error) {
+      console.error('Error al actualizar precios por codPro:', error);
+      result(error, null);
+    }
+
+  })
+);
+
+productRouter.put(
+  '/dispre',
+  // isAuth,
+  // isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const porcen = req.query.porcen || '';
+    const codProd2 = req.query.codProd2 || '';
+    const codProd1 = req.query.codProd1 || '';
+    const supplier = req.query.supplier || '';
+    const category = req.query.category || '';
+    const configuracion = req.query.configuracion || '';
+
+    const productsFilter =
+    !codProd1 && !codProd2 ? {}
+  : !codProd1 && codProd2 ? {
+                codPro: {
+                  $lte: codProd2,
+                },
+              }
+  : codProd1 && !codProd2 ? {
+                codPro: {
+                  $gte: codProd1,
+                },
+              }
+  :                   {
+                codPro: {
+                  $gte: codProd1,
+                  $lte: codProd2,
+                },
+              };
+
+        const supplierFilter =
+              supplier && supplier !== 'all'
+                ? {
+                  supplier: new ObjectId(supplier)
+                  }
+                : {};
+        const categoryFilter =
+              category && category !== 'all'
+                ? {
+                  category: category
+                  }
+                : {};
+        
+
+    try {
+      const products = await Product.find({
+        // codPro: { $gte: codProd1, $lte: codProd2 },
+        ...productsFilter,
+        ...supplierFilter,
+        ...categoryFilter,
+        id_config : new ObjectId(configuracion) 
+      });
+      const updates = await Promise.all(
+        products.map(async (product) => {
+          product.price = parseFloat((product.price / (1 + porcen / 100)).toFixed(2));
+          return await product.save();
+        })
+      );
+      res.send({ message: 'Product Updated' });
+    } catch (error) {
+      console.error('Error al actualizar precios por codPro:', error);
+      result(error, null);
+    }
+
+  })
+);
+
+
 
 productRouter.put(
   '/upstock/:id',
@@ -119,6 +297,7 @@ productRouter.put(
       product.minStock = req.body.minStock;
       product.porIva = req.body.porIva;
       product.description = req.body.description;
+      product.supplier = req.body.codSup;
       await product.save();
       res.send({ message: 'Product Updated' });
     } else {
@@ -179,7 +358,6 @@ productRouter.post(
 );
 
 const PAGE_SIZE = 10;
-
 productRouter.get(
   '/admin',
   isAuth,

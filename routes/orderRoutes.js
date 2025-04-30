@@ -76,7 +76,7 @@ orderRouter.post(
 orderRouter.get(
   '/summary',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
 
@@ -332,6 +332,14 @@ orderRouter.get(
       { $sort: { _id: 1 } },
     ]);
     const productCategories = await Product.aggregate([
+      {
+        $match: {
+          $and: [
+            configuracionFilter,
+            ],
+        },
+      },
+
       {
         $group: {
           _id: '$category',

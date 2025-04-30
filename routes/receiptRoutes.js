@@ -182,7 +182,7 @@ receiptRouter.get(
   receiptRouter.get(
   '/searchcajSB',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;
@@ -315,7 +315,7 @@ receiptRouter.get(
 receiptRouter.get(
   '/searchrecS',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;
@@ -409,7 +409,7 @@ receiptRouter.get(
 receiptRouter.get(
   '/searchrecB',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;
@@ -502,7 +502,7 @@ receiptRouter.get(
 receiptRouter.get(
   '/searchcajS',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;
@@ -599,7 +599,7 @@ receiptRouter.get(
 receiptRouter.get(
   '/searchcajB',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;
