@@ -423,6 +423,7 @@ invoiceRouter.get(
     const customer = query.customer || '';
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
+    console.log(usuario)
     const order = query.order || '';
 
     const fechasFilter =
@@ -2451,12 +2452,89 @@ invoiceRouter.post(
   '/',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-      //////////  numera factura /////////////////
+    
+    //////////  GENERA RECIBO /////////////////
+    let recAux = 0;
+    if ( req.body.receiptAux.recDat && req.body.receiptAux.desVal) {
+
+      //////////  numera remito /////////////////
       
-      if (req.body.invNum > 0)
-        {invNumero = req.body.invNum }
+      if (req.body.receiptAux.recNum > 0)
+        {recNumero = req.body.receiptAux.recNum }
         else {
-          const comproId = req.body.codCom;
+          const configId = req.body.receiptAux.codCon;
+          const configuracion = await Configuration.findById(configId);
+          if (configuracion) {
+            configuracion.numIntRec = configuracion.numIntRec + 1;
+            await configuracion.save();
+          }
+          recNumero = configuracion.numIntRec;
+        };
+        //////////  numera remito /////////////////
+  
+    const newReceipt = new Receipt({
+      receiptItems: req.body.receiptAux.receiptItems.map((x) => ({
+        ...x,
+        valuee: x._id,
+      })),
+      subTotal: req.body.receiptAux.subTotal,
+      total: req.body.receiptAux.total,
+      totalBuy: req.body.receiptAux.totalBuy,
+      // user: req.body.receiptAux.codUse,
+      user: req.body.receiptAux.user,
+      id_client: req.body.receiptAux.codCus,
+      id_config: req.body.receiptAux.codCon,
+      codConNum: req.body.receiptAux.codConNum,
+      supplier: req.body.receiptAux.codSup,
+      //////////  numera remito /////////////////
+      recNum: recNumero,
+      //////////  numera remito /////////////////
+      recDat: req.body.receiptAux.recDat,
+      desVal: req.body.receiptAux.desVal,
+      notes: req.body.receiptAux.notes,
+      salbuy: req.body.receiptAux.salbuy,
+    });
+    const receipt = await newReceipt.save();
+    recAux = receipt.recNum;
+    console.log(recAux);
+    }
+      //////////  GENERA RECIBO /////////////////
+      //////////  MODIFICA STOCK /////////////////
+    
+    if (req.body.invoiceAux.isHaber) {
+      req.body.invoiceAux.orderItems.map(async(item) => {
+        // const product = await Product.findById(productId);
+        const product = await Product.findById(item._id);
+      if (product) {
+        product.inStock = product.inStock - +item.quantity;
+        await product.save();
+    
+    }
+  }
+      )
+
+    } else {
+
+      req.body.invoiceAux.orderItems.map(async(item) => {
+        // const product = await Product.findById(productId);
+        const product = await Product.findById(item._id);
+      if (product) {
+        product.inStock = product.inStock + +item.quantity;
+        await product.save();
+   
+    }
+  }
+      )
+
+    };
+    
+    //////////  MODIFICA STOCK /////////////////
+    //////////  numera factura /////////////////
+      
+      if (req.body.invoiceAux.invNum > 0)
+        {invNumero = req.body.invoiceAux.invNum }
+        else {
+          const comproId = req.body.invoiceAux.codCom;
           const comprobante = await Comprobante.findById(comproId);
           if (comprobante) {
             comprobante.numInt = comprobante.numInt + 1;
@@ -2465,41 +2543,73 @@ invoiceRouter.post(
           invNumero = comprobante.numInt;
         };
         //////////  numera factura /////////////////
+
+        //////////  numera remito /////////////////
+        remNumero = 0;          
+        if (req.body.invoiceAux.geRem) {
+
+          if (req.body.invoiceAux.remNum > 0)
+            {remNumero = req.body.invoiceAux.remNum }
+            else {
+              const configId = req.body.invoiceAux.codCon;
+              const configuracion = await Configuration.findById(configId);
+              if (configuracion) {
+                configuracion.numIntRem = configuracion.numIntRem + 1;
+                await configuracion.save();
+              }
+              remNumero = configuracion.numIntRem;
+            };
+        }
+
+
+          //////////  numera remito /////////////////
+
         
+        if (recAux > 0) {
+          invrecNum = recAux;
+          invrecDat =  req.body.invoiceAux.invDat;
+          }else{
+            invrecNum = recAux;
+            invrecDat =  req.body.invoiceAux.recDat;
+          };
+
         const newInvoice = new Invoice({
-          orderItems: req.body.orderItems.map((x) => ({
+          orderItems: req.body.invoiceAux.orderItems.map((x) => ({
             ...x,
             product: x._id,
           })),
-          shippingAddress: req.body.shippingAddress,
-          paymentMethod: req.body.paymentMethod,
-          subTotal: req.body.subTotal,
-          shippingPrice: req.body.shippingPrice,
-          tax: req.body.tax,
-          total: req.body.total,
-          totalBuy: req.body.totalBuy,
-          user: req.body.codUse,
-          id_client: req.body.codCus,
-          id_config: req.body.codCon,
-          user: req.body.user,
-          codConNum: req.body.codConNum,
-          codCom: req.body.codCom,
-          supplier: req.body.codSup,
-          remNum: req.body.remNum,
-          remDat: req.body.remDat,
+          shippingAddress: req.body.invoiceAux.shippingAddress,
+          paymentMethod: req.body.invoiceAux.paymentMethod,
+          subTotal: req.body.invoiceAux.subTotal,
+          shippingPrice: req.body.invoiceAux.shippingPrice,
+          tax: req.body.invoiceAux.tax,
+          total: req.body.invoiceAux.total,
+          totalBuy: req.body.invoiceAux.totalBuy,
+          user: req.body.invoiceAux.codUse,
+          id_client: req.body.invoiceAux.codCus,
+          id_config: req.body.invoiceAux.codCon,
+          user: req.body.invoiceAux.user,
+          codConNum: req.body.invoiceAux.codConNum,
+          codCom: req.body.invoiceAux.codCom,
+          supplier: req.body.invoiceAux.codSup,
+          //////////  numera remito /////////////////
+          remNum: remNumero,
+          //////////  numera remito /////////////////
+          remDat: req.body.invoiceAux.remDat,
           //////////  numera factura /////////////////
           invNum: invNumero,
           //////////  numera factura /////////////////
-          invDat: req.body.invDat,
-          recNum: req.body.recNum,
-          recDat: req.body.recDat,
-          desVal: req.body.desVal,
-          notes: req.body.notes,
-          salbuy: req.body.salbuy,
+          invDat: req.body.invoiceAux.invDat,
+          recNum: invrecNum,
+          recDat: invrecDat,
+          desVal: req.body.invoiceAux.desVal,
+          notes: req.body.invoiceAux.notes,
+          salbuy: req.body.invoiceAux.salbuy,
           // //////////  Me fijo si es Compra o venta para ver haber o debe /////////////////
-          isHaber: (req.body.salbuy === "SALE") ? req.body.isHaber : !req.body.isHaber,
+          isHaber: (req.body.invoiceAux.salbuy === "SALE") ? req.body.invoiceAux.isHaber : !req.body.invoiceAux.isHaber,
           // //////////  Me fijo si es Compra o venta para ver haber o debe /////////////////
         });
+        
         const invoice = await newInvoice.save();
         res.status(201).send({ message: 'New Invoice Created', invoice });
       })
@@ -2775,7 +2885,7 @@ invoiceRouter.put(
   '/:id/unapplyrecS',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    await Invoice.updateMany({ recNum: req.body.recNum, user: req.body.user }, { $set: { recNum: null }}) 
+    await Invoice.updateMany({ recNum: req.body.recNum, id_client: req.body.customer }, { $set: { recNum: null }}) 
     
     // const invoice = await Invoice.find({recNum: req.params.id });
     // //    console.log(req.body.recNum);
@@ -2909,7 +3019,7 @@ invoiceRouter.put(
 invoiceRouter.delete(
   '/:id',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const invoice = await Invoice.findById(req.params.id);
     if (invoice) {

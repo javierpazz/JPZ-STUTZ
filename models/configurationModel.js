@@ -11,6 +11,7 @@ const configurationSchema = new mongoose.Schema(
     feciniact: { type: String},
     numIntRem: { type: Number },
     numIntRec: { type: Number },
+    numIntOdp: { type: Number },
     numIntCaj: { type: Number },
     numIntMov: { type: Number },
 

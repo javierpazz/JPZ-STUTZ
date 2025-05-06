@@ -461,7 +461,7 @@ orderRouter.put(
 orderRouter.delete(
   '/:id',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const order = await Invoice.findById(req.params.id);
     if (order) {

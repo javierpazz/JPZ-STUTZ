@@ -1022,7 +1022,7 @@ receiptRouter.put(
 receiptRouter.delete(
   '/:id',
   isAuth,
-  isAdmin,
+  // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const receipt = await Receipt.findById(req.params.id);
     if (receipt) {
