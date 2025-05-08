@@ -5,7 +5,26 @@ const User = require ('../models/userModel.js');
 const { isAuth, isAdmin, generateToken, baseUrl, mailgun } = require ('../utils.js');
 
 const userRouter = express.Router();
+///////////////list
+userRouter.get(
+  '/list',
+  isAuth,
+  // isAdmin,
+  async (req, res) => {
+  const { query } = req;
 
+  try {
+    const users = await User.find()
+      .sort({ desVal: 1 });
+
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+  ///////////////list
 userRouter.get(
   '/',
   isAuth,

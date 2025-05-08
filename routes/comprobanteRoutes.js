@@ -5,6 +5,26 @@ const Invoice = require ('../models/invoiceModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
 
 const comprobanteRouter = express.Router();
+///////////////list
+comprobanteRouter.get(
+  '/list',
+  isAuth,
+  // isAdmin,
+  async (req, res) => {
+  const { query } = req;
+  try {
+    const comprobantes = await Comprobante.find({
+      codCon : query.id_config,
+      }).sort({ nameCom: 1 });
+
+    res.json(comprobantes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+  ///////////////list
 
 comprobanteRouter.get('/', async (req, res) => {
   const { query } = req;

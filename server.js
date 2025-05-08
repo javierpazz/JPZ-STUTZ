@@ -34,7 +34,7 @@ const orderRoutesMob = require('./routes/mob/orderRoutes.js');
 
 
 dotenv.config();
-console.log("kiki");
+console.log("jpz");
 console.log(process.env.MONGODB_URI);
 console.log(`"${process.env.MONGODB_URI}"`);
 

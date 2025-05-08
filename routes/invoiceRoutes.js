@@ -2457,7 +2457,7 @@ invoiceRouter.post(
     let recAux = 0;
     if ( req.body.receiptAux.recDat && req.body.receiptAux.desVal) {
 
-      //////////  numera remito /////////////////
+      //////////  numera RECIBO /////////////////
       
       if (req.body.receiptAux.recNum > 0)
         {recNumero = req.body.receiptAux.recNum }
@@ -2470,7 +2470,7 @@ invoiceRouter.post(
           }
           recNumero = configuracion.numIntRec;
         };
-        //////////  numera remito /////////////////
+        //////////  numera RECIBO /////////////////
   
     const newReceipt = new Receipt({
       receiptItems: req.body.receiptAux.receiptItems.map((x) => ({
@@ -2500,7 +2500,8 @@ invoiceRouter.post(
     }
       //////////  GENERA RECIBO /////////////////
       //////////  MODIFICA STOCK /////////////////
-    
+      
+    if (req.body.invoiceAux.salbuy === "SALE") {
     if (req.body.invoiceAux.isHaber) {
       req.body.invoiceAux.orderItems.map(async(item) => {
         // const product = await Product.findById(productId);
@@ -2526,8 +2527,42 @@ invoiceRouter.post(
   }
       )
 
-    };
+    }
+    } else {
+
+      if (!req.body.invoiceAux.isHaber) {
+        req.body.invoiceAux.orderItems.map(async(item) => {
+          // const product = await Product.findById(productId);
+          const product = await Product.findById(item._id);
+        if (product) {
+          product.inStock = product.inStock - +item.quantity;
+          await product.save();
+      
+      }
+    }
+        )
+  
+      } else {
+  
+        req.body.invoiceAux.orderItems.map(async(item) => {
+          // const product = await Product.findById(productId);
+          const product = await Product.findById(item._id);
+        if (product) {
+          product.inStock = product.inStock + +item.quantity;
+          await product.save();
+     
+      }
+    }
+        )
+  
+      }
+  
+
+
+    }
+
     
+
     //////////  MODIFICA STOCK /////////////////
     //////////  numera factura /////////////////
       

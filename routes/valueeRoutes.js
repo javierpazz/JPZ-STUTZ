@@ -5,6 +5,27 @@ const { isAuth, isAdmin } = require ('../utils.js');
 
 const valueeRouter = express.Router();
 
+///////////////list
+valueeRouter.get(
+  '/list',
+  isAuth,
+  // isAdmin,
+  async (req, res) => {
+  const { query } = req;
+
+  try {
+    const valuees = await Valuee.find()
+      .sort({ desVal: 1 });
+
+    res.json(valuees);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+  ///////////////list
+
 valueeRouter.get('/', async (req, res) => {
   const valuees = await Valuee.find().sort({ desVal: 1 });
   res.send(valuees);

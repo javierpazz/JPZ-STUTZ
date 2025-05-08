@@ -6,6 +6,27 @@ const Receipt = require ('../models/receiptModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
 
 const supplierRouter = express.Router();
+///////////////list
+supplierRouter.get(
+  '/list',
+  isAuth,
+  // isAdmin,
+  async (req, res) => {
+  const { query } = req;
+
+  try {
+    const suppliers = await Supplier.find()
+      .sort({ name: 1 });
+
+
+    res.json(suppliers);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+  ///////////////list
 
 supplierRouter.get('/', async (req, res) => {
   const suppliers = await Supplier.find().sort({ name: 1 });

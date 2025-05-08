@@ -7,6 +7,28 @@ const { isAuth, isAdmin } = require ('../utils.js');
 
 const customerRouter = express.Router();
 
+///////////////list
+customerRouter.get('/list',
+  isAuth,
+  // isAdmin,
+  async (req, res) => {
+  const { query } = req;
+
+  try {
+    const customers = await Customer.find()
+      .sort({ nameCus: 1 });
+
+
+    res.json(customers);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+  ///////////////list
+
+
 customerRouter.get('/', async (req, res) => {
   const customers = await Customer.find().sort({ nameCus: 1 });
   res.send(customers);

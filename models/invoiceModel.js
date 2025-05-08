@@ -6,6 +6,7 @@ const orderSchema = new mongoose.Schema(
       {
         slug: { type: String },
         title: { type: String, required: true },
+        medPro: { type: String, required: true },
         quantity: { type: Number, required: true },
         image: { type: String },
         price: { type: Number, required: true },

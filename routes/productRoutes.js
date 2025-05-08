@@ -9,7 +9,11 @@ const productRouter = express.Router();
 
 
 ///////////////list
-productRouter.get('/list', async (req, res) => {
+productRouter.get(
+  '/list',
+  isAuth,
+  // isAdmin,
+  async (req, res) => {
   const { query } = req;
   const configuracion = query.configuracion || '';
 
@@ -64,6 +68,7 @@ productRouter.post(
       codPro: req.body.codPro,
       codigoPro: req.body.codigoPro,
       title: req.body.title,
+      medPro: req.body.medPro,
       slug: req.body.slug,
       price: req.body.price,
       priceBuy: req.body.priceBuy,
@@ -285,6 +290,7 @@ productRouter.put(
       product.codPro = req.body.codPro;
       product.codigoPro = req.body.codigoPro;
       product.title = req.body.title;
+      product.medPro = req.body.medPro;
       product.slug = req.body.slug;
       product.price = req.body.price;
       product.priceBuy = req.body.priceBuy,
@@ -476,7 +482,7 @@ productRouter.get('/slug/:slug', async (req, res) => {
 });
 productRouter.get('/:id', async (req, res) => {
   const product = await Product.findById(req.params.id)
-  .populate('supplier', '_id codSup name');
+  .populate('supplier', 'codSup name');
   if (product) {
     res.send(product);
   } else {

@@ -17,6 +17,7 @@ const productSchema = new mongoose.Schema(
     codPro: { type: String, required: true },
     codigoPro: { type: String, required: true },
     title: { type: String, required: true },
+    medPro: { type: String, required: true },
     slug: { type: String },
     // slug: { type: String, required: true, unique: true },
     image: { type: String },

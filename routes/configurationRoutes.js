@@ -8,6 +8,26 @@ const Product = require ('../models/productModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
 
 const configurationRouter = express.Router();
+///////////////list
+configurationRouter.get(
+  '/list',
+  isAuth,
+  // isAdmin,
+  async (req, res) => {
+  const { query } = req;
+
+  try {
+    const configurations = await Configuration.find()
+      .sort({ desVal: 1 });
+
+    res.json(configurations);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+  ///////////////list
 
 configurationRouter.get('/', async (req, res) => {
   const configurations = await Configuration.find();

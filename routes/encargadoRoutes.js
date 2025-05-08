@@ -5,7 +5,26 @@ const Receipt = require ('../models/receiptModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
 
 const encargadoRouter = express.Router();
+///////////////list
+encargadoRouter.get(
+  '/list',
+    isAuth,
+    // isAdmin,
+  async (req, res) => {
+  const { query } = req;
 
+  try {
+    const encargados = await Encargado.find()
+      .sort({ name: 1 });
+
+    res.json(encargados);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+  ///////////////list
 encargadoRouter.get('/', async (req, res) => {
   const encargados = await Encargado.find().sort({ name: 1 });
   res.send(encargados);
