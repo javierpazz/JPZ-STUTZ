@@ -25,6 +25,7 @@ productRouter.get(
       .sort({ category: 1, codPro: 1 });
 
     const result = products.map(prod => ({
+      codigoPro: prod.codigoPro,
       codPro: prod.codPro,
       title: prod.title,
       supplier: prod.supplier?.name || 'N/A',
@@ -47,7 +48,10 @@ productRouter.get(
 
 
 productRouter.get('/', async (req, res) => {
+  const { query } = req;
   const products = await Product.find().sort({ name: +1 });
+  // const products = await Product.find({id_config : query.id_config}).sort({ name: +1 });
+  // const products = await Product.find({id_config : "681d34c8515fd7d881b94460"}).sort({ name: +1 });
   res.send(products);
 });
 
@@ -122,17 +126,17 @@ productRouter.put(
     const productsFilter =
     !codProd1 && !codProd2 ? {}
   : !codProd1 && codProd2 ? {
-                codPro: {
+                codigoPro: {
                   $lte: codProd2,
                 },
               }
   : codProd1 && !codProd2 ? {
-                codPro: {
+                codigoPro: {
                   $gte: codProd1,
                 },
               }
   :                   {
-                codPro: {
+                codigoPro: {
                   $gte: codProd1,
                   $lte: codProd2,
                 },
@@ -190,17 +194,17 @@ productRouter.put(
     const productsFilter =
     !codProd1 && !codProd2 ? {}
   : !codProd1 && codProd2 ? {
-                codPro: {
+                codigoPro: {
                   $lte: codProd2,
                 },
               }
   : codProd1 && !codProd2 ? {
-                codPro: {
+                codigoPro: {
                   $gte: codProd1,
                 },
               }
   :                   {
-                codPro: {
+                codigoPro: {
                   $gte: codProd1,
                   $lte: codProd2,
                 },

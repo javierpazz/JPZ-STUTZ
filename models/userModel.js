@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
     role : {
       type: String,
       enum: {
-          values: ['admin','super-user','SEO','client'],
+          values: ['admin','user','super-user','SEO','client'],
           message: '{VALUE} no es un role válido',
           default: 'client',
           required: true

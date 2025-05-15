@@ -578,14 +578,14 @@ invoiceRouter.get(
 
 
 invoiceRouter.get(
-  '/StoAply/:userId',
+  '/StoAply/:id_client',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const invoices = await Invoice.find({
       salbuy: 'SALE',
-      recNum: null,
-      user: req.params.userId,
+      recNum: 0,
+      id_client: new ObjectId(req.params.id_client),
     }).populate('user', 'name');
     res.send(invoices);
   })
@@ -598,7 +598,7 @@ invoiceRouter.get(
   expressAsyncHandler(async (req, res) => {
     const invoices = await Invoice.find({
       salbuy: 'BUY',
-      recNum: null,
+      recNum: 0,
       supplier: req.params.suppId,
     }).populate('supplier', 'name');
     res.send(invoices);

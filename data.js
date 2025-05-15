@@ -165,7 +165,7 @@ const data = {
       image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
       isAdmin: false,
       isActive: true,
-      role: "client",
+      role: "user",
       roles: [{
         id : 1,
         name : "ADMIN",

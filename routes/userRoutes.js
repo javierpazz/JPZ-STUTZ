@@ -121,10 +121,30 @@ userRouter.delete(
   })
 );
 userRouter.post(
+  '/signinadmin',
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findOne({ email: req.body.email });
+    if (user && user.isActive && user.role !== "client") {
+      if (bcrypt.compareSync(req.body.password, user.password)) {
+        res.send({
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          isAdmin: user.isAdmin,
+          role: user.role,
+          token: generateToken(user),
+        });
+        return;
+      }
+    }
+    res.status(401).send({ message: 'Invalid email or password' });
+  })
+);
+userRouter.post(
   '/signin',
   expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
-    if (user && user.isActive) {
+    if (user && user.isActive && user.role == "client") {
       if (bcrypt.compareSync(req.body.password, user.password)) {
         res.send({
           _id: user._id,
