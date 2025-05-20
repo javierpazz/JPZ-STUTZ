@@ -102,7 +102,7 @@ invoiceRouter.get(
         salbuy: 'SALE', invNum: {$gt : 0} })
       .populate('id_client', 'nameCus')
       .populate('supplier', 'name')
-      .populate('codCom', 'nameCom')
+      .populate('codCom', 'nameCom interno')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
@@ -584,6 +584,7 @@ invoiceRouter.get(
   expressAsyncHandler(async (req, res) => {
     const invoices = await Invoice.find({
       salbuy: 'SALE',
+      invNum: {$gt: 0},
       recNum: 0,
       id_client: new ObjectId(req.params.id_client),
     }).populate('user', 'name');
@@ -598,6 +599,7 @@ invoiceRouter.get(
   expressAsyncHandler(async (req, res) => {
     const invoices = await Invoice.find({
       salbuy: 'BUY',
+      invNum: {$gt: 0},
       recNum: 0,
       supplier: req.params.suppId,
     }).populate('supplier', 'name');
@@ -2448,6 +2450,195 @@ const PAGE_SIZE = 10;
 // );
 // ///////////////////////movim
 
+//////////////GENERA FACTURA DESDE  REMITO ////////////////
+
+invoiceRouter.put(
+  '/gen/:id',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    //////////  GENERA RECIBO /////////////////
+      console.log(req.body.receiptAux.codCon)
+    let recAux = 0;
+    if ( req.body.receiptAux.recDat && req.body.receiptAux.desVal) {
+
+      //////////  numera RECIBO /////////////////
+      if (req.body.receiptAux.recNum > 0)
+        {recNumero = req.body.receiptAux.recNum }
+        else {
+          const configId = req.body.receiptAux.codCon;
+          const configuracion = await Configuration.findById(configId);
+          if (configuracion) {
+            configuracion.numIntRec = configuracion.numIntRec + 1;
+            await configuracion.save();
+          }
+          recNumero = configuracion.numIntRec;
+        };
+        //////////  numera RECIBO /////////////////
+  console.log(req.body.receiptAux.receiptItems)
+    const newReceipt = new Receipt({
+      receiptItems: req.body.receiptAux.receiptItems.map((x) => ({
+        ...x,
+        valuee: x._id,
+      })),
+      subTotal: req.body.receiptAux.subTotal,
+      total: req.body.receiptAux.total,
+      totalBuy: req.body.receiptAux.totalBuy,
+      // user: req.body.receiptAux.codUse,
+      user: req.body.receiptAux.user,
+      id_client: req.body.receiptAux.codCus,
+      id_config: req.body.receiptAux.codCon,
+      codConNum: req.body.receiptAux.codConNum,
+      supplier: req.body.receiptAux.codSup,
+      //////////  numera recibo /////////////////
+      recNum: recNumero,
+      //////////  numera recibo /////////////////
+      recDat: req.body.receiptAux.recDat,
+      desVal: req.body.receiptAux.desVal,
+      notes: req.body.receiptAux.notes,
+      salbuy: req.body.receiptAux.salbuy,
+    });
+    const receipt = await newReceipt.save();
+    recAux = receipt.recNum;
+    console.log(recAux);
+    }
+      //////////  GENERA RECIBO /////////////////
+  //     //////////  MODIFICA STOCK /////////////////
+      
+  //   if (req.body.invoiceAux.salbuy === "SALE") {
+  //   if (req.body.invoiceAux.isHaber) {
+  //     req.body.invoiceAux.orderItems.map(async(item) => {
+  //       // const product = await Product.findById(productId);
+  //       const product = await Product.findById(item._id);
+  //     if (product) {
+  //       product.inStock = product.inStock - +item.quantity;
+  //       await product.save();
+    
+  //   }
+  // }
+  //     )
+
+  //   } else {
+
+  //     req.body.invoiceAux.orderItems.map(async(item) => {
+  //       // const product = await Product.findById(productId);
+  //       const product = await Product.findById(item._id);
+  //     if (product) {
+  //       product.inStock = product.inStock + +item.quantity;
+  //       await product.save();
+   
+  //   }
+  // }
+  //     )
+
+  //   }
+  //   } else {
+
+  //     if (!req.body.invoiceAux.isHaber) {
+  //       req.body.invoiceAux.orderItems.map(async(item) => {
+  //         // const product = await Product.findById(productId);
+  //         const product = await Product.findById(item._id);
+  //       if (product) {
+  //         product.inStock = product.inStock - +item.quantity;
+  //         await product.save();
+      
+  //     }
+  //   }
+  //       )
+  
+  //     } else {
+  
+  //       req.body.invoiceAux.orderItems.map(async(item) => {
+  //         // const product = await Product.findById(productId);
+  //         const product = await Product.findById(item._id);
+  //       if (product) {
+  //         product.inStock = product.inStock + +item.quantity;
+  //         await product.save();
+     
+  //     }
+  //   }
+  //       )
+  
+  //     }
+  
+
+
+  //   }
+
+    
+
+  //   //////////  MODIFICA STOCK /////////////////
+        //////////  numera factura /////////////////
+      
+        if (req.body.invoiceAux.invNum > 0)
+          {invNumero = req.body.invoiceAux.invNum }
+          else {
+            const comproId = req.body.invoiceAux.codCom;
+            const comprobante = await Comprobante.findById(comproId);
+            if (comprobante) {
+              comprobante.numInt = comprobante.numInt + 1;
+              await comprobante.save();
+            }
+            invNumero = comprobante.numInt;
+          };
+        //////////  numera factura /////////////////
+
+      //   //////////  numera remito /////////////////
+      //   if (req.body.invoiceAux.salbuy === "BUY") {
+      //   remNumero = req.body.invoiceAux.remNum;
+      //   }else {
+      //   remNumero = 0;          
+      //   if (req.body.invoiceAux.geRem) {
+
+      //     if (req.body.invoiceAux.remNum > 0)
+      //       {remNumero = req.body.invoiceAux.remNum }
+      //       else {
+      //         const configId = req.body.invoiceAux.codCon;
+      //         const configuracion = await Configuration.findById(configId);
+      //         if (configuracion) {
+      //           configuracion.numIntRem = configuracion.numIntRem + 1;
+      //           await configuracion.save();
+      //         }
+      //         remNumero = configuracion.numIntRem;
+      //       };
+      //   };
+      // };
+
+      //     //////////  numera remito /////////////////
+
+        
+        if (recAux > 0) {
+          invrecNum = recAux;
+          invrecDat =  req.body.invoiceAux.invDat;
+          }else{
+            invrecNum = recAux;
+            invrecDat =  req.body.invoiceAux.recDat;
+          };
+
+    const invoiceAux = await Invoice.findById(req.params.id);
+       console.log(req.params.id);
+          if (invoiceAux) {
+                //////////  numera factura /////////////////
+                invoiceAux.invNum = invNumero;
+                //////////  numera factura /////////////////
+                invoiceAux.codCom = req.body.invoiceAux.codCom;
+                invoiceAux.invDat = req.body.invoiceAux.invDat;
+                invoiceAux.salbuy = req.body.invoiceAux.salbuy;
+                // //////////  Me fijo si es Compra o venta para ver haber o debe /////////////////
+                invoiceAux.isHaber = (req.body.invoiceAux.salbuy === "SALE") ? req.body.invoiceAux.isHaber : !req.body.invoiceAux.isHaber;
+                // //////////  Me fijo si es Compra o venta para ver haber o debe /////////////////
+            const invoice = await invoiceAux.save();
+            res.send(invoice);
+          } else {
+            res.status(404).send({ message: 'No se Genero la Factura' });
+          }
+      })
+    );
+
+//////////////GENERA FACTURA DESDE  REMITO ////////////////
+
+
+
+
 invoiceRouter.post(
   '/',
   isAuth,
@@ -2486,9 +2677,9 @@ invoiceRouter.post(
       id_config: req.body.receiptAux.codCon,
       codConNum: req.body.receiptAux.codConNum,
       supplier: req.body.receiptAux.codSup,
-      //////////  numera remito /////////////////
+      //////////  numera recibo /////////////////
       recNum: recNumero,
-      //////////  numera remito /////////////////
+      //////////  numera recibo /////////////////
       recDat: req.body.receiptAux.recDat,
       desVal: req.body.receiptAux.desVal,
       notes: req.body.receiptAux.notes,
@@ -2497,7 +2688,10 @@ invoiceRouter.post(
     const receipt = await newReceipt.save();
     recAux = receipt.recNum;
     console.log(recAux);
-    }
+  }else{
+    recAux = 0;  
+    recDat = null;
+  }
       //////////  GENERA RECIBO /////////////////
       //////////  MODIFICA STOCK /////////////////
       
@@ -2580,6 +2774,9 @@ invoiceRouter.post(
         //////////  numera factura /////////////////
 
         //////////  numera remito /////////////////
+        if (req.body.invoiceAux.salbuy === "BUY") {
+        remNumero = req.body.invoiceAux.remNum;
+        }else {
         remNumero = 0;          
         if (req.body.invoiceAux.geRem) {
 
@@ -2594,8 +2791,8 @@ invoiceRouter.post(
               }
               remNumero = configuracion.numIntRem;
             };
-        }
-
+        };
+      };
 
           //////////  numera remito /////////////////
 
@@ -2818,7 +3015,7 @@ invoiceRouter.get(
     const invoice = await Invoice.findById(req.params.id)
     .populate('id_client', 'codCus nameCus domcomer cuit coniva')
     .populate('supplier', 'codSup name domcomer cuit coniva')
-    .populate('codCom', 'codCom nameCom noDisc toDisc itDisc')
+    .populate('codCom', 'codCom nameCom noDisc toDisc itDisc interno')
     .populate('id_config2', 'name domcomer cuit coniva ib feciniact');
     if (invoice) {
       res.send(invoice);
@@ -2865,6 +3062,22 @@ invoiceRouter.put(
       res.send({ message: 'Remit Invoice Number Changed successfully' });
     } else {
       res.status(404).send({ message: 'Invoice Not Found' });
+    }
+  })
+);
+
+invoiceRouter.put(
+  '/:id/deleteremit',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const invoice = await Invoice.findById(req.params.id);
+    //    console.log(req.body.recNum);
+    if (invoice) {
+      (invoice.remNum = null),
+        await invoice.save();
+      res.send({ message: 'Remito Borrado' });
+    } else {
+      res.status(404).send({ message: 'Remito Not Found' });
     }
   })
 );
@@ -2920,7 +3133,7 @@ invoiceRouter.put(
   '/:id/unapplyrecS',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    await Invoice.updateMany({ recNum: req.body.recNum, id_client: req.body.customer }, { $set: { recNum: null }}) 
+    await Invoice.updateMany({ recNum: req.body.recNum, id_client: req.body.customer }, { $set: { recNum: 0, recDat: "", desVal: "" }}) 
     
     // const invoice = await Invoice.find({recNum: req.params.id });
     // //    console.log(req.body.recNum);
@@ -2939,7 +3152,7 @@ invoiceRouter.put(
   '/:id/unapplyrecB',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    await Invoice.updateMany({ recNum: req.body.recNum, supplier: req.body.supplier }, { $set: { recNum: null }}) 
+    await Invoice.updateMany({ recNum: req.body.recNum, supplier: req.body.supplier }, { $set: { recNum: 0, recDat: "", desVal: "" }}) 
     
     // const invoice = await Invoice.find({recNum: req.params.id });
     // //    console.log(req.body.recNum);
@@ -2956,6 +3169,40 @@ invoiceRouter.put(
 
 
 //di
+
+invoiceRouter.put(
+  '/generaremito/:id',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+console.log("gerena");
+        //////////  numera remito /////////////////
+        remNumero = 0;          
+              const configId = req.body.id_config;
+              const configuracion = await Configuration.findById(configId);
+              if (configuracion) {
+                configuracion.numIntRem = configuracion.numIntRem + 1;
+                await configuracion.save();
+              }
+              remNumero = configuracion.numIntRem;
+          //////////  numera remito /////////////////
+
+
+
+    const invoice = await Invoice.findById(req.params.id);
+    //    console.log(req.body.recNum);
+    if (invoice) {
+      //////////  numera remito /////////////////
+      invoice.remNum = remNumero,
+      //////////  numera remito /////////////////
+      await invoice.save();
+      res.send({ message: 'Remito Generado' });
+    } else {
+      res.status(404).send({ message: 'Invoice Not Found' });
+    }
+  })
+);
+
+
 
 invoiceRouter.put(
   '/:id/applyrec',

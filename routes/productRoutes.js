@@ -111,7 +111,7 @@ productRouter.post(
 
 productRouter.put(
   '/aumpre',
-  // isAuth,
+  isAuth,
   // isAdmin,
   expressAsyncHandler(async (req, res) => {
   
@@ -181,7 +181,7 @@ productRouter.put(
 
 productRouter.put(
   '/dispre',
-  // isAuth,
+  isAuth,
   // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const porcen = req.query.porcen || '';
