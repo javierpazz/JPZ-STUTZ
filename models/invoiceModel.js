@@ -29,6 +29,7 @@ const orderSchema = new mongoose.Schema(
       postalCode: { type: String },
       zip       : { type: String },
       country: { type: String },
+      cuit: { type: String },
       phone     : { type: String },
       location: {
         lat: Number,

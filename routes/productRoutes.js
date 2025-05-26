@@ -49,9 +49,8 @@ productRouter.get(
 
 productRouter.get('/', async (req, res) => {
   const { query } = req;
-  const products = await Product.find().sort({ name: +1 });
-  // const products = await Product.find({id_config : query.id_config}).sort({ name: +1 });
-  // const products = await Product.find({id_config : "681d34c8515fd7d881b94460"}).sort({ name: +1 });
+  // const products = await Product.find().sort({ name: +1 });
+  const products = await Product.find({id_config : query.id_config}).sort({ name: +1 });
   res.send(products);
 });
 
@@ -400,6 +399,7 @@ productRouter.get(
     const price = query.price || '';
     const rating = query.rating || '';
     const order = query.order || '';
+    const configuration = query.id_config || '';
     const searchQuery = query.query || '';
 
     const queryFilter =
@@ -420,6 +420,14 @@ productRouter.get(
             },
           }
         : {};
+
+    const configuracionFilter =
+      configuration && configuration !== 'all'
+        ? {
+          id_config : configuration
+        }
+        : {};
+
     const priceFilter =
       price && price !== 'all'
         ? {
@@ -446,6 +454,7 @@ productRouter.get(
     const products = await Product.find({
       ...queryFilter,
       ...categoryFilter,
+      ...configuracionFilter,
       ...priceFilter,
       ...ratingFilter,
     })
@@ -456,6 +465,7 @@ productRouter.get(
     const countProducts = await Product.countDocuments({
       ...queryFilter,
       ...categoryFilter,
+      ...configuracionFilter,
       ...priceFilter,
       ...ratingFilter,
     });

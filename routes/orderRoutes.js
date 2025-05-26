@@ -51,6 +51,15 @@ orderRouter.post(
   '/',
   isAuth,
   expressAsyncHandler(async (req, res) => {
+    console.log(req.user)
+
+    const custom = await Customer.findOne({ emailCus: req.user.email });
+    custom.cuit = req.body.shippingAddress.cuit;
+    await custom.save();
+
+
+
+    
     const newOrder = new Invoice({
       orderItems: req.body.orderItems.map((x) => ({
         ...x,
@@ -64,12 +73,18 @@ orderRouter.post(
       tax: req.body.tax,
       total: req.body.total,
       user: req.user._id,
+      id_client: custom._id,
+      id_config: req.body.id_config,
+      codConNum: req.body.codConNum,
+      // invNum: 23456,
+      // invDat: new Date(),
+      salbuy: "SALE",
       ordYes: req.body.ordYes,
       staOrd: req.body.staOrd,
     });
 
     const order = await newOrder.save();
-    res.status(201).send({ message: 'New Order Created', order });
+    res.status(201).send({ message: ' Orden Creada', order });
   })
 );
 
@@ -368,10 +383,10 @@ orderRouter.get(
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
 
-    const orders = await Invoice.find({ user: req.user._id })
+    const orders = await Invoice.find({ user: req.user._id, ordYes: 'Y' })
       .skip(pageSize * (page - 1))
       .limit(pageSize);
-    const countOrders = await Invoice.countDocuments();
+    const countOrders = await Invoice.countDocuments({ user: req.user._id, ordYes: 'Y' });
 
     res.send({
       orders,
@@ -466,9 +481,9 @@ orderRouter.delete(
     const order = await Invoice.findById(req.params.id);
     if (order) {
       await order.remove();
-      res.send({ message: 'Order Deleted' });
+      res.send({ message: 'Orden Eliminada' });
     } else {
-      res.status(404).send({ message: 'Order Not Found' });
+      res.status(404).send({ message: 'Orden No Encontrada' });
     }
   })
 );
