@@ -68,13 +68,23 @@ const data = {
           },
     ],
 
+  instrumento: [
+      {
+        codIns: '1',
+        name: 'ESCRITURA',
+        },
+        {
+          codIns: '2',
+          name: 'BOLETO',
+          },
+    ],
 
 
   configuration: [
       {
         codCon: '0001',
-        name: 'STUTZ WINES',
-        domcomer: 'DIRECCION STUTZ WINES',
+        name: 'PIA STUTZ',
+        domcomer: 'DIRECCION PIA STUTZ',
         cuit: '20-20202020-2',
         coniva: 'RESP. INSCRIPTO',
         ib: '87654321',
@@ -86,21 +96,8 @@ const data = {
       },
       {
         codCon: '0002',
-        name: 'FARMACIA',
-        domcomer: 'DIRECCION FARMACIA',
-        cuit: '20-20202020-2',
-        coniva: 'RESP. INSCRIPTO',
-        ib: '87654321',
-        feciniact: '12/07/2021',
-        numIntRem: 0,
-        numIntRec: 0,
-        numIntCaj: 0,
-        numIntMov: 0,
-      },
-      {
-        codCon: '0003',
-        name: 'SUPER MAYO',
-        domcomer: 'DIRECCION SUPER MAYO',
+        name: 'FELIZA NANNI',
+        domcomer: 'DIRECCION FELIZA NANNI',
         cuit: '20-20202020-2',
         coniva: 'RESP. INSCRIPTO',
         ib: '87654321',

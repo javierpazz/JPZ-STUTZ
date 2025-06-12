@@ -28,6 +28,7 @@ const crearUsuario = async(req, res = response ) => {
     newUser = new User({
         name: req.body.name,
         email: email.toLocaleLowerCase(),
+        isAdmin: false,
         password: bcrypt.hashSync(password),
         role:'client',
     });
@@ -37,17 +38,20 @@ const crearUsuario = async(req, res = response ) => {
 
         // await newUser.save();
         await newUser.save({validateBeforeSave: true});
+        console.log(newUser);
 
         // Generar JWT
-        const token = await generarJWT( newUser.id, newUser.email );
+        const token = await generarJWT( newUser._id, newUser.name, newUser.email, newUser.isAdmin, newUser.role );
 
-        const {role, name} = newUser;
+        const {role, name, _id, isAdmin, isActive} = newUser;
 
 
         res.status(200).json({
             token,
             user: {email,
                    role,
+                   isAdmin,
+                   isActive,
                    name
                 }
         })
@@ -89,15 +93,17 @@ const loginUsuario = async(req, res = response ) => {
         }
 
         // Generar JWT
-        const token = await generarJWT( usuario.id, usuario.email );
-
-        const {role, name, _id} = usuario;
+        const token = await generarJWT( usuario._id, usuario.name, usuario.email, usuario.isAdmin, usuario.role );
+        
+        const {role, name, _id, isAdmin, isActive} = usuario;
 
         res.json({
             token,
             user: {_id,
                 email,
                 role,
+                isAdmin,
+                isActive,
                 name
              }
      })
@@ -122,9 +128,11 @@ const revalidarToken = async (req, res = response ) => {
     const { uid, email } = req;
 
     // Generar JWT
-    const token = await generarJWT( uid, email );
-
+    
     const usuario = await User.findOne({ email });
+
+    // const token = await generarJWT( uid, email );
+    const token = await generarJWT( usuario._id, usuario.name, usuario.email, usuario.isAdmin, usuario.role );
 
     if ( !usuario ) {
         return res.status(400).json({
@@ -133,13 +141,15 @@ const revalidarToken = async (req, res = response ) => {
         });
     }
 
-    const {role, name, _id} = usuario;
+    const {role, name, _id, isAdmin, isActive} = usuario;
 
         res.json({
             token,
             user: {_id,
                 email,
                 role,
+                isAdmin,
+                isActive,
                 name
              }
      })

@@ -317,6 +317,196 @@ invoiceRouter.get(
     });
   })
 );
+
+/////////////////prosup
+invoiceRouter.get(
+  '/pruebaki',
+
+  isAuth,
+  // isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const factura = 'SALE';
+
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const supplier = query.supplier || '';
+    const producto = query.producto || '';
+    const order = query.order || '';
+
+
+    const fechasFilter =
+    !fech1 && !fech2 ? {}
+  : !fech1 && fech2 ? {
+                invDat: {
+                  $lte: fech2,
+                },
+              }
+  : fech1 && !fech2 ? {
+                invDat: {
+                  $gte: fech1,
+                },
+              }
+  :                   {
+                invDat: {
+                  $gte: fech1,
+                  $lte: fech2,
+                },
+              };
+
+
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: new ObjectId(configuracion)
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: new ObjectId(usuario)
+          }
+        : {};
+    const supplierFilter =
+      supplier && supplier !== 'all'
+        ? {
+          id_client: new ObjectId(supplier)
+          }
+        : {};
+    const productoFilter =
+      producto && producto !== 'all'
+        ? {
+          // orderItems._id: new ObjectId(producto)
+          }
+        : {};
+  
+    const invoices = await Invoice.aggregate([
+      {
+        $match: {
+          $and: [
+            // fechasFilter,
+            // usuarioFilter,
+            // supplierFilter,
+            // configuracionFilter,
+            { salbuy: factura },
+            ],
+        },
+      },
+
+      { $unwind: '$orderItems' },
+    ]);
+
+    res.send({
+      invoices,
+    });
+
+//////ffffffffffffffffffffff
+  })
+);
+/////////////////prosup
+
+
+
+
+invoiceRouter.get(
+  '/searchremSEsc',
+  isAuth,
+  // isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const customer = query.customer || '';
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    remDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    remDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    remDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
+
+
+
+     const customerFilter =
+      customer && customer !== 'all'
+        ? {
+          id_client: customer
+          }
+        : {};
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+    const sortOrder =
+      order === 'featured'
+        ? { featured: -1 }
+        : order === 'mayimporte'
+        ? { total: -1 }
+        : order === 'menimporte'
+        ? { total: 1 }
+        : order === 'newest'
+        ? { createdAt: -1 }
+        : { createdAt: 1 };
+
+    const invoices = await Invoice.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...customerFilter,
+       ...usuarioFilter,
+        salbuy: 'SALE', remNum: {$gt : 0} })
+      .populate('id_client', 'nameCus')
+      .populate('id_instru', 'name')
+      .populate('supplier', 'name')
+      .sort(sortOrder)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+
+    const countInvoices = await Invoice.countDocuments({ 
+      ...fechasFilter,
+      ...configuracionFilter,
+      ...customerFilter,
+      ...usuarioFilter,
+       salbuy: 'SALE', remNum: {$gt : 0} });
+    res.send({
+      invoices,
+      countInvoices,
+      page,
+      pages: Math.ceil(countInvoices / pageSize),
+    });
+  })
+);
+
+
 invoiceRouter.get(
   '/searchremB',
   isAuth,
@@ -2846,12 +3036,140 @@ invoiceRouter.post(
         res.status(201).send({ message: 'New Invoice Created', invoice });
       })
     );
+
+invoiceRouter.put(
+  '/remModEsc/:id',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+console.log(req.body)
+    const invoice = await Invoice.findById(req.params.id);
+    if (invoice) {
+  
+      invoice.shippingAddress= req.body.shippingAddress,
+      invoice.orderItems= req.body.orderItems,
+      invoice.paymentMethod= req.body.paymentMethod,
+      invoice.subTotal= req.body.subTotal,
+      invoice.shippingPrice= req.body.shippingPrice,
+      invoice.tax= req.body.tax,
+      invoice.total= req.body.total,
+      invoice.totalBuy= req.body.totalBuy,
+      invoice.user= req.body.codUse,
+      invoice.id_client= req.body.codCus,
+      invoice.id_instru= req.body.codIns,
+      invoice.codIns= req.body.id_instru,
+      invoice.libNum = req.body.libNum,
+      invoice.folNum = req.body.folNum,
+      invoice.asiNum = req.body.asiNum,
+      invoice.asiDat = req.body.asiDat,
+      invoice.escNum = req.body.escNum,
+      invoice.asieNum = req.body.asieNum,
+      invoice.asieDat = req.body.asieDat,
+      invoice.terminado = req.body.terminado,
+      invoice.id_config= req.body.codCon,
+      invoice.user= req.body.user,
+      invoice.id_config2= req.body.codCon2,
+      invoice.movpvNum= req.body.movpvNum,
+      invoice.movpvDat= req.body.movpvDat,
+      invoice.codConNum= req.body.codConNum,
+      invoice.codCom= req.body.codCom,
+      invoice.supplier= req.body.codSup,
+      invoice.remNum= req.body.remNum,
+      invoice.remDat= req.body.remDat,
+      invoice.dueDat= req.body.dueDat,
+      invoice.invNum= req.body.invNum,
+      invoice.invDat= req.body.invDat,
+      invoice.recNum= req.body.recNum,
+      invoice.recDat= req.body.recDat,
+      invoice.desVal= req.body.desVal,
+      invoice.notes= req.body.notes,
+      invoice.salbuy= req.body.salbuy,
+     
+
+      await invoice.save();
+      res.send({ message: 'Entrada Modificada' });
+    } else {
+      res.status(404).send({ message: 'Entrada Not Found' });
+    }
+  })
+);
+
     
+
+
+    invoiceRouter.post(
+      '/remEsc/',
+      isAuth,
+  expressAsyncHandler(async (req, res) => {
+    //////////  numera remito /////////////////
+      
+      if (req.body.remNum > 0)
+      {remNumero = req.body.remNum }
+      else {
+        const configId = req.body.codCon;
+        const configuracion = await Configuration.findById(configId);
+        if (configuracion) {
+          configuracion.numIntRem = configuracion.numIntRem + 1;
+          await configuracion.save();
+        }
+        remNumero = configuracion.numIntRem;
+      };
+      //////////  numera remito /////////////////
+
+    const newInvoice = new Invoice({
+      orderItems: req.body.orderItems.map((x) => ({
+        ...x,
+        product: x._id,
+      })),
+      shippingAddress: req.body.shippingAddress,
+      paymentMethod: req.body.paymentMethod,
+      subTotal: req.body.subTotal,
+      shippingPrice: req.body.shippingPrice,
+      tax: req.body.tax,
+      total: req.body.total,
+      totalBuy: req.body.totalBuy,
+      user: req.body.codUse,
+      id_client: req.body.codCus,
+        id_instru: req.body.codIns,
+              codIns: req.body.id_instru,
+              libNum : req.body.libNum,
+              folNum : req.body.folNum,
+              asiNum : req.body.asiNum,
+              asiDat : req.body.asiDat,
+              escNum : req.body.escNum,
+              asieNum : req.body.asieNum,
+              asieDat : req.body.asieDat,
+              terminado : req.body.terminado,
+      id_config: req.body.codCon,
+      user: req.body.user,
+      id_config2: req.body.codCon2,
+      movpvNum: req.body.movpvNum,
+      movpvDat: req.body.movpvDat,
+      codConNum: req.body.codConNum,
+      codCom: req.body.codCom,
+      supplier: req.body.codSup,
+      //////////  numera remito /////////////////
+      remNum: remNumero,
+      //////////  numera remito /////////////////
+      remDat: req.body.remDat,
+      dueDat: req.body.dueDat,
+      invNum: req.body.invNum,
+      invDat: req.body.invDat,
+      recNum: req.body.recNum,
+      recDat: req.body.recDat,
+      desVal: req.body.desVal,
+      notes: req.body.notes,
+      salbuy: req.body.salbuy,
+    });
+    const invoice = await newInvoice.save();
+    res.status(201).send({ message: 'New Invoice Created', invoice });
+  })
+);
+
+
     invoiceRouter.post(
       '/rem/',
       isAuth,
   expressAsyncHandler(async (req, res) => {
-
     //////////  numera remito /////////////////
       
       if (req.body.remNum > 0)
@@ -2893,6 +3211,7 @@ invoiceRouter.post(
       remNum: remNumero,
       //////////  numera remito /////////////////
       remDat: req.body.remDat,
+      dueDat: req.body.dueDat,
       invNum: req.body.invNum,
       invDat: req.body.invDat,
       recNum: req.body.recNum,
@@ -2905,6 +3224,8 @@ invoiceRouter.post(
     res.status(201).send({ message: 'New Invoice Created', invoice });
   })
 );
+
+
 
 invoiceRouter.post(
   '/mov/',

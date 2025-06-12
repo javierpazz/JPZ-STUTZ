@@ -21,7 +21,11 @@ const getOrderById = async( req, res = response ) => {
     //     return null;
     // }
 
-    const order = await Order.findById( id ).lean();
+    const order = await Order.findById( id )
+      .populate('id_client', 'nameCus codCus')
+      .populate('id_instru', 'name codIns')
+      .populate('supplier', 'name')
+      .lean();
  
     if ( !order ) {
         return null;
@@ -78,9 +82,10 @@ try {
         return (currentPrice * current.quantity) + prev
     }, 0 );
 
-
-    const taxRate = 0.10 ;
-    const backendTotal = subTotal * ( taxRate + 1 );
+    // const taxRate = 0.10 ;
+    const taxRate = orderItems.reduce( ( prev, current ) => (current.price * current.quantity * (current.porIva/100)) + prev, 0 );
+    // const backendTotal = subTotal * ( taxRate + 1 );
+    const backendTotal = subTotal + taxRate ;
 
     if ( total !== backendTotal ) {
         throw new Error('El total no cuadra con el monto');

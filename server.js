@@ -76,6 +76,7 @@ app.use('/api/tes/user', require('./routes/tes/auth') );
 app.use('/api/tes/admin', require('./routes/tes/admadmin') );
 app.use('/api/tes/admin/users', require('./routes/tes/admusers') );
 app.use('/api/tes/admin/products', require('./routes/tes/admproducts') );
+app.use('/api/tes/admin/instrumentos', require('./routes/tes/adminstrumentos') );
 app.use('/api/tes/admin/upload', uploadRouter);
 // app.use('/api/admin/upload', require('./tes/routes/admproductsupload') );
 app.use('/api/tes/admin/orders', require('./routes/tes/admorders') );
