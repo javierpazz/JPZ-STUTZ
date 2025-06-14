@@ -25,6 +25,21 @@ const getInstrumentosBySlug = async( req, res = response ) => {
 
 
 }
+const getInstrumentosById = async( req, res = response ) => {
+    const { id } = req.params;
+    console.log(req.params)
+    const instrumento = await Instrumento.findById(id).lean();
+ 
+    if( !instrumento ) {
+        return res.status(404).json({
+            message: 'Instrumento no encontrado'
+        })
+    }
+
+    return res.json( instrumento );
+
+
+}
 
 
 const updateInstrumento = async(req, res) =>  {
@@ -85,6 +100,7 @@ const createInstrumento = async(req, res) => {
 module.exports = {
     getInstrumentos,
     getInstrumentosBySlug,
+    getInstrumentosById,
     updateInstrumento,
     createInstrumento
 }

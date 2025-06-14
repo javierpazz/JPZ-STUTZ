@@ -8,7 +8,7 @@ const { check } = require('express-validator');
 const { isDate } = require('../../tes/helpers/isDate');
 const { validarCampos } = require('../../tes/middlewares/validar-campos');
 const { validarJWT } = require('../../tes/middlewares/validar-jwt');
-const { getInstrumentos, updateInstrumento, createInstrumento, getInstrumentosBySlug } = require('../../controllers/tes/adminstrumentos');
+const { getInstrumentos, updateInstrumento, createInstrumento, getInstrumentosBySlug, getInstrumentosById } = require('../../controllers/tes/adminstrumentos');
 
 const router = Router();
 
@@ -20,7 +20,7 @@ router.use( validarJWT );
 router.get('/', getInstrumentos );
 
 // Obtener productos by slug
-router.get('/:name', getInstrumentosBySlug );
+router.get('/:id', getInstrumentosById );
 
 
 // Actualizar User

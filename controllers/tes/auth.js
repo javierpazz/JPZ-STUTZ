@@ -48,7 +48,8 @@ const crearUsuario = async(req, res = response ) => {
 
         res.status(200).json({
             token,
-            user: {email,
+            user: {_id,
+                   email,
                    role,
                    isAdmin,
                    isActive,

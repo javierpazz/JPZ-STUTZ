@@ -320,13 +320,12 @@ invoiceRouter.get(
 
 /////////////////prosup
 invoiceRouter.get(
-  '/pruebaki',
+  '/diligencias',
 
   isAuth,
   // isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
-    const factura = 'SALE';
 
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
@@ -388,17 +387,63 @@ invoiceRouter.get(
       {
         $match: {
           $and: [
-            // fechasFilter,
-            // usuarioFilter,
-            // supplierFilter,
-            // configuracionFilter,
-            { salbuy: factura },
+            fechasFilter,
+            usuarioFilter,
+            supplierFilter,
+            configuracionFilter,
+            { "id_instru": { "$exists": true } },
             ],
         },
       },
 
       { $unwind: '$orderItems' },
-    ]);
+      {
+        $lookup: {
+          from: 'instrumentos', // nombre de la colección (atención a las minúsculas/plural)
+          localField: 'id_instru',
+          foreignField: '_id',
+          as: 'instruDetails',
+        },
+      },
+      {
+          $unwind: {
+            path: '$instruDetails',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+
+        {
+          $addFields: {
+            instruName: '$instruDetails.name',
+          },
+        },
+        {
+          $unset: 'instruDetails',
+        },
+      {
+        $lookup: {
+          from: 'customers', // nombre de la colección (atención a las minúsculas/plural)
+          localField: 'id_client',
+          foreignField: '_id',
+          as: 'custoDetails',
+        },
+      },
+      {
+          $unwind: {
+            path: '$custoDetails',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+
+        {
+          $addFields: {
+            customName: '$custoDetails.nameCus',
+          },
+        },
+        {
+          $unset: 'custoDetails',
+        },
+      ]);
 
     res.send({
       invoices,
@@ -468,40 +513,176 @@ invoiceRouter.get(
         : {};
   
     const sortOrder =
-      order === 'featured'
-        ? { featured: -1 }
-        : order === 'mayimporte'
-        ? { total: -1 }
-        : order === 'menimporte'
-        ? { total: 1 }
-        : order === 'newest'
-        ? { createdAt: -1 }
-        : { createdAt: 1 };
+         { remDat: -1 }
+
+    const existeIns =
+          { "id_instru": { "$exists": true } }
 
     const invoices = await Invoice.find({
       ...fechasFilter,
       ...configuracionFilter,
        ...customerFilter,
        ...usuarioFilter,
-        salbuy: 'SALE', remNum: {$gt : 0} })
+       ...existeIns})
       .populate('id_client', 'nameCus')
       .populate('id_instru', 'name')
       .populate('supplier', 'name')
       .sort(sortOrder)
-      .skip(pageSize * (page - 1))
-      .limit(pageSize);
 
-    const countInvoices = await Invoice.countDocuments({ 
-      ...fechasFilter,
-      ...configuracionFilter,
-      ...customerFilter,
-      ...usuarioFilter,
-       salbuy: 'SALE', remNum: {$gt : 0} });
     res.send({
       invoices,
-      countInvoices,
-      page,
-      pages: Math.ceil(countInvoices / pageSize),
+    });
+  })
+);
+
+invoiceRouter.get(
+  '/searchremSEscRST',
+  isAuth,
+  // isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const customer = query.customer || '';
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    remDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    remDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    remDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
+
+
+
+     const customerFilter =
+      customer && customer !== 'all'
+        ? {
+          id_client: customer
+          }
+        : {};
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+    const sortOrder =
+         { dueDat: 1 }
+
+
+    const invoices = await Invoice.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...customerFilter,
+       ...usuarioFilter,
+        libNum: {$gt : 0}, terminado : false })
+      .populate('id_client', 'nameCus')
+      .populate('id_instru', 'name')
+      .populate('supplier', 'name')
+      .sort(sortOrder)
+
+    res.send({
+      invoices,
+    });
+  })
+);
+
+invoiceRouter.get(
+  '/searchremSEscPST',
+  isAuth,
+  // isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const customer = query.customer || '';
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    remDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    remDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    remDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
+
+
+
+     const customerFilter =
+      customer && customer !== 'all'
+        ? {
+          id_client: customer
+          }
+        : {};
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+    const sortOrder =
+         { dueDat: 1 }
+
+
+    const invoices = await Invoice.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...customerFilter,
+       ...usuarioFilter,
+        asiNum: {$gt : 0}, terminado : false })
+      .populate('id_client', 'nameCus')
+      .populate('id_instru', 'name')
+      .populate('supplier', 'name')
+      .sort(sortOrder)
+
+    res.send({
+      invoices,
     });
   })
 );
@@ -3073,7 +3254,7 @@ console.log(req.body)
       invoice.codConNum= req.body.codConNum,
       invoice.codCom= req.body.codCom,
       invoice.supplier= req.body.codSup,
-      invoice.remNum= req.body.remNum,
+      // invoice.remNum= req.body.remNum,
       invoice.remDat= req.body.remDat,
       invoice.dueDat= req.body.dueDat,
       invoice.invNum= req.body.invNum,
