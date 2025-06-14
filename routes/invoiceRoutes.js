@@ -612,6 +612,83 @@ invoiceRouter.get(
 );
 
 invoiceRouter.get(
+  '/searchremSEscNRST',
+  isAuth,
+  // isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const customer = query.customer || '';
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    remDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    remDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    remDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
+
+
+
+     const customerFilter =
+      customer && customer !== 'all'
+        ? {
+          id_client: customer
+          }
+        : {};
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+    const sortOrder =
+         { dueDat: 1 }
+
+
+    const invoices = await Invoice.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...customerFilter,
+       ...usuarioFilter,
+        libNum: {$eq : 0}, terminado : false })
+      .populate('id_client', 'nameCus')
+      .populate('id_instru', 'name')
+      .populate('supplier', 'name')
+      .sort(sortOrder)
+
+    res.send({
+      invoices,
+    });
+  })
+);
+
+
+invoiceRouter.get(
   '/searchremSEscPST',
   isAuth,
   // isAdmin,
@@ -676,6 +753,82 @@ invoiceRouter.get(
        ...customerFilter,
        ...usuarioFilter,
         asiNum: {$gt : 0}, terminado : false })
+      .populate('id_client', 'nameCus')
+      .populate('id_instru', 'name')
+      .populate('supplier', 'name')
+      .sort(sortOrder)
+
+    res.send({
+      invoices,
+    });
+  })
+);
+
+invoiceRouter.get(
+  '/searchremSEscNPST',
+  isAuth,
+  // isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
+    const fech2 = req.query.fech2 ? new Date(req.query.fech2) : "";
+    const customer = query.customer || '';
+    const configuracion = query.configuracion || '';
+    const usuario = query.usuario || '';
+    const order = query.order || '';
+
+    const fechasFilter =
+        !fech1 && !fech2 ? {}
+      : !fech1 && fech2 ? {
+                    remDat: {
+                      $lte: fech2,
+                    },
+                  }
+      : fech1 && !fech2 ? {
+                    remDat: {
+                      $gte: fech1,
+                    },
+                  }
+      :                   {
+                    remDat: {
+                      $gte: fech1,
+                      $lte: fech2,
+                    },
+                  };
+
+
+
+     const customerFilter =
+      customer && customer !== 'all'
+        ? {
+          id_client: customer
+          }
+        : {};
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: configuracion
+          }
+        : {};
+    const usuarioFilter =
+      usuario && usuario !== 'all'
+        ? {
+          user: usuario
+          }
+        : {};
+  
+    const sortOrder =
+         { dueDat: 1 }
+
+
+    const invoices = await Invoice.find({
+      ...fechasFilter,
+      ...configuracionFilter,
+       ...customerFilter,
+       ...usuarioFilter,
+        asiNum: {$eq : 0}, terminado : false })
       .populate('id_client', 'nameCus')
       .populate('id_instru', 'name')
       .populate('supplier', 'name')

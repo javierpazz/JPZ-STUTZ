@@ -49,8 +49,23 @@ productRouter.get(
 
 productRouter.get('/', async (req, res) => {
   const { query } = req;
-  // const products = await Product.find().sort({ name: +1 });
-  const products = await Product.find({id_config : query.id_config}).sort({ name: +1 });
+    const configuracion = query.configuracion || '';
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: new ObjectId(configuracion)
+          }
+        : {};
+
+
+
+    // const products = await Product.find().sort({ name: +1 });
+  const products = await Product.find(
+    // {id_config : query.id_config}
+      configuracionFilter,
+    )
+    .sort({ name: +1 }
+    );
   res.send(products);
 });
 
