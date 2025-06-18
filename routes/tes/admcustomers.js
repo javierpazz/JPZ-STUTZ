@@ -1,6 +1,6 @@
 /*
-    Productos Routes
-    /api/admin/users
+    Clientes Routes
+    /api/admin/Clientes
 */
 const { Router } = require('express');
 const { check } = require('express-validator');
@@ -8,7 +8,7 @@ const { check } = require('express-validator');
 const { isDate } = require('../../tes/helpers/isDate');
 const { validarCampos } = require('../../tes/middlewares/validar-campos');
 const { validarJWT } = require('../../tes/middlewares/validar-jwt');
-const { getProducts, updateProduct, createProduct } = require('../../controllers/tes/admproducts');
+const { getCustomers, updateCustomer, createCustomer, getCustomersBySlug, getCustomersById, deleteCustomer } = require('../../controllers/tes/admcustomers');
 
 const router = Router();
 
@@ -16,21 +16,28 @@ const router = Router();
 router.use( validarJWT );
 
 
-// Obtener Productoss
-router.get('/', getProducts );
+// Obtener Clientes
+router.get('/', getCustomers );
 
-// Actualizar Productos
+// Obtener Clientes by slug
+router.get('/:id', getCustomersById );
+
+
+// Actualizar Clientes
 router.put(
     '/', 
-    updateProduct 
+    updateCustomer 
 );
 
-// crear Productos
+// crear Clientes
 router.post(
     '/', 
-    createProduct 
+    createCustomer 
 );
 
+
+// Eliminar Clientes by Id
+router.delete('/:id', deleteCustomer );
 
 
 

@@ -43,7 +43,35 @@ const getInstrumentosById = async( req, res = response ) => {
 
 
 const updateInstrumento = async(req, res) =>  {
-    console.log(req.body.body);
+
+    const { _id = '' } = req.body;
+    if ( !isValidObjectId( _id ) ) {
+        return res.status(400).json({ message: 'El id del instrumento no es válido' });
+    }
+    
+
+
+    try {
+        
+        const instrumento = await Instrumento.findById(_id);
+        if ( !instrumento ) {
+            return res.status(400).json({ message: 'No existe un instrumento con ese ID' });
+        }
+        instrumento.codIns = req.body.codIns;
+        instrumento.name = req.body.name;
+        instrumento.orderItems = req.body.orderItems;
+        await instrumento.save();
+        
+
+        return res.status(200).json( instrumento );
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ message: 'Revisar la consola del servidor' });
+    }
+
+}
+const updateInstrumentoDet = async(req, res) =>  {
 
     const { _id = '' } = req.body.body;
     if ( !isValidObjectId( _id ) ) {
@@ -94,6 +122,31 @@ const createInstrumento = async(req, res) => {
 
 }
 
+const deleteInstrumento = async(req, res) =>  {
+    const { id = '' } = req.params;
+    if ( !isValidObjectId( id ) ) {
+        return res.status(400).json({ message: 'El id del instrumento no es válido' });
+    }
+    
+
+
+    try {
+        
+        const instrumento = await Instrumento.findById(id);
+        if ( !instrumento ) {
+            return res.status(400).json({ message: 'No existe un instrumento con ese ID' });
+        }
+        await instrumento.delete();
+        
+
+        return res.status(200).json( instrumento );
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ message: 'Revisar la consola del servidor' });
+    }
+
+}
 
 
 
@@ -102,7 +155,9 @@ module.exports = {
     getInstrumentosBySlug,
     getInstrumentosById,
     updateInstrumento,
-    createInstrumento
+    updateInstrumentoDet,
+    createInstrumento,
+    deleteInstrumento
 }
 
 

@@ -496,7 +496,18 @@ productRouter.get(
 productRouter.get(
   '/categories',
   expressAsyncHandler(async (req, res) => {
-    const categories = await Product.find().distinct('category');
+    console.log(req.query)
+        const configuracion = req.query.configuracion || '';
+    const configuracionFilter =
+      configuracion && configuracion !== 'all'
+        ? {
+          id_config: new ObjectId(configuracion)
+          }
+        : {};
+
+    const categories = await Product.find(
+            configuracionFilter,
+    ).distinct('category');
     res.send(categories);
   })
 );

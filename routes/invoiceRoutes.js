@@ -3461,7 +3461,7 @@ console.log(req.body)
       tax: req.body.tax,
       total: req.body.total,
       totalBuy: req.body.totalBuy,
-      user: req.body.codUse,
+      user: req.body.user,
       id_client: req.body.codCus,
         id_instru: req.body.codIns,
               codIns: req.body.id_instru,

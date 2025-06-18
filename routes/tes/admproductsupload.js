@@ -1,5 +1,5 @@
 /*
-    User Routes
+    Producto Routes
     /api/admin/users
 */
 const { Router } = require('express');
@@ -16,7 +16,7 @@ const router = Router();
 router.use( validarJWT );
 
 
-// Actualizar User
+// Actualizar Producto
 router.post(
     '/', 
     uploadfile
