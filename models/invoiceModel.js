@@ -57,6 +57,7 @@ const orderSchema = new mongoose.Schema(
     total: { type: Number },
     totalBuy: { type: Number },
     id_client: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer' },
+    id_parte: { type: mongoose.Schema.Types.ObjectId, ref: 'Parte' },
     id_instru: { type: mongoose.Schema.Types.ObjectId, ref: 'Instrumento' },
     libNum : { type: Number},
     folNum : { type: Number},

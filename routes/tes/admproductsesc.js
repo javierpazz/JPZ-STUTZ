@@ -1,5 +1,5 @@
 /*
-    User Routes
+    Productos Routes
     /api/admin/users
 */
 const { Router } = require('express');
@@ -8,7 +8,7 @@ const { check } = require('express-validator');
 const { isDate } = require('../../tes/helpers/isDate');
 const { validarCampos } = require('../../tes/middlewares/validar-campos');
 const { validarJWT } = require('../../tes/middlewares/validar-jwt');
-const { getUsers, updateUser, updateUserAdministracion, createUser, deleteUser } = require('../../controllers/tes/admusers');
+const { getProducts, updateProduct, createProduct, deleteProducto } = require('../../controllers/tes/admproductsesc');
 
 const router = Router();
 
@@ -16,29 +16,24 @@ const router = Router();
 router.use( validarJWT );
 
 
-// Obtener Users
-router.get('/', getUsers );
+// Obtener Productoss
+router.get('/', getProducts );
 
-// Actualizar User Rol
+// Actualizar Productos
 router.put(
     '/', 
-    updateUser 
-);
-// Actualizar User IsActive
-router.put(
-    '/isActive/', 
-    updateUserAdministracion
+    updateProduct 
 );
 
-// crear User
+// crear Productos
 router.post(
     '/', 
-    createUser 
+    createProduct 
 );
 
+// Eliminar Producto by Id
+router.delete('/:id', deleteProducto );
 
-// Eliminar User by Id
-router.delete('/:id', deleteUser );
 
 
 

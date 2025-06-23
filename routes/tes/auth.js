@@ -5,7 +5,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { validarCampos } = require('../../tes/middlewares/validar-campos');
-const { crearUsuario, loginUsuario, revalidarToken } = require('../../controllers/tes/auth');
+const { crearUsuario, loginUsuario, loginUsuarioAdm, revalidarToken } = require('../../controllers/tes/auth');
 const { validarJWT } = require('../../tes/middlewares/validar-jwt');
 
 
@@ -34,6 +34,15 @@ router.post(
     loginUsuario 
 );
 
+router.post(
+    '/loginadm',
+    [
+        check('email', 'El email es obligatorio').isEmail(),
+        check('password', 'El password debe de ser de 6 caracteres').isLength({ min: 6 }),
+        validarCampos
+    ],
+    loginUsuarioAdm
+);
 
 
 router.get('/validate-token',

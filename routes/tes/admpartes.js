@@ -1,6 +1,6 @@
 /*
-    User Routes
-    /api/admin/users
+    Partes Routes
+    /api/admin/Partes
 */
 const { Router } = require('express');
 const { check } = require('express-validator');
@@ -8,7 +8,7 @@ const { check } = require('express-validator');
 const { isDate } = require('../../tes/helpers/isDate');
 const { validarCampos } = require('../../tes/middlewares/validar-campos');
 const { validarJWT } = require('../../tes/middlewares/validar-jwt');
-const { getUsers, updateUser, updateUserAdministracion, createUser, deleteUser } = require('../../controllers/tes/admusers');
+const { getPartes, updateParte, createParte, getPartesBySlug, getPartesById, deleteParte } = require('../../controllers/tes/admpartes');
 
 const router = Router();
 
@@ -16,29 +16,28 @@ const router = Router();
 router.use( validarJWT );
 
 
-// Obtener Users
-router.get('/', getUsers );
+// Obtener Partes
+router.get('/', getPartes );
 
-// Actualizar User Rol
+// Obtener Partes by slug
+router.get('/:id', getPartesById );
+
+
+// Actualizar Partes
 router.put(
     '/', 
-    updateUser 
-);
-// Actualizar User IsActive
-router.put(
-    '/isActive/', 
-    updateUserAdministracion
+    updateParte 
 );
 
-// crear User
+// crear Partes
 router.post(
     '/', 
-    createUser 
+    createParte 
 );
 
 
-// Eliminar User by Id
-router.delete('/:id', deleteUser );
+// Eliminar Partes by Id
+router.delete('/:id', deleteParte );
 
 
 
