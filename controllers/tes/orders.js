@@ -26,6 +26,8 @@ const getOrderById = async( req, res = response ) => {
       .populate('id_instru', 'name codIns')
       .populate('supplier', 'name')
       .populate('id_parte', 'name')
+      .populate('id_config', 'name')
+      .populate('user', 'name')
       .lean();
  
     if ( !order ) {

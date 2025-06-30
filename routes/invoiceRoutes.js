@@ -1,5 +1,6 @@
 const express = require ('express');
 const expressAsyncHandler = require ('express-async-handler');
+const mongoose = require ('mongoose');
 const mongodb = require ('mongodb');
 const Invoice = require ('../models/invoiceModel.js');
 const Receipt = require ('../models/receiptModel.js');
@@ -3313,77 +3314,91 @@ console.log(req.body)
 );
 
     
-
-
-    invoiceRouter.post(
-      '/remEsc/',
-      isAuth,
+invoiceRouter.post(
+  '/remEsc/',
+  isAuth,
   expressAsyncHandler(async (req, res) => {
-    //////////  numera remito /////////////////
-      
-      if (req.body.remNum > 0)
-      {remNumero = req.body.remNum }
-      else {
-        const configId = req.body.codCon;
-        const configuracion = await Configuration.findById(configId);
-        if (configuracion) {
-          configuracion.numIntRem = configuracion.numIntRem + 1;
-          await configuracion.save();
-        }
-        remNumero = configuracion.numIntRem;
-      };
-      //////////  numera remito /////////////////
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    const newInvoice = new Invoice({
-      orderItems: req.body.orderItems.map((x) => ({
-        ...x,
-        product: x._id,
-      })),
-      shippingAddress: req.body.shippingAddress,
-      paymentMethod: req.body.paymentMethod,
-      subTotal: req.body.subTotal,
-      shippingPrice: req.body.shippingPrice,
-      tax: req.body.tax,
-      total: req.body.total,
-      totalBuy: req.body.totalBuy,
-      user: req.body.user,
-      id_client: req.body.codCus,
+    try {
+      let remNumero;
+      if (req.body.remNum > 0) {
+        remNumero = req.body.remNum;
+      } else {
+        const configId = req.body.codCon;
+        const configuracion = await Configuration.findById(configId).session(session);
+        if (configuracion) {
+          configuracion.numIntRem += 1;
+          await configuracion.save({ session });
+          remNumero = configuracion.numIntRem;
+        } else {
+          throw new Error('Configuración no encontrada');
+        }
+      }
+
+      const newInvoice = new Invoice({
+        orderItems: req.body.orderItems.map((x) => ({
+          ...x,
+          product: x._id,
+        })),
+        shippingAddress: req.body.shippingAddress,
+        paymentMethod: req.body.paymentMethod,
+        subTotal: req.body.subTotal,
+        shippingPrice: req.body.shippingPrice,
+        tax: req.body.tax,
+        total: req.body.total,
+        totalBuy: req.body.totalBuy,
+        user: req.body.user,
+        id_client: req.body.codCus,
         id_parte: req.body.codPar,
         id_instru: req.body.codIns,
-              // codIns: req.body.id_instru,
-              libNum : req.body.libNum,
-              folNum : req.body.folNum,
-              asiNum : req.body.asiNum,
-              asiDat : req.body.asiDat,
-              escNum : req.body.escNum,
-              asieNum : req.body.asieNum,
-              asieDat : req.body.asieDat,
-              terminado : req.body.terminado,
-      id_config: req.body.codCon,
-      user: req.body.user,
-      id_config2: req.body.codCon2,
-      movpvNum: req.body.movpvNum,
-      movpvDat: req.body.movpvDat,
-      codConNum: req.body.codConNum,
-      codCom: req.body.codCom,
-      supplier: req.body.codSup,
-      //////////  numera remito /////////////////
-      remNum: remNumero,
-      //////////  numera remito /////////////////
-      remDat: req.body.remDat,
-      dueDat: req.body.dueDat,
-      invNum: req.body.invNum,
-      invDat: req.body.invDat,
-      recNum: req.body.recNum,
-      recDat: req.body.recDat,
-      desVal: req.body.desVal,
-      notes: req.body.notes,
-      salbuy: req.body.salbuy,
-    });
-    const invoice = await newInvoice.save();
-    res.status(201).send({ message: 'New Invoice Created', invoice });
+        libNum: req.body.libNum,
+        folNum: req.body.folNum,
+        asiNum: req.body.asiNum,
+        asiDat: req.body.asiDat,
+        escNum: req.body.escNum,
+        asieNum: req.body.asieNum,
+        asieDat: req.body.asieDat,
+        terminado: req.body.terminado,
+        id_config: req.body.codCon,
+        user: req.body.user,
+        id_config2: req.body.codCon2,
+        movpvNum: req.body.movpvNum,
+        movpvDat: req.body.movpvDat,
+        codConNum: req.body.codConNum,
+        codCom: req.body.codCom,
+        supplier: req.body.codSup,
+        remNum: remNumero,
+        remDat: req.body.remDat,
+        dueDat: req.body.dueDat,
+        invNum: req.body.invNum,
+        invDat: req.body.invDat,
+        recNum: req.body.recNum,
+        recDat: req.body.recDat,
+        desVal: req.body.desVal,
+        notes: req.body.notes,
+        salbuy: req.body.salbuy,
+      });
+
+      const invoice = await newInvoice.save({ session });
+
+      await session.commitTransaction();
+      session.endSession();
+
+      res.status(201).send({ message: 'New Invoice Created', invoice });
+    } catch (error) {
+      console.log(error);
+      await session.abortTransaction();
+      session.endSession();
+      // res.status(500).send({ message: 'Error creating invoice', error: error.message });
+      res.status(500).send({ error });
+      
+    }
   })
 );
+
+
 
 
     invoiceRouter.post(

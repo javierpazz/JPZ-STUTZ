@@ -227,8 +227,9 @@ io.on("connection", (socket) => {
 });
 
 
-httpServer.listen(port, () => {
-  console.log(`Serve at http://localhost:${port}`);
+httpServer.listen(port, '0.0.0.0', () => {
+  // console.log(`Serve at http://localhost:${port}`);
+  console.log(`Serve at http://0.0.0.0:${port}`);
 });
 
 
