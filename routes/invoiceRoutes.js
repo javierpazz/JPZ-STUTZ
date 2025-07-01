@@ -339,8 +339,10 @@ invoiceRouter.get(
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
     const order = query.order || '';
+    const obser = query.obser || '';
     const estado = query.estado || '';
     const registro = query.registro || '';
+    console.log(obser)
     const fechasFilter =
         !fech1 && !fech2 ? {}
       : !fech1 && fech2 ? {
@@ -401,6 +403,18 @@ invoiceRouter.get(
           }
         : {};
 
+    const obserFilter =
+      obser && obser !== 'all'
+        ? {
+        $or: [
+        {'notes': { $regex: obser, $options: 'i' }},
+        {'orderItems.observ': { $regex: obser, $options: 'i' }}
+        ]
+        }
+        : {};
+
+
+
     const sortOrder =
         order === 'newest'
         ? { createdAt: -1 }
@@ -449,6 +463,7 @@ invoiceRouter.get(
             productFilter,
             usuarioFilter,
             registroFilter,
+            obserFilter,
             // estadoFilter,
             // existeIns,
             ],
@@ -606,6 +621,7 @@ invoiceRouter.get(
     const order = query.order || '';
     const estado = query.estado || '';
     const registro = query.registro || '';
+    const obser = query.obser || '';
 
     const fechasFilter =
         !fech1 && !fech2 ? {}
@@ -667,6 +683,17 @@ invoiceRouter.get(
           }
         : {};
 
+    const obserFilter =
+      obser && obser !== 'all'
+        ? {
+        $or: [
+          // { $text: { $search: obser } },
+          { 'notes': { $regex: obser, $options: 'i' } },
+          { 'orderItems.observ': { $regex: obser, $options: 'i' } }
+        ]
+              }
+        : {};
+
     const sortOrder =
         order === 'newest'
         ? { createdAt: -1 }
@@ -707,6 +734,7 @@ invoiceRouter.get(
        ...instruFilter,
        ...productFilter,
        ...usuarioFilter,
+       ...obserFilter,
        ...estadoFiltro,
        ...registroFiltro,
       //  ...existeIns
@@ -3318,8 +3346,8 @@ invoiceRouter.post(
   '/remEsc/',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    // const session = await mongoose.startSession();
+    // session.startTransaction();
 
     try {
       let remNumero;
@@ -3327,10 +3355,12 @@ invoiceRouter.post(
         remNumero = req.body.remNum;
       } else {
         const configId = req.body.codCon;
-        const configuracion = await Configuration.findById(configId).session(session);
+        // const configuracion = await Configuration.findById(configId).session(session);
+        const configuracion = await Configuration.findById(configId);
         if (configuracion) {
           configuracion.numIntRem += 1;
-          await configuracion.save({ session });
+          // await configuracion.save({ session });
+          await configuracion.save();
           remNumero = configuracion.numIntRem;
         } else {
           throw new Error('Configuración no encontrada');
@@ -3381,16 +3411,17 @@ invoiceRouter.post(
         salbuy: req.body.salbuy,
       });
 
-      const invoice = await newInvoice.save({ session });
+      // const invoice = await newInvoice.save({ session });
+      const invoice = await newInvoice.save();
 
-      await session.commitTransaction();
-      session.endSession();
+      // await session.commitTransaction();
+      // session.endSession();
 
       res.status(201).send({ message: 'New Invoice Created', invoice });
     } catch (error) {
       console.log(error);
-      await session.abortTransaction();
-      session.endSession();
+      // await session.abortTransaction();
+      // session.endSession();
       // res.status(500).send({ message: 'Error creating invoice', error: error.message });
       res.status(500).send({ error });
       

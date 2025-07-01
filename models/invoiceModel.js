@@ -114,6 +114,8 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
+orderSchema.index({ notes: 'text', orderItems: 'text' });
+
 const Invoice = mongoose.model('Order', orderSchema);
 // const db = require('../config/config');
 

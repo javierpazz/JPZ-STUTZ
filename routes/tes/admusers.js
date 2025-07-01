@@ -8,7 +8,7 @@ const { check } = require('express-validator');
 const { isDate } = require('../../tes/helpers/isDate');
 const { validarCampos } = require('../../tes/middlewares/validar-campos');
 const { validarJWT } = require('../../tes/middlewares/validar-jwt');
-const { getUsers, updateUser, updateUserAdministracion, createUser, deleteUser } = require('../../controllers/tes/admusers');
+const { getUsers, getUserById, updateUserAdm, updateUser, updateUserAdministracion, createUser, deleteUser } = require('../../controllers/tes/admusers');
 
 const router = Router();
 
@@ -18,6 +18,15 @@ router.use( validarJWT );
 
 // Obtener Users
 router.get('/', getUsers );
+
+// Obtener User by slug
+router.get('/:id', getUserById );
+
+// Actualizar User
+router.put(
+    '/', 
+    updateUserAdm 
+);
 
 // Actualizar User Rol
 router.put(

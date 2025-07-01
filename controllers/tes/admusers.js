@@ -11,6 +11,64 @@ const getUsers = async( req, res = response ) => {
     return res.status(200).json( users );
 }
 
+const getUserById = async( req, res = response ) => {
+    const { id } = req.params;
+    const user = await User.findById(id).lean();
+ 
+    if( !user ) {
+        return res.status(404).json({
+            message: 'Usuario no encontrado'
+        })
+    }
+
+    return res.json( user );
+
+
+}
+
+const updateUserAdm = async(req, res) =>  {
+    const { _id = '' } = req.body;
+    if ( !isValidObjectId( _id ) ) {
+        return res.status(400).json({ message: 'El id del Usuario no es válido' });
+    }
+    
+    try {
+        
+        const user = await User.findById(_id);
+        if ( !user ) {
+            return res.status(400).json({ message: 'No existe un Usuario con ese ID' });
+        }
+        
+        ///// verifico pasword
+        // Confirmar los passwords
+        const validPassword = bcrypt.compareSync( req.body.password, user.password );
+        
+        if ( !validPassword ) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Password incorrecto'
+            });
+        }
+        ///// verifico pasword
+        
+        user.name = req.body.name;
+        user.email = req.body.email;
+        if (req.body.passwordNue !== "") {
+        user.password = bcrypt.hashSync(req.body.passwordNue);
+        }
+        await user.save();
+
+        return res.status(200).json( user );
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ message: 'Revisar la consola del servidor' });
+    }
+
+}
+
+
+
 const updateUser = async(req, res) =>  {
     
     const { userId = '', role = '' } = req.body;
@@ -59,7 +117,6 @@ const updateUserAdministracion = async(req, res) =>  {
 const createUser = async(req, res) => {
 
     try {
-        console.log(req.body)
         const userInDB = await User.findOne({ name: req.body.name });
         if ( userInDB ) {
             return res.status(400).json({ message: 'Ya existe un Usuario con ese Nombre' });
@@ -115,6 +172,8 @@ const deleteUser = async(req, res) =>  {
 
 module.exports = {
     getUsers,
+    getUserById,
+    updateUserAdm,
     updateUser,
     updateUserAdministracion,
     createUser,
