@@ -384,8 +384,9 @@ receiptRouter.get(
        ...usuarioFilter,
         salbuy: 'SALE', recNum: {$gt : 0} })
       .populate('id_client', 'nameCus')
-      .populate('supplier', 'name')
+      .populate('id_config', 'name')
       .populate('id_encarg', 'name')
+      .populate('user', 'name')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
@@ -477,9 +478,10 @@ receiptRouter.get(
        ...supplierFilter,
        ...usuarioFilter,
         salbuy: 'BUY', recNum: {$gt : 0} })
-      .populate('user', 'name')
       .populate('supplier', 'name')
+      .populate('id_config', 'name')
       .populate('id_encarg', 'name')
+      .populate('user', 'name')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
@@ -574,8 +576,9 @@ receiptRouter.get(
        ...usuarioFilter,
         salbuy: 'SALE', cajNum: {$gt : 0} })
       .populate('id_client', 'nameCus')
-      .populate('supplier', 'name')
+      .populate('id_config', 'name')
       .populate('id_encarg', 'name')
+      .populate('user', 'name')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
@@ -667,9 +670,10 @@ receiptRouter.get(
        ...encargadoFilter,
        ...usuarioFilter,
         salbuy: 'BUY', cajNum: {$gt : 0} })
-      .populate('user', 'name')
-      .populate('supplier', 'name')
+      .populate('id_client', 'nameCus')
+      .populate('id_config', 'name')
       .populate('id_encarg', 'name')
+      .populate('user', 'name')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);

@@ -94,16 +94,23 @@ invoiceRouter.get(
         ? { createdAt: -1 }
         : { createdAt: 1 };
 
+    const existeIns =
+          { "id_instru": { "$exists": false } }
+        
     const invoices = await Invoice.find({
       ...fechasFilter,
       ...configuracionFilter,
        ...customerFilter,
        ...usuarioFilter,
        ...comprobanteFilter,
+       ...existeIns,
         salbuy: 'SALE', invNum: {$gt : 0} })
       .populate('id_client', 'nameCus')
-      .populate('supplier', 'name')
       .populate('codCom', 'nameCom interno')
+      .populate('id_instru', 'name')
+      .populate('id_parte', 'name')
+      .populate('id_config', 'name')
+      .populate('user', 'name')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
@@ -196,19 +203,33 @@ invoiceRouter.get(
         ? { createdAt: -1 }
         : { createdAt: 1 };
 
+
+    const existeIns =
+          { "id_instru": { "$exists": false } }
+        
+
     const invoices = await Invoice.find({
       ...fechasFilter,
       ...configuracionFilter,
        ...supplierFilter,
        ...usuarioFilter,
        ...comprobanteFilter,
+       ...existeIns,
         salbuy: 'BUY', invNum: {$gt : 0} })
-      .populate('user', 'name')
+      
       .populate('supplier', 'name')
-      .populate('codCom', 'nameCom')
+      .populate('id_client', 'nameCus')
+      .populate('codCom', 'nameCom interno')
+      .populate('id_instru', 'name')
+      .populate('id_parte', 'name')
+      .populate('id_config', 'name')
+      .populate('user', 'name')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
+
+
+
 
     const countInvoices = await Invoice.countDocuments({ 
       ...fechasFilter,
@@ -216,6 +237,7 @@ invoiceRouter.get(
       ...supplierFilter,
       ...usuarioFilter,
       ...comprobanteFilter,
+      ...existeIns,
        salbuy: 'BUY', invNum: {$gt : 0} });
     res.send({
       invoices,
@@ -292,23 +314,33 @@ invoiceRouter.get(
         ? { createdAt: -1 }
         : { createdAt: 1 };
 
+    const existeIns =
+          { "id_instru": { "$exists": false } }
+
     const invoices = await Invoice.find({
       ...fechasFilter,
       ...configuracionFilter,
        ...customerFilter,
        ...usuarioFilter,
+       ...existeIns,
         salbuy: 'SALE', remNum: {$gt : 0} })
-      .populate('id_client', 'nameCus')
       .populate('supplier', 'name')
+      .populate('id_client', 'nameCus')
+      .populate('codCom', 'nameCom interno')
+      .populate('id_config', 'name')
+      .populate('user', 'name')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
+
+
 
     const countInvoices = await Invoice.countDocuments({ 
       ...fechasFilter,
       ...configuracionFilter,
       ...customerFilter,
       ...usuarioFilter,
+      ...existeIns,
        salbuy: 'SALE', remNum: {$gt : 0} });
     res.send({
       invoices,
@@ -342,7 +374,6 @@ invoiceRouter.get(
     const obser = query.obser || '';
     const estado = query.estado || '';
     const registro = query.registro || '';
-    console.log(obser)
     const fechasFilter =
         !fech1 && !fech2 ? {}
       : !fech1 && fech2 ? {
@@ -464,8 +495,8 @@ invoiceRouter.get(
             usuarioFilter,
             registroFilter,
             obserFilter,
-            // estadoFilter,
-            // existeIns,
+            estadoFilter,
+            existeIns,
             ],
         },
       },
@@ -737,7 +768,7 @@ invoiceRouter.get(
        ...obserFilter,
        ...estadoFiltro,
        ...registroFiltro,
-      //  ...existeIns
+       ...existeIns
       })
       .populate('id_client', 'nameCus')
       .populate('id_instru', 'name')
@@ -820,23 +851,38 @@ invoiceRouter.get(
         ? { createdAt: -1 }
         : { createdAt: 1 };
 
+    const existeIns =
+          { "id_instru": { "$exists": false } }
+
+
     const invoices = await Invoice.find({
       ...fechasFilter,
       ...configuracionFilter,
        ...supplierFilter,
        ...usuarioFilter,
+       ...existeIns,
         salbuy: 'BUY', remNum: {$gt : 0} })
-      .populate('user', 'name')
+      
       .populate('supplier', 'name')
+      .populate('id_client', 'nameCus')
+      .populate('codCom', 'nameCom interno')
+      .populate('id_instru', 'name')
+      .populate('id_parte', 'name')
+      .populate('id_config', 'name')
+      .populate('user', 'name')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
+
+
+
 
     const countInvoices = await Invoice.countDocuments({ 
       ...fechasFilter,
       ...configuracionFilter,
       ...supplierFilter,
       ...usuarioFilter,
+      ...existeIns,
        salbuy: 'BUY', remNum: {$gt : 0} });
     res.send({
       invoices,
@@ -860,7 +906,6 @@ invoiceRouter.get(
     const customer = query.customer || '';
     const configuracion = query.configuracion || '';
     const usuario = query.usuario || '';
-    console.log(usuario)
     const order = query.order || '';
 
     const fechasFilter =
@@ -906,20 +951,30 @@ invoiceRouter.get(
         ? { createdAt: -1 }
         : { createdAt: 1 };
 
+
+    const existeIns =
+          { "id_instru": { "$exists": false } }
+
     const invoices = await Invoice.find({
       ...fechasFilter,
       ...configuracionFilter,
        ...usuarioFilter,
+       ...existeIns,
         salbuy: 'SALE', movpvNum: {$gt : 0} })
+      .populate('user', 'name')
+      .populate('id_config', 'name')
       .populate('id_config2', 'name')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
 
+
+
     const countInvoices = await Invoice.countDocuments({ 
       ...fechasFilter,
       ...configuracionFilter,
       ...usuarioFilter,
+      ...existeIns,
        salbuy: 'SALE', movpvNum: {$gt : 0} });
     res.send({
       invoices,
@@ -989,11 +1044,20 @@ invoiceRouter.get(
         ? { createdAt: -1 }
         : { createdAt: 1 };
 
+
+    const existeIns =
+          { "id_instru": { "$exists": false } }
+
+
+
     const invoices = await Invoice.find({
       ...fechasFilter,
       ...configuracionFilter,
        ...usuarioFilter,
+       ...existeIns,
         salbuy: 'BUY', movpvNum: {$gt : 0} })
+      .populate('user', 'name')
+      .populate('id_config', 'name')
       .populate('id_config2', 'name')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
@@ -1003,6 +1067,7 @@ invoiceRouter.get(
       ...fechasFilter,
       ...configuracionFilter,
       ...usuarioFilter,
+      ...existeIns,
        salbuy: 'BUY', movpvNum: {$gt : 0} });
     res.send({
       invoices,

@@ -1,6 +1,8 @@
 const { response } = require('express');
 const { isValidObjectId } = require('mongoose');
 const Encargado = require('../../models/encargadoModel');
+const Invoice = require('../../models/invoiceModel');
+const Receipt = require('../../models/receiptModel');
 
 const getEncargados = async( req, res = response ) => {
 
@@ -97,6 +99,13 @@ const deleteEncargado = async(req, res) =>  {
         return res.status(400).json({ message: 'El id del Encargado no es válido' });
     }
     
+
+
+    const receipts = await Receipt.findOne({id_encarg: req.params.id })
+    if (receipts) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este Encargado' });
+      return;
+    }
 
 
     try {

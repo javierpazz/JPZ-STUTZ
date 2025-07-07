@@ -1,6 +1,7 @@
 const { response } = require('express');
 const { isValidObjectId } = require('mongoose');
 const EstadoOrden = require('../../models/stateOrdModel');
+const Invoice = require('../../models/invoiceModel');
 
 const getEstadosOrden = async( req, res = response ) => {
 
@@ -97,6 +98,13 @@ const deleteEstadoOrden = async(req, res) =>  {
         return res.status(400).json({ message: 'El id del Estado Orden no es válido' });
     }
     
+    const invoices = await Invoice.findOne({id_estado: req.params.id });
+    if (invoices) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este Estado' });
+      return;
+    }
+
+
 
 
     try {

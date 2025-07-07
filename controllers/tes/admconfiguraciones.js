@@ -2,6 +2,7 @@ const { response } = require('express');
 const { isValidObjectId } = require('mongoose');
 const Configuration = require('../../models/configurationModel');
 const Invoice = require('../../models/invoiceModel');
+const Receipt = require('../../models/receiptModel');
 
 const getConfiguraciones = async( req, res = response ) => {
 
@@ -109,11 +110,23 @@ const deleteConfiguracion = async(req, res) =>  {
         return res.status(400).json({ message: 'El id del Punto Venta no es válido' });
     }
     
-    const invoices = await Invoice.findOne({id_client: req.params.id });
+    const invoices = await Invoice.findOne({
+            $or: [
+                { id_config: req.params.id },
+                { id_config2: req.params.id }
+            ]
+            });
     if (invoices) {
-      res.status(404).send({ message: 'No Puede Borrar por que tiene Entradas con este cliente' });
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este Punto de Venta' });
       return;
     }
+
+    const receipts = await Receipt.findOne({id_config: req.params.id })
+    if (receipts) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este Punto de Venta' });
+      return;
+    }
+
 
 
     try {

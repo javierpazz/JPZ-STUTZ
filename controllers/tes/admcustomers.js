@@ -1,6 +1,8 @@
 const { response } = require('express');
 const { isValidObjectId } = require('mongoose');
 const Customer = require('../../models/customerModel');
+const Invoice = require('../../models/invoiceModel');
+const Receipt = require('../../models/receiptModel');
 
 const getCustomers = async( req, res = response ) => {
 
@@ -101,6 +103,19 @@ const deleteCustomer = async(req, res) =>  {
         return res.status(400).json({ message: 'El id del Cliente no es válido' });
     }
     
+    const invoices = await Invoice.findOne({id_client: req.params.id });
+    if (invoices) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este Cliente' });
+      return;
+    }
+
+    const receipts = await Receipt.findOne({id_client: req.params.id })
+    if (receipts) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este Cliente' });
+      return;
+    }
+
+
 
 
     try {

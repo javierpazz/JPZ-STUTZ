@@ -1,6 +1,7 @@
 const { response } = require('express');
 const { isValidObjectId } = require('mongoose');
 const Valor = require('../../models/valueeModel');
+const Receipt = require('../../models/receiptModel');
 
 const getValores = async( req, res = response ) => {
 
@@ -97,6 +98,14 @@ const deleteValor = async(req, res) =>  {
         return res.status(400).json({ message: 'El id del Valor no es válido' });
     }
     
+
+    const receipts = await Receipt.findOne({"receiptItems._id": req.params.id})
+    if (receipts) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este Valor' });
+      return;
+    }
+
+
 
 
     try {

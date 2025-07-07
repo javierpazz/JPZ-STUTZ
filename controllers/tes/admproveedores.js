@@ -1,6 +1,8 @@
 const { response } = require('express');
 const { isValidObjectId } = require('mongoose');
 const Supplier = require('../../models/supplierModel');
+const Invoice = require('../../models/invoiceModel');
+const Receipt = require('../../models/receiptModel');
 
 const getProveedores = async( req, res = response ) => {
 
@@ -101,6 +103,19 @@ const deleteProveedor = async(req, res) =>  {
         return res.status(400).json({ message: 'El id del Proveedor no es válido' });
     }
     
+    const invoices = await Invoice.findOne({supplier: req.params.id });
+    if (invoices) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este Proveedor' });
+      return;
+    }
+
+    const receipts = await Receipt.findOne({supplier: req.params.id })
+    if (receipts) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este Proveedor' });
+      return;
+    }
+
+
 
 
     try {

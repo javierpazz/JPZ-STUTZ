@@ -3,6 +3,7 @@ const { isValidObjectId } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../../models/userModel');
 const Invoice = require('../../models/invoiceModel');
+const Receipt = require('../../models/receiptModel');
 
 const getUsers = async( req, res = response ) => {
 
@@ -145,10 +146,15 @@ const deleteUser = async(req, res) =>  {
     
     const invoices = await Invoice.findOne({user: req.params.id });
     if (invoices) {
-      res.status(404).send({ message: 'No Puede Borrar por que tiene Entradas con este Usuario' });
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este Usuario' });
       return;
     }
 
+    const receipts = await Receipt.findOne({user: req.params.id })
+    if (receipts) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este Usuario' });
+      return;
+    }
 
     try {
         
