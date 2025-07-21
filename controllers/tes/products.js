@@ -11,7 +11,6 @@ const SHOP_CONSTANTS = {
 
 const getProducts = async( req, res = response ) => {
 
-    console.log(req.query.gender)
     
     const { gender = 'all' } = req.query;
 
@@ -32,9 +31,12 @@ const getProducts = async( req, res = response ) => {
 
 
 const getProductBySlug = async( req, res = response ) => {
+    console.log("kikipipi")
 
     const { slug } = req.params;
-    const product = await Product.findOne({ slug }).lean();
+    const product = await Product.findOne({ slug })
+    .populate('supplier', 'codSup name')
+    .lean();
  
     if( !product ) {
         return res.status(404).json({

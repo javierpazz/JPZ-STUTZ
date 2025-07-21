@@ -22,16 +22,16 @@ const updateProduct = async(req, res) =>  {
     // }
     
     if ( !isValidObjectId( _id ) ) {
-        return res.status(400).json({ message: 'El id de la Diligencia no es válido' });
+        return res.status(400).json({ message: 'El id de el Producto no es válido' });
     }
     // TODO: posiblemente tendremos un localhost:3000/products/asdasd.jpg
 
 
     try {
-        
+        console.log(req.body)
         const product = await Product.findById(_id);
         if ( !product ) {
-            return res.status(400).json({ message: 'No existe una Diligencia con ese ID' });
+            return res.status(400).json({ message: 'No existe un Producto con ese ID' });
         }
 
         // TODO: eliminar fotos en Cloudinary
@@ -67,12 +67,11 @@ const createProduct = async(req, res) => {
     
     // TODO: posiblemente tendremos un localhost:3000/products/asdasd.jpg
     
-
     try {
 
         const productInDB = await Product.findOne({ title: req.body.title });
         if ( productInDB ) {
-            return res.status(400).json({ message: 'Ya existe una Diligencia con ese titulo' });
+            return res.status(400).json({ message: 'Ya existe un Producto con ese titulo' });
         }
         delete req.body['_id'];
         const product = new Product( req.body );
@@ -94,12 +93,12 @@ const deleteProducto = async(req, res) =>  {
     const { id = '' } = req.params;
 
     if ( !isValidObjectId( id ) ) {
-        return res.status(400).json({ message: 'El id de la Diligencia no es válido' });
+        return res.status(400).json({ message: 'El id del Producto no es válido' });
     }
     
     const invoices = await Invoice.findOne({ "orderItems._id": req.params.id });
     if (invoices) {
-      res.status(404).send({ message: 'No Puede Borrar por que tiene Entradas con esta Diligencia' });
+      res.status(404).send({ message: 'No Puede Borrar por que tiene movimientos con este Producto' });
       return;
     }
 
@@ -109,7 +108,7 @@ const deleteProducto = async(req, res) =>  {
         
         const producto = await Product.findById(id);
         if ( !producto ) {
-            return res.status(400).json({ message: 'No existe una Diligencia con ese ID' });
+            return res.status(400).json({ message: 'No existe un Producto con ese ID' });
         }
         await producto.delete();
         

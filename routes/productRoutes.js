@@ -335,6 +335,13 @@ productRouter.delete(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+
+    const invoices = await Invoice.findOne({ "orderItems._id": req.params.id });
+    if (invoices) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este Producto' });
+      return;
+    }
+
     const product = await Product.findById(req.params.id);
     if (product) {
       await product.remove();
@@ -391,6 +398,7 @@ productRouter.get(
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
     const products = await Product.find({id_config : query.id_config})
+      .populate('supplier', 'name')
       .sort({ title: 1 })
       .skip(pageSize * (page - 1))
       .limit(pageSize);

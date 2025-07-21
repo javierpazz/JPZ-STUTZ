@@ -26,7 +26,8 @@ const getOrderById = async( req, res = response ) => {
       .populate('codCom', 'nameCom codCom noDisc toDisc itDisc')
       .populate('supplier', 'name codSup cuit coniva domcomer')
       .populate('id_parte', 'name codPar')
-      .populate('id_config', 'name codCon cuit coniva domcomer')
+      .populate('id_instru', 'name codIns')
+      .populate('id_config' )
       .populate('id_config2', 'name codCon cuit coniva domcomer')
       .populate('user', 'name')
       .lean();

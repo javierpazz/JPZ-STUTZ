@@ -3146,10 +3146,10 @@ invoiceRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     
+    console.log("recibo")
     //////////  GENERA RECIBO /////////////////
     let recAux = 0;
     if ( req.body.receiptAux.recDat && req.body.receiptAux.desVal) {
-
       //////////  numera RECIBO /////////////////
       
       if (req.body.receiptAux.recNum > 0)
@@ -3173,7 +3173,6 @@ invoiceRouter.post(
       subTotal: req.body.receiptAux.subTotal,
       total: req.body.receiptAux.total,
       totalBuy: req.body.receiptAux.totalBuy,
-      // user: req.body.receiptAux.codUse,
       user: req.body.receiptAux.user,
       id_client: req.body.receiptAux.codCus,
       id_config: req.body.receiptAux.codCon,

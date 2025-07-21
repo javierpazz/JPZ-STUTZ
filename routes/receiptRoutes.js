@@ -952,6 +952,7 @@ receiptRouter.get(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const receipt = await Receipt.findById(req.params.id)
+    .populate('id_config')
     .populate('id_client', 'codCus nameCus domcomer cuit coniva')
     .populate('supplier', 'codSup name domcomer cuit coniva')
     .populate('id_encarg', 'name');

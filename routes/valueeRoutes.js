@@ -2,6 +2,7 @@ const express = require ('express');
 const expressAsyncHandler = require ('express-async-handler');
 const Valuee = require ('../models/valueeModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
+const Receipt = require('../models/receiptModel.js');
 
 const valueeRouter = express.Router();
 
@@ -68,6 +69,13 @@ valueeRouter.delete(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+
+    const receipts = await Receipt.findOne({"receiptItems._id": req.params.id})
+    if (receipts) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este Valor' });
+      return;
+    }
+
     const valuee = await Valuee.findById(req.params.id);
     if (valuee) {
       await valuee.remove();
