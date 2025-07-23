@@ -403,12 +403,8 @@ productRouter.get(
       .skip(pageSize * (page - 1))
       .limit(pageSize);
     const countProducts = await Product.countDocuments({id_config : query.id_config});
-    res.send({
-      products,
-      countProducts,
-      page,
-      pages: Math.ceil(countProducts / pageSize),
-    });
+    // return res.status(200).json( products );
+    res.send(products);
   })
 );
 

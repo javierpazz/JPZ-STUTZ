@@ -5,7 +5,7 @@ const receiptSchema = new mongoose.Schema(
     receiptItems: [
       {
         desval: { type: String, required: true },
-        numval: { type: Number, required: true },
+        numval: { type: Number},
         amountval: { type: Number, required: true },
         valuee: {
           type: mongoose.Schema.Types.ObjectId,

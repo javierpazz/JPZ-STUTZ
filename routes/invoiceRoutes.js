@@ -2432,7 +2432,7 @@ invoiceRouter.get(
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const factura = 'BUY';
-
+    console.log(query)
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
     const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
@@ -2610,13 +2610,17 @@ invoiceRouter.get(
       },
       sortOrder
     ]);
-    console.log(ctacte)
+    console.log("ctacte")
 ///////////////////ordena para listar por cliente
       // Agrupar y calcular el saldo acumulado
       const resultado = [];
       const agrupadoPorSupplier = {};
-  
+
       for (const r of ctacte) {
+        if (!r.supplierInfo || !r.supplierInfo._id) {
+          console.warn('Movimiento sin supplierInfo:', r);
+          continue;
+        }
         const supplierId = r.supplierInfo._id.toString();
         const codSupp = r.supplierInfo.codSup;
         const supplierNombre = r.supplierInfo.name || 'Proovedor sin nombre';
