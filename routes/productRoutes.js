@@ -389,8 +389,32 @@ productRouter.post(
 );
 
 const PAGE_SIZE = 10;
+
 productRouter.get(
   '/admin',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const products = await Product.find({id_config : query.id_config})
+      .populate('supplier', 'name')
+      .sort({ title: 1 })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+    const countProducts = await Product.countDocuments({id_config : query.id_config});
+    res.send({
+      products,
+      countProducts,
+      page,
+      pages: Math.ceil(countProducts / pageSize),
+    });
+  })
+);
+
+productRouter.get(
+  '/admin/tes',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
