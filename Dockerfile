@@ -29,6 +29,8 @@ FROM node:19-alpine3.15 as prod
 EXPOSE 3000
 WORKDIR /app
 ENV APP_VERSION=${APP_VERSION}
+ENV MONGODB_URI=${MONGODB_URI}
+ENV JWT_SECRET=${JWT_SECRET}
 COPY . .
 COPY --from=prod-deps /app/node_modules ./node_modules
 # COPY --from=builder /app/dist ./dist

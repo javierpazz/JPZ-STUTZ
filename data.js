@@ -83,8 +83,8 @@ const data = {
   configuration: [
       {
         codCon: '0001',
-        name: 'PIA STUTZ',
-        domcomer: 'DIRECCION PIA STUTZ',
+        name: 'STUTZ WINES',
+        domcomer: 'DIRECCION STUTZ WINES',
         cuit: '20-20202020-2',
         coniva: 'RESP. INSCRIPTO',
         ib: '87654321',
@@ -96,8 +96,8 @@ const data = {
       },
       {
         codCon: '0002',
-        name: 'FELIZA NANNI',
-        domcomer: 'DIRECCION FELIZA NANNI',
+        name: 'FILTROS NORTE',
+        domcomer: 'DIRECCION FILTROS NORTE',
         cuit: '20-20202020-2',
         coniva: 'RESP. INSCRIPTO',
         ib: '87654321',

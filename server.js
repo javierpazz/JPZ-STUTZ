@@ -33,7 +33,10 @@ const orderRoutesMob = require('./routes/mob/orderRoutes.js');
 // const mercadoPago
 
 
-dotenv.config();
+// dotenv.config();
+dotenv.config({ path: path.join(__dirname, ".env") });
+
+
 console.log("jpz");
 console.log(process.env.MONGODB_URI);
 console.log(`"${process.env.MONGODB_URI}"`);

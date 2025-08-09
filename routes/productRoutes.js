@@ -129,7 +129,6 @@ productRouter.put(
   // isAdmin,
   expressAsyncHandler(async (req, res) => {
   
-  
     const porcen = req.query.porcen || '';
     const codProd2 = req.query.codProd2 || '';
     const codProd1 = req.query.codProd1 || '';

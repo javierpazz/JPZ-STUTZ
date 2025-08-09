@@ -5,7 +5,7 @@ serviceAccountKey.json
 node_modules
 /.pnp
 .pnp.js
-
+stutzdb
 # testing
 /coverage
 

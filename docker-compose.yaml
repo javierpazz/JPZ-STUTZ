@@ -17,6 +17,7 @@ services:
   escr-app:
     depends_on:
       - db
+    # image: javierpazz/jpzstutz
     image: stutz
     ports:
       - 4000:3000
