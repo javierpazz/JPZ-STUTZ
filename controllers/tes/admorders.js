@@ -4,7 +4,7 @@ const Order = require('../../models/invoiceModel');
 
 const getOrders = async( req, res = response ) => {
 
-    const orders = await Order.find()
+    const orders = await Order.find({ ordYes: 'Y' })
         .sort({ createdAt: 'desc' })
         .populate('user', 'name email')
         .lean();

@@ -94,7 +94,7 @@ const crearUsuarioAdministracion = async(req, res = response ) => {
         isAdmin: false,
         isActive: true,
         password: bcrypt.hashSync(password),
-        role:'client',
+        role:'user',
     });
     
     
@@ -140,7 +140,9 @@ const loginUsuario = async(req, res = response ) => {
         
         const usuario = await User.findOne({ email });
 
-        if ( !usuario ) {
+        // if ( !usuario ) {
+        if ( !usuario || !usuario.isActive || usuario.role !== "client" ) {
+
             return res.status(400).json({
                 ok: false,
                 msg: 'El usuario no existe con ese email'
@@ -190,7 +192,7 @@ const loginUsuarioAdm = async(req, res = response ) => {
         
         const usuario = await User.findOne({ email });
         // if (user && user.isActive && user.role !== "client") {
-        if ( !usuario || usuario.role === "client" ) {
+        if ( !usuario || !usuario.isActive || usuario.role === "client" ) {
             return res.status(400).json({
                 ok: false,
                 msg: 'Datos Incorrectos'

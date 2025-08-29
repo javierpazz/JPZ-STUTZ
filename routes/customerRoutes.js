@@ -1,5 +1,6 @@
 const express = require ('express');
 const expressAsyncHandler = require ('express-async-handler');
+const Configuration = require ('../models/configurationModel.js');
 const Customer = require ('../models/customerModel.js');
 const Invoice = require ('../models/invoiceModel.js');
 const Receipt = require ('../models/receiptModel.js');
@@ -38,8 +39,21 @@ customerRouter.get('/', async (req, res) => {
 customerRouter.post(
   '/signup',
   expressAsyncHandler(async (req, res) => {
+
+    const configuration = await Configuration.findById(req.body.punto);
+    if (configuration) {
+      configuration.numIntCli = configuration.numIntCli + 1;
+      await configuration.save();
+      // res.send({ message: 'Configuration Updated' });
+    } else {
+      // res.status(404).send({ message: 'Configuration Not Found' });
+    }
+
+
+
+  //////////
     const newCustomer = new Customer({
-      codCus: 0,
+      codCus: configuration.numIntCli,
       nameCus: req.body.nameCus,
       emailCus: req.body.emailCus,
       domcomer: req.body.domcomer,
@@ -166,5 +180,15 @@ customerRouter.get('/:id', async (req, res) => {
     res.status(404).send({ message: 'Customer Not Found' });
   }
 });
+
+customerRouter.get('/byemail/:Email', async (req, res) => {
+  const customer = await Customer.findOne({emailCus: req.params.Email});
+  if (customer) {
+    res.send(customer);
+  } else {
+    res.status(404).send({ message: 'Customer Not Found' });
+  }
+});
+
 
 module.exports = customerRouter;

@@ -4,8 +4,20 @@ const Comprobante = require('../../models/comprobanteModel');
 const Invoice = require('../../models/invoiceModel');
 
 const getComprobantes = async( req, res = response ) => {
-    const comprobantes = await Comprobante.find({codCon : req.query.id_config})
-        .sort({ nameCom: 'asc' })
+
+  const { query } = req;
+  const Haber = query.isHaber || '';
+    const HaberFilter =
+      Haber && Haber !== 'all'
+        ? {
+          isHaber: Haber
+          }
+        : {};
+
+    const comprobantes = await Comprobante.find({
+       ...HaberFilter,
+        codCon : req.query.id_config
+        }).sort({ nameCom: 'asc' })
         .lean();
 
     return res.status(200).json( comprobantes );

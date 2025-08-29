@@ -8,12 +8,18 @@ const Supplier =require ('../models/supplierModel.js');
 const Valuee =require ('../models/valueeModel.js');
 const Comprobante =require ('../models/comprobanteModel.js');
 const Encargado =require ('../models/encargadoModel.js');
+const Parte =require ('../models/parteModel.js');
+const Instrumento =require ('../models/instrumentoModel.js');
 const data =require ('../data.js');
 const Instrumento = require('../models/instrumentoModel.js');
 
 const seedRouter = express.Router();
 
 seedRouter.get('/', async (req, res) => {
+  await Parte.remove({});
+  const createdPartes = await Parte.insertMany(data.parte);
+  await Instrumento.remove({});
+  const createdInstrumentos = await Instrumento.insertMany(data.instrumento);
   await User.remove({});
   const createdUsers = await User.insertMany(data.users);
   await Category.remove({});

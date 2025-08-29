@@ -79,6 +79,17 @@ const data = {
           },
     ],
 
+  parte: [
+      {
+        codPar: '1',
+        name: 'PARTE1',
+        },
+        {
+          codPar: '2',
+          name: 'PARTE2',
+          },
+    ],
+
 
   configuration: [
       {
@@ -93,6 +104,7 @@ const data = {
         numIntRec: 0,
         numIntCaj: 0,
         numIntMov: 0,
+        numIntCli: 1000000,
       },
       {
         codCon: '0002',
@@ -106,6 +118,7 @@ const data = {
         numIntRec: 0,
         numIntCaj: 0,
         numIntMov: 0,
+        numIntCli: 1000000,
       },
       ],
       
@@ -128,7 +141,7 @@ const data = {
       lastname: 'Javier',
       email: 'admin@example.com',
       phone: '1',
-      password: bcrypt.hashSync('123456'),
+      password: bcrypt.hashSync('Aa123456'),
       image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
       isAdmin: true,
       isActive: true,
@@ -158,7 +171,7 @@ const data = {
       lastname: 'Juan',
       email: 'user@example.com',
       phone: '2',
-      password: bcrypt.hashSync('123456'),
+      password: bcrypt.hashSync('Aa123456'),
       image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
       isAdmin: false,
       isActive: true,
@@ -188,7 +201,7 @@ const data = {
       lastname: 'Oo',
       email: 'Oo@oo.com',
       phone: '3',
-      password: bcrypt.hashSync('123456'),
+      password: bcrypt.hashSync('Aa123456'),
       image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
       isAdmin: false,
       isActive: true,

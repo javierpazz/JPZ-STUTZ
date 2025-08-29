@@ -3150,10 +3150,14 @@ invoiceRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     
-    console.log("recibo")
     //////////  GENERA RECIBO /////////////////
     let recAux = 0;
-    if ( req.body.receiptAux.recDat && req.body.receiptAux.desVal) {
+    console.log("recibo")
+    console.log(req.body.receiptAux.recDat)
+    console.log(req.body.receiptAux.desVal)
+    console.log(req.body.receiptAux.receiptItems)
+    console.log("recibo")
+    if ( req.body.receiptAux.recDat !== "" && req.body.receiptAux.desVal !== "") {
       //////////  numera RECIBO /////////////////
       
       if (req.body.receiptAux.recNum > 0)
@@ -3263,7 +3267,7 @@ invoiceRouter.post(
     
 
     //////////  MODIFICA STOCK /////////////////
-    //////////  numera factura /////////////////
+        //////////  numera factura /////////////////
       
       if (req.body.invoiceAux.invNum > 0)
         {invNumero = req.body.invoiceAux.invNum }
@@ -3337,6 +3341,7 @@ invoiceRouter.post(
           invNum: invNumero,
           //////////  numera factura /////////////////
           invDat: req.body.invoiceAux.invDat,
+          dueDat: req.body.invoiceAux.dueDat,
           recNum: invrecNum,
           recDat: invrecDat,
           desVal: req.body.invoiceAux.desVal,
@@ -3548,6 +3553,7 @@ invoiceRouter.post(
       dueDat: req.body.dueDat,
       invNum: req.body.invNum,
       invDat: req.body.invDat,
+      dueDat: req.body.dueDat,
       recNum: req.body.recNum,
       recDat: req.body.recDat,
       desVal: req.body.desVal,
@@ -3704,15 +3710,101 @@ invoiceRouter.get(
 );
 
 invoiceRouter.put(
+  '/:id/geninvRem',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+            //////////  GENERA RECIBO /////////////////
+            let recAux = 0;
+            if ( req.body.receiptAux.recDat && req.body.receiptAux.desVal) {
+              //////////  numera RECIBO /////////////////
+              
+              if (req.body.receiptAux.recNum > 0)
+                {recNumero = req.body.receiptAux.recNum }
+              else {
+                const configId = req.body.receiptAux.codCon._id;
+          const configuracion = await Configuration.findById(configId);
+          if (configuracion) {
+            configuracion.numIntRec = configuracion.numIntRec + 1;
+            await configuracion.save();
+          }
+          recNumero = configuracion.numIntRec;
+        };
+        //////////  numera RECIBO /////////////////
+  
+    const newReceipt = new Receipt({
+      receiptItems: req.body.receiptAux.receiptItems.map((x) => ({
+        ...x,
+        valuee: x._id,
+      })),
+      subTotal: req.body.receiptAux.subTotal,
+      total: req.body.receiptAux.total,
+      totalBuy: req.body.receiptAux.totalBuy,
+      user: req.body.receiptAux.user,
+      id_client: req.body.receiptAux.codCus._id,
+      id_config: req.body.receiptAux.codCon._id,
+      codConNum: req.body.receiptAux.codConNum,
+      supplier: req.body.receiptAux.codSup,
+      //////////  numera recibo /////////////////
+      recNum: recNumero,
+      //////////  numera recibo /////////////////
+      recDat: req.body.receiptAux.recDat,
+      desVal: req.body.receiptAux.desVal,
+      notes: req.body.receiptAux.notes,
+      salbuy: req.body.receiptAux.salbuy,
+    });
+    const receipt = await newReceipt.save();
+    recAux = receipt.recNum;
+  }else{
+    recAux = 0;  
+    recDat = null;
+  }
+      //////////  GENERA RECIBO /////////////////
+
+      //////////  numera factura /////////////////
+    
+      if (req.body.invoiceAux.invNum > 0)
+        {invNumero = req.body.invoiceAux.invNum }
+        else {
+          const comproId = req.body.invoiceAux.codCom;
+          const comprobante = await Comprobante.findById(comproId);
+          if (comprobante) {
+            comprobante.numInt = comprobante.numInt + 1;
+            await comprobante.save();
+          }
+          invNumero = comprobante.numInt;
+        };
+      //////////  numera factura /////////////////
+
+
+
+
+  const invoice = await Invoice.findById(req.params.id);
+    if (invoice) {
+      invoice.notes = req.body.invoiceAux.notes;
+      invoice.codCom = req.body.invoiceAux.codCom;
+      invoice.dueDat = req.body.invoiceAux.dueDat;
+      invoice.invDat = req.body.invoiceAux.invDat;
+      invoice.invNum = invNumero;
+      await invoice.save();
+      res.send({ message: 'Factura Generado' });
+    } else {
+      res.status(404).send({ message: 'Factura no Encontrada' });
+    }
+  })
+);
+
+
+
+invoiceRouter.put(
   '/:id/applycha',
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const invoice = await Invoice.findById(req.params.id);
-    //    console.log(req.body.recNum);
+       console.log(req.body.staOrd);
     if (invoice) {
       invoice.remNum = req.body.remNum;
       invoice.invNum = req.body.invNum;
-      invoice.staOrd = req.body.staOrd;
+      // invoice.staOrd = req.body.staOrd;
       await invoice.save();
       res.send({ message: 'Remit Invoice Number Changed successfully' });
     } else {
@@ -3720,6 +3812,23 @@ invoiceRouter.put(
     }
   })
 );
+
+invoiceRouter.put(
+  '/:id/applychasta',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const invoice = await Invoice.findById(req.params.id);
+       console.log(req.body.staOrd);
+    if (invoice) {
+      invoice.staOrd = req.body.staOrd;
+      await invoice.save();
+      res.send({ message: 'Estado de Orden Actualizado' });
+    } else {
+      res.status(404).send({ message: 'Orden No Encontrada' });
+    }
+  })
+);
+
 
 invoiceRouter.put(
   '/:id/deleteremit',

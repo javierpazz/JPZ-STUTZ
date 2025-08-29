@@ -45,7 +45,7 @@ const getOrderById = async( req, res = response ) => {
 const getOrdersByUs = async( req, res = response ) => {
     console.log(req);
     const  id  = req.params.id;
-    const orders = await Order.find({ user : id }).lean();
+    const orders = await Order.find({ user : id, ordYes: 'Y' }).lean();
     return res.status(200).json( orders );
 
     // if ( !isValidObjectId(id) ){
@@ -100,6 +100,7 @@ try {
     const newOrder = new Order({ ...req.body,
                                  isPaid: false,
                                  user: req.uid,
+                                 salbuy: "SALE",
                                  ordYes: "Y",
                                  staOrd: "NUEVA" });
     await newOrder.save();

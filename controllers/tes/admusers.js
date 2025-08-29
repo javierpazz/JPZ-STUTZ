@@ -28,6 +28,7 @@ const getUserById = async( req, res = response ) => {
 }
 
 const updateUserAdm = async(req, res) =>  {
+
     const { _id = '' } = req.body;
     if ( !isValidObjectId( _id ) ) {
         return res.status(400).json({ message: 'El id del Usuario no es válido' });
@@ -44,14 +45,14 @@ const updateUserAdm = async(req, res) =>  {
         // Confirmar los passwords
         const validPassword = bcrypt.compareSync( req.body.password, user.password );
         
-        if ( !validPassword ) {
+        ///// verifico pasword y si es admin puede nodificar sin password
+        if ( !validPassword && req.body.puede === false ) {
             return res.status(400).json({
                 ok: false,
                 msg: 'Password incorrecto'
             });
         }
         ///// verifico pasword
-        
         user.name = req.body.name;
         user.email = req.body.email;
         if (req.body.passwordNue !== "") {
@@ -70,7 +71,7 @@ const updateUserAdm = async(req, res) =>  {
 
 
 
-const updateUser = async(req, res) =>  {
+const updateUserRole = async(req, res) =>  {
     
     const { userId = '', role = '' } = req.body;
     
@@ -180,7 +181,7 @@ module.exports = {
     getUsers,
     getUserById,
     updateUserAdm,
-    updateUser,
+    updateUserRole,
     updateUserAdministracion,
     createUser,
     deleteUser

@@ -14,6 +14,7 @@ const configurationSchema = new mongoose.Schema(
     numIntOdp: { type: Number },
     numIntCaj: { type: Number },
     numIntMov: { type: Number },
+    numIntCli: { type: Number },
 
   },
   {
