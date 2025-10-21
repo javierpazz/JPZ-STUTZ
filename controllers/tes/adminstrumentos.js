@@ -60,7 +60,8 @@ const updateInstrumento = async(req, res) =>  {
         }
         instrumento.codIns = req.body.codIns;
         instrumento.name = req.body.name;
-        instrumento.orderItems = req.body.orderItems;
+        instrumento.publico = req.body.publico;
+        // instrumento.orderItems = req.body.orderItems;
         await instrumento.save();
         
 
@@ -110,6 +111,7 @@ const createInstrumento = async(req, res) => {
             return res.status(400).json({ message: 'Ya existe un instrumento con esa Descripcion' });
         }
         delete req.body['_id'];
+        req.body.orderItems=[];
         const instrumento = new Instrumento( req.body );
         await instrumento.save();
 

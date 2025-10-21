@@ -18,7 +18,8 @@ services:
     depends_on:
       - db
     # image: javierpazz/jpzstutz
-    image: stutz
+    image: javierpazz/jpzecofacesc:1.0.10
+    # image: stutz
     ports:
       - 4000:3000
     environment:

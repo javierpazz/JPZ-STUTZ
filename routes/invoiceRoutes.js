@@ -8,6 +8,7 @@ const User = require ('../models/userModel.js');
 const Product = require ('../models/productModel.js');
 const Configuration = require ('../models/configurationModel.js');
 const Comprobante = require ('../models/comprobanteModel.js');
+const { randomUUID } = require('crypto');
 const { isAuth, isAdmin, mailgun, payInvoiceEmailTemplate } = require ('../utils.js');
 
 const invoiceRouter = express.Router();
@@ -519,6 +520,7 @@ invoiceRouter.get(
         {
           $addFields: {
             instruName: '$instruDetails.name',
+            instruPublico: '$instruDetails.publico',
           },
         },
         {
@@ -771,7 +773,7 @@ invoiceRouter.get(
        ...existeIns
       })
       .populate('id_client', 'nameCus')
-      .populate('id_instru', 'name')
+      .populate('id_instru', 'name publico')
       .populate('id_parte', 'name')
       .populate('id_config', 'name')
       .populate('user', 'name')
@@ -2355,7 +2357,6 @@ invoiceRouter.get(
       },
       sortOrder
     ]);
-    console.log(ctacte)
 ///////////////////ordena para listar por cliente
       // Agrupar y calcular el saldo acumulado
       const resultado = [];
@@ -2384,6 +2385,7 @@ invoiceRouter.get(
 
 
         const movimiento = {
+          _uid: randomUUID(),  // <-- agrega un UID único aquí
           fecha: r.docDat,
           compDes: descrip,
           nameUse: r.userInfo.name,
@@ -2415,6 +2417,7 @@ invoiceRouter.get(
 ///////////////////ordena para listar por cliente
     res.send({
       resultado,
+      ctacte
     });
 
   })
@@ -2432,7 +2435,6 @@ invoiceRouter.get(
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const factura = 'BUY';
-    console.log(query)
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
     const fech1 = req.query.fech1 ? new Date(req.query.fech1) : "" ;
@@ -2643,6 +2645,7 @@ invoiceRouter.get(
 
 
         const movimiento = {
+          _uid: randomUUID(),  // <-- agrega un UID único aquí
           fecha: r.docDat,
           compDes: descrip,
           nameUse: r.userInfo.name,
@@ -2674,6 +2677,7 @@ invoiceRouter.get(
 ///////////////////ordena para listar por cliente
     res.send({
       resultado,
+      ctacte
     });
 
   })

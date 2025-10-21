@@ -43,8 +43,9 @@ console.log(`"${process.env.MONGODB_URI}"`);
 
 mongoose
   .connect(process.env.MONGODB_URI)
-  // .connect(`"${process.env.MONGODB_URI}"`)
-  // .connect("mongodb+srv://admin:admin123456@stutzapp.nf44trs.mongodb.net/sdb")
+    // .connect('mongodb://jpazz56a:27052017@stutzDB')
+    // .connect('mongodb://jpazz56a:27052017@stutzDB') esta es para dockerizacion
+  // .connect("mongodb+srv://admin:admin123456@stutzapp.nf44trs.mongodb.net/sdb") esta para mongoatlas
   .then(() => {
     console.log('connected to db');
   })
@@ -118,7 +119,7 @@ orderRoutesMob(app);
 
 
 app.use('/api/upload', uploadRouter);
-app.use('/api/seed', seedRouter);
+app.use('/api/seed123jpz', seedRouter);
 app.use('/api/products', productRouter);
 app.use('/api/encargados', encargadoRouter);
 app.use('/api/suppliers', supplierRouter);

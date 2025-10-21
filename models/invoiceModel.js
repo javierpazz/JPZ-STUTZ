@@ -15,6 +15,7 @@ const orderSchema = new mongoose.Schema(
         venDat : { type: String },
         observ : { type: String },
         terminado : { type: Boolean },
+        codigoPro : { type: String },
         _id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Product',

@@ -11,7 +11,6 @@ const Encargado =require ('../models/encargadoModel.js');
 const Parte =require ('../models/parteModel.js');
 const Instrumento =require ('../models/instrumentoModel.js');
 const data =require ('../data.js');
-const Instrumento = require('../models/instrumentoModel.js');
 
 const seedRouter = express.Router();
 
@@ -97,7 +96,7 @@ const data1 = {
         codCom: '5',
         nameCom: 'NOTA DEBITO',
         claCom: '4',
-        isHaber: 'false',
+        isHaber: 'true',
         noDisc: 'true',
         toDisc: 'false',
         itDisc: 'false',
@@ -109,7 +108,7 @@ const data1 = {
         codCom: '6',
         nameCom: 'NOTA CREDITO',
         claCom: '4',
-        isHaber: 'true',
+        isHaber: 'false',
         noDisc: 'true',
         toDisc: 'false',
         itDisc: 'false',
@@ -157,7 +156,7 @@ const data1 = {
         codCom: '4',
         nameCom: 'COMP NO FISCAL',
         claCom: '4',
-        isHaber: 'false',
+        isHaber: 'true',
         noDisc: 'true',
         toDisc: 'false',
         itDisc: 'false',
@@ -169,7 +168,7 @@ const data1 = {
             codCom: '5',
             nameCom: 'NOTA DEBITO',
             claCom: '4',
-            isHaber: 'false',
+            isHaber: 'true',
             noDisc: 'true',
             toDisc: 'false',
             itDisc: 'false',
@@ -181,7 +180,7 @@ const data1 = {
             codCom: '6',
             nameCom: 'NOTA CREDITO',
             claCom: '4',
-            isHaber: 'true',
+            isHaber: 'false',
             noDisc: 'true',
             toDisc: 'false',
             itDisc: 'false',

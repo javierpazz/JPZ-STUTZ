@@ -72,7 +72,7 @@ valueeRouter.delete(
 
     const receipts = await Receipt.findOne({"receiptItems._id": req.params.id})
     if (receipts) {
-      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este Valor' });
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este Valor' });
       return;
     }
 

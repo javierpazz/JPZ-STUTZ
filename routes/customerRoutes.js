@@ -128,12 +128,12 @@ customerRouter.delete(
 
     const invoices = await Invoice.findOne({id_client: req.params.id });
     if (invoices) {
-      res.status(404).send({ message: 'No Puede Borrar por que tiene Facturas con este cliente' });
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este cliente' });
       return;
     }
     const receipts = await Receipt.findOne({id_client: req.params.id })
     if (receipts) {
-      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este cliente' });
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este cliente' });
       return;
     }
 

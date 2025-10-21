@@ -5,6 +5,7 @@ const User = require ('../models/userModel.js');
 const Encargado = require ('../models/encargadoModel.js');
 const Product = require ('../models/productModel.js');
 const Configuration = require ('../models/configurationModel.js');
+const { randomUUID } = require('crypto');
 const { isAuth, isAdmin, mailgun, payReceiptEmailTemplate } = require ('../utils.js');
 
 const receiptRouter = express.Router();
@@ -143,6 +144,7 @@ receiptRouter.get(
 
 
         const movimiento = {
+          _uid: randomUUID(), // 👈 unique ID for React keys
           fecha: r.cajDat || r.recDat,
           compDes: compDesVar,
           nameCus: r.user.name,
@@ -258,6 +260,7 @@ receiptRouter.get(
   
         if (!agrupadoPorUser[userId]) {
           agrupadoPorUser[userId] = {
+            _uid: randomUUID(), // 👈 ID único para el grupo 
             user: userNombre,
             movimientos: [],
             saldoTotal: 0,
@@ -278,6 +281,7 @@ receiptRouter.get(
 
 
         const movimiento = {
+          _uid: randomUUID(), // 👈 ID único por movimiento
           fecha: r.cajDat || r.recDat,
           compDes: compDesVar,
           descripcion: descrip,
@@ -298,6 +302,7 @@ receiptRouter.get(
       // Convertir el objeto agrupado a array final
       for (const userId in agrupadoPorUser) {
         resultado.push({
+          _uid: agrupadoPorUser[userId]._uid,
           user: userId,
           nombreCliente: agrupadoPorUser[userId].user,
           movimientos: agrupadoPorUser[userId].movimientos,

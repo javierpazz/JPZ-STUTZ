@@ -1,6 +1,7 @@
 const express = require ('express');
 const expressAsyncHandler = require ('express-async-handler');
 const StateOrd = require ('../models/stateOrdModel.js');
+const Invoice = require ('../models/invoiceModel.js');
 const { isAuth, isAdmin } = require ('../utils.js');
 
 const stateOrdRouter = express.Router();
@@ -47,6 +48,14 @@ stateOrdRouter.delete(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+
+    const invoices = await Invoice.findOne({id_client: req.params.id });
+    if (invoices) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este Usuario' });
+      return;
+    }
+
+
     const stateOrd = await StateOrd.findById(req.params.id);
     if (stateOrd) {
       await stateOrd.remove();

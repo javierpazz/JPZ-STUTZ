@@ -1,4 +1,4 @@
-stutzdb
+stutzdb/
 Dockerfile
 docker-compose.yml
 .env

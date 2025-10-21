@@ -72,10 +72,17 @@ const data = {
       {
         codIns: '1',
         name: 'ESCRITURA',
-        },
-        {
-          codIns: '2',
-          name: 'BOLETO',
+        publico: true,
+      },
+      {
+        codIns: '2',
+        name: 'BOLETO',
+        publico: true,
+      },
+      {
+        codIns: '3',
+        name: 'CERTIFICACION',
+        publico: true,
           },
     ],
 
@@ -94,8 +101,8 @@ const data = {
   configuration: [
       {
         codCon: '0001',
-        name: 'STUTZ WINES',
-        domcomer: 'DIRECCION STUTZ WINES',
+        name: 'PIA STUTZ',
+        domcomer: 'DIRECCION PIA STUTZ',
         cuit: '20-20202020-2',
         coniva: 'RESP. INSCRIPTO',
         ib: '87654321',
@@ -108,8 +115,8 @@ const data = {
       },
       {
         codCon: '0002',
-        name: 'FILTROS NORTE',
-        domcomer: 'DIRECCION FILTROS NORTE',
+        name: 'CUCA NANNI',
+        domcomer: 'DIRECCION CUCA NANNI',
         cuit: '20-20202020-2',
         coniva: 'RESP. INSCRIPTO',
         ib: '87654321',

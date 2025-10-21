@@ -87,12 +87,12 @@ supplierRouter.delete(
 
     const invoices = await Invoice.findOne({supplier: req.params.id });
     if (invoices) {
-      res.status(404).send({ message: 'No Puede Borrar por que tiene Facturas con este Proovedor' });
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este Proovedor' });
       return;
     }
     const receipts = await Receipt.findOne({supplier: req.params.id })
     if (receipts) {
-      res.status(404).send({ message: 'No Puede Borrar por que tiene Recibos con este Proovedor' });
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este Proovedor' });
       return;
     }
 

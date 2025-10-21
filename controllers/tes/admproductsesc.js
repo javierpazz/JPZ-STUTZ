@@ -2,6 +2,7 @@ const { response } = require('express');
 const { isValidObjectId } = require('mongoose');
 const Product = require('../../models/productModel');
 const Invoice = require('../../models/invoiceModel');
+const Instrumento = require('../../models/instrumentoModel');
 
 const getProducts = async( req, res = response ) => {
 
@@ -97,12 +98,16 @@ const deleteProducto = async(req, res) =>  {
         return res.status(400).json({ message: 'El id de la Diligencia no es válido' });
     }
     
+    const instrumentos = await Instrumento.findOne({ "orderItems._id": req.params.id });
+    if (instrumentos) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Instrumentos Parametrizados con esta Diligencia' });
+      return;
+    }
     const invoices = await Invoice.findOne({ "orderItems._id": req.params.id });
     if (invoices) {
       res.status(404).send({ message: 'No Puede Borrar por que tiene Entradas con esta Diligencia' });
       return;
     }
-
 
 
     try {

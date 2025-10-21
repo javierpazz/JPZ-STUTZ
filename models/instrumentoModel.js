@@ -5,6 +5,7 @@ const instrumentoSchema = new mongoose.Schema(
 
     codIns: { type: String, required: true },
     name: { type: String, required: true },
+    publico : { type: Boolean },
     orderItems: [
       {
         slug: { type: String },

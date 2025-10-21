@@ -2,6 +2,7 @@ const express = require ('express');
 const bcrypt = require ('bcryptjs');
 const expressAsyncHandler = require ('express-async-handler');
 const User = require ('../models/userModel.js');
+const Invoice = require ('../models/invoiceModel.js');
 const { isAuth, isAdmin, generateToken, baseUrl, mailgun } = require ('../utils.js');
 
 const userRouter = express.Router();
@@ -107,6 +108,12 @@ userRouter.delete(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const invoices = await Invoice.findOne({id_client: req.params.id });
+    if (invoices) {
+      res.status(404).send({ message: 'No Puede Borrar por que tiene Movimientos con este Usuario' });
+      return;
+    }
+
     const user = await User.findById(req.params.id);
     if (user) {
       if (user.email === 'admin@example.com') {
