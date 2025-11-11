@@ -145,7 +145,8 @@ const loginUsuario = async(req, res = response ) => {
 
             return res.status(400).json({
                 ok: false,
-                msg: 'El usuario no existe con ese email'
+                // msg: 'El usuario no existe con ese email'
+                msg: 'Datos Incorrectos'
             });
         }
 
@@ -155,7 +156,8 @@ const loginUsuario = async(req, res = response ) => {
         if ( !validPassword ) {
             return res.status(400).json({
                 ok: false,
-                msg: 'Password incorrecto'
+                // msg: 'Password incorrecto'
+                msg: 'Datos Incorrectos'
             });
         }
 
@@ -201,7 +203,8 @@ const loginUsuarioAdm = async(req, res = response ) => {
         if ( !usuario.isActive ) {
             return res.status(400).json({
                 ok: false,
-                msg: 'Usuario Inactivo'
+                // msg: 'Usuario Inactivo'
+                msg: 'Datos Incorrectos'
             });
         }
 
@@ -211,7 +214,8 @@ const loginUsuarioAdm = async(req, res = response ) => {
         if ( !validPassword ) {
             return res.status(400).json({
                 ok: false,
-                msg: 'Password incorrecto'
+                // msg: 'Password incorrecto'
+                msg: 'Datos Incorrectos'
             });
         }
 
@@ -260,7 +264,8 @@ const revalidarToken = async (req, res = response ) => {
     if ( !usuario ) {
         return res.status(400).json({
             ok: false,
-            msg: 'El usuario no existe con ese email'
+            // msg: 'El usuario no existe con ese email'
+                msg: 'Datos Incorrectos'
         });
     }
 

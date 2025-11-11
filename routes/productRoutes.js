@@ -301,6 +301,7 @@ productRouter.put(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+console.log(req.body)
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {

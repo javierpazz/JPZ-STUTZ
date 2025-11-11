@@ -46,7 +46,7 @@ const getOrdersByUs = async( req, res = response ) => {
     console.log(req);
     const  id  = req.params.id;
     const orders = await Order.find({ user : id, ordYes: 'Y' }).lean();
-    return res.status(200).json( orders );
+    // return res.status(200).json( orders );
 
     // if ( !isValidObjectId(id) ){
     //     return null;
@@ -54,7 +54,7 @@ const getOrdersByUs = async( req, res = response ) => {
 
  
     if ( !orders ) {
-        return null;
+    return res.status(500).json( orders );
     }
 
     return res.status(200).json( orders );

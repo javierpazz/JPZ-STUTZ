@@ -3194,7 +3194,7 @@ invoiceRouter.post(
       recNum: recNumero,
       //////////  numera recibo /////////////////
       recDat: req.body.receiptAux.recDat,
-      desVal: req.body.receiptAux.desVal,
+      desval: req.body.receiptAux.desVal,
       notes: req.body.receiptAux.notes,
       salbuy: req.body.receiptAux.salbuy,
     });
@@ -3789,6 +3789,8 @@ invoiceRouter.put(
       invoice.dueDat = req.body.invoiceAux.dueDat;
       invoice.invDat = req.body.invoiceAux.invDat;
       invoice.invNum = invNumero;
+      invoice.recNum = recAux;
+      invoice.recDat = req.body.invoiceAux.invDat;
       await invoice.save();
       res.send({ message: 'Factura Generado' });
     } else {

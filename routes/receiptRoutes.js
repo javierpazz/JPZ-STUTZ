@@ -242,7 +242,9 @@ receiptRouter.get(
       ...configuracionFilter,
        ...usuarioFilter,
        ...encargadoFilter,
-    })
+        // salbuy: 'BUY', cajNum: {$gt : 0}
+        // cajNum: {$gt : 0}
+      })
         .sort({ user: 1, createdAt: 1 })
         .populate('user', 'name')
         .populate('supplier', 'name')
@@ -842,7 +844,7 @@ receiptRouter.post(
       cajNum: cajNumero,
       //////////  numera compCaja /////////////////
       cajDat: req.body.cajDat,
-      desVal: req.body.desVal,
+      desval: req.body.receiptItems[0].desVal,
       notes: req.body.notes,
       salbuy: req.body.salbuy,
     });
@@ -888,7 +890,7 @@ receiptRouter.post(
       recNum: recNumero,
       //////////  numera remito /////////////////
       recDat: req.body.recDat,
-      desVal: req.body.desVal,
+      desval: req.body.receiptItems[0].desVal,
       notes: req.body.notes,
       salbuy: req.body.salbuy,
     });
