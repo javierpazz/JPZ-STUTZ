@@ -92,7 +92,7 @@ app.use('/api/tes/admin/estadosorden', require('./routes/tes/admestadosorden') )
 app.use('/api/tes/admin/comprobantes', require('./routes/tes/admcomprobantes') );
 app.use('/api/tes/admin/partes', require('./routes/tes/admpartes') );
 app.use('/api/tes/admin/upload', uploadRouter);
-// app.use('/api/admin/upload', require('./tes/routes/admproductsupload') );
+// app.use('/api/tes/admin/upload', require('./routes/tes/admproductsupload') );
 app.use('/api/tes/admin/orders', require('./routes/tes/admorders') );
 app.use('/api/tes/seed', require('./routes/tes/seed') );
 //ooo app.use('/api/search', require('./tes/routes/searchPro') );

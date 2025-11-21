@@ -93,7 +93,7 @@ userRouter.put(
       if (req.body.isAdmin) {
         user.role="admin"
       }else {
-        user.role="user"
+        user.role="client"
       }
       const updatedUser = await user.save();
       res.send({ message: 'User Updated', user: updatedUser });
@@ -131,22 +131,8 @@ userRouter.post(
   '/signinadmin',
   expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
-    
-///// control logs
-    if (!user) {
-    return res.status(401).send({ message: 'Datos Invalidos' });
-    }
-    if (!user.isActive || user.role === "client") {
-    return res.status(401).send({ message: 'Hable con Administrador ' });
-    }
-///// control logs
-
-    // if (user && user.isActive && user.role !== "client") {
+    if (user && user.isActive && user.role !== "client") {
       if (bcrypt.compareSync(req.body.password, user.password)) {
-///// control logs
-        user.numLogs = 0;
-        await user.save();
-///// control logs
         res.send({
           _id: user._id,
           name: user.name,
@@ -157,45 +143,16 @@ userRouter.post(
         });
         return;
       }
-    // }
-///// control logs
-      const log = user.numLogs + 1;
-      if(log > 3) {
-      user.numLogs = 0;    
-      user.isActive = false;    
-      await user.save();
-      res.status(401).send({ message: 'Hable con Administrador ' });
-      return;
-      }
-      user.numLogs = log;    
-      await user.save();
-      return res.status(401).send({ message: 'Datos Invalidos' });
-
-///// control logs
+    }
+    res.status(401).send({ message: 'Invalid email or password' });
   })
 );
 userRouter.post(
   '/signin',
   expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
-
-///// control logs
-    if (!user) {
-    return res.status(401).send({ message: 'Datos Invalidos' });
-    }
-    if (!user.isActive || user.role !== "client") {
-    return res.status(401).send({ message: 'Hable con Administrador ' });
-    }
-///// control logs
-
-
-
-    // if (user && user.isActive && user.role === "client") {
+    if (user && user.isActive && user.role == "client") {
       if (bcrypt.compareSync(req.body.password, user.password)) {
-///// control logs
-        user.numLogs = 0;
-        await user.save();
-///// control logs
         res.send({
           _id: user._id,
           name: user.name,
@@ -206,21 +163,8 @@ userRouter.post(
         });
         return;
       }
-    // }
-///// control logs
-      const log = user.numLogs + 1;
-      if(log > 3) {
-      user.numLogs = 0;    
-      user.isActive = false;    
-      await user.save();
-      res.status(401).send({ message: 'Hable con Administrador ' });
-      return;
-      }
-      user.numLogs = log;    
-      await user.save();
-      return res.status(401).send({ message: 'Datos Invalidos' });
-///// control logs
-
+    }
+    res.status(401).send({ message: 'Invalid email or password' });
   })
 );
 

@@ -247,7 +247,9 @@ productRouter.put(
       });
       const updates = await Promise.all(
         products.map(async (product) => {
-          product.price = parseFloat((product.price / (1 + porcen / 100)).toFixed(2));
+          // product.price = parseFloat((product.price / (1 + porcen / 100)).toFixed(2));
+          product.price = parseFloat((product.price  - (product.price * (porcen / 100))).toFixed(2));
+
           return await product.save();
         })
       );

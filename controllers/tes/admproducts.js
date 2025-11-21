@@ -1,6 +1,12 @@
 const { response } = require('express');
 const { isValidObjectId } = require('mongoose');
 const Product = require('../../models/productModel');
+const { v2 : cloudinary } = require ('cloudinary');
+cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
 
 const getProducts = async( req, res = response ) => {
 
@@ -40,7 +46,7 @@ const updateProduct = async(req, res) =>  {
                 // Borrar de cloudinary
                 const [ fileId, extension ] = image.substring( image.lastIndexOf('/') + 1 ).split('.')
                 console.log({ image, fileId, extension });
-                // await cloudinary.uploader.destroy( fileId );
+                await cloudinary.uploader.destroy( fileId );
             }
         });
 

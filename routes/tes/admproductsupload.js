@@ -5,10 +5,10 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { isDate } = require('../helpers/isDate');
-const { validarCampos } = require('../middlewares/validar-campos');
-const { validarJWT } = require('../middlewares/validar-jwt');
-const { uploadfile } = require('../controllers/admproductsupload');
+const { isDate } = require('../../tes/helpers/isDate');
+const { validarCampos } = require('../../tes/middlewares/validar-campos');
+const { validarJWT } = require('../../tes/middlewares/validar-jwt');
+const { uploadfile } = require('../../controllers/tes/admproductsupload');
 
 const router = Router();
 
