@@ -66,6 +66,14 @@ const data = {
           cuit: '20-20202020-2',
           coniva: 'RESP INSCRIPTO',
           },
+        {
+          codCus: '3',
+          nameCus: 'CLIENTE PRUEBA',
+          emailCus: 'prueba@example.com',
+          domcomer: 'DIRECCION CLIENTE 2',
+          cuit: '20-20202020-2',
+          coniva: 'RESP INSCRIPTO',
+          },
     ],
 
   instrumento: [
@@ -101,8 +109,8 @@ const data = {
   configuration: [
       {
         codCon: '0001',
-        name: 'PIA STUTZ',
-        domcomer: 'DIRECCION PIA STUTZ',
+        name: 'PUNTO DE VENTA 2',
+        domcomer: 'DIRECCION PUNTO DE VENTA 2',
         cuit: '20-20202020-2',
         coniva: 'RESP. INSCRIPTO',
         ib: '87654321',
@@ -115,8 +123,8 @@ const data = {
       },
       {
         codCon: '0002',
-        name: 'CUCA NANNI',
-        domcomer: 'DIRECCION CUCA NANNI',
+        name: 'PUNTO DE VENTA 1',
+        domcomer: 'DIRECCION PUNTO DE VENTA 1',
         cuit: '20-20202020-2',
         coniva: 'RESP. INSCRIPTO',
         ib: '87654321',
@@ -204,9 +212,9 @@ const data = {
     ],
       },
     {
-      name: 'Oo',
-      lastname: 'Oo',
-      email: 'Oo@oo.com',
+      name: 'prueba',
+      lastname: 'prueba',
+      email: 'prueba@example.com',
       phone: '3',
       password: bcrypt.hashSync('Aa123456'),
       image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
