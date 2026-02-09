@@ -5,7 +5,8 @@ const baseUrl = () =>
   process.env.BASE_URL
     ? process.env.BASE_URL
     : process.env.NODE_ENV !== 'production'
-    ? 'http://localhost:3000'
+    // ? 'http://localhost:3000'
+    ? 'http://localhost:5173'
     : 'https://yourdomain.com';
 
 
@@ -20,7 +21,7 @@ const generateToken = (user) => {
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: '30d',
+      expiresIn: '3h',
     }
   );
 };

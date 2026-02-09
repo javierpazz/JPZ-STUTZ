@@ -40,6 +40,13 @@ customerRouter.post(
   '/signup',
   expressAsyncHandler(async (req, res) => {
 
+    const customerBody = await Customer.findOne({emailCus : req.body.emailCus});
+    if (customerBody) {
+      res.send({ message: 'Ya existe cliente con ese mail' });
+      return;
+    }
+
+
     const configuration = await Configuration.findById(req.body.punto);
     if (configuration) {
       configuration.numIntCli = configuration.numIntCli + 1;

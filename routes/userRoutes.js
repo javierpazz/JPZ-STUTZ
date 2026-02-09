@@ -3,6 +3,7 @@ const bcrypt = require ('bcryptjs');
 const expressAsyncHandler = require ('express-async-handler');
 const User = require ('../models/userModel.js');
 const Invoice = require ('../models/invoiceModel.js');
+const jwt = require ('jsonwebtoken');
 const { isAuth, isAdmin, generateToken, baseUrl, mailgun } = require ('../utils.js');
 
 const userRouter = express.Router();
@@ -283,6 +284,7 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
 
+    
     if (user) {
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
         expiresIn: '3h',
