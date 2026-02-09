@@ -137,8 +137,11 @@ userRouter.post(
     if (!user) {
     return res.status(401).send({ message: 'Datos Invalidos' });
     }
-    if (!user.isActive || user.role === "client") {
-    return res.status(401).send({ message: 'Hable con Administrador ' });
+    if (!user.isActive) {
+    return res.status(401).send({ message: 'No Activo - Hable con el Administrador' });
+    }
+    if ( user.role === "client") {
+    return res.status(401).send({ message: 'Este usuario es de un cliente' });
     }
 ///// control logs
 
@@ -184,8 +187,11 @@ userRouter.post(
     if (!user) {
     return res.status(401).send({ message: 'Datos Invalidos' });
     }
-    if (!user.isActive || user.role !== "client") {
-    return res.status(401).send({ message: 'Hable con Administrador ' });
+    if (!user.isActive ) {
+    return res.status(401).send({ message: 'No Activo - Hable con el Administrador' });
+    }
+    if ( user.role !== "client") {
+    return res.status(401).send({ message: 'Este usuario es de la Empresa' });
     }
 ///// control logs
 
@@ -304,7 +310,7 @@ userRouter.post(
             subject: `Reset Password`,
             html: ` 
              <p>Please Click the following link to reset your password:</p> 
-             <a href="${baseUrl()}/reset-password/${token}"}>Reset Password</a>
+             <a href="${baseUrl()}/reset-password/${token}/"}>Reset Password</a>
              `,
           },
           (error, body) => {

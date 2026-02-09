@@ -140,13 +140,31 @@ const loginUsuario = async(req, res = response ) => {
         
         const usuario = await User.findOne({ email });
 
-        // if ( !usuario ) {
-        if ( !usuario || !usuario.isActive || usuario.role !== "client" ) {
+        if ( !usuario ) {
+        // if ( !usuario || !usuario.isActive || usuario.role !== "client" ) {
 
             return res.status(400).json({
                 ok: false,
-                // msg: 'El usuario no existe con ese email'
                 msg: 'Datos Incorrectos'
+                // msg: 'Este usuario es de la Empresa'
+            });
+        }
+        if ( !usuario.isActive ) {
+        // if ( !usuario || !usuario.isActive || usuario.role !== "client" ) {
+
+            return res.status(400).json({
+                ok: false,
+                msg: 'No Activo - Hable con el Administrador'
+                // msg: 'Este usuario es de la Empresa'
+            });
+        }
+
+        if ( usuario.role !== "client" ) {
+        // if ( !usuario || !usuario.isActive || usuario.role !== "client" ) {
+
+            return res.status(400).json({
+                ok: false,
+                msg: 'Este usuario es de la Empresa'
             });
         }
 
@@ -194,19 +212,33 @@ const loginUsuarioAdm = async(req, res = response ) => {
         
         const usuario = await User.findOne({ email });
         // if (user && user.isActive && user.role !== "client") {
-        if ( !usuario || !usuario.isActive || usuario.role === "client" ) {
+        // if ( !usuario || !usuario.isActive || usuario.role === "client" ) {
+        if ( !usuario  ) {
             return res.status(400).json({
                 ok: false,
                 msg: 'Datos Incorrectos'
             });
         }
+
         if ( !usuario.isActive ) {
+        // if ( !usuario || !usuario.isActive || usuario.role !== "client" ) {
+
             return res.status(400).json({
                 ok: false,
-                // msg: 'Usuario Inactivo'
-                msg: 'Datos Incorrectos'
+                msg: 'No Activo - Hable con el Administrador'
+                // msg: 'Este usuario es de la Empresa'
             });
         }
+
+        if ( usuario.role === "client" ) {
+        // if ( !usuario || !usuario.isActive || usuario.role !== "client" ) {
+
+            return res.status(400).json({
+                ok: false,
+                msg: 'Este usuario es de un cliente'
+            });
+        }
+
 
         // Confirmar los passwords
         const validPassword = bcrypt.compareSync( password, usuario.password );
