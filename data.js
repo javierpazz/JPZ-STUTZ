@@ -182,7 +182,7 @@ const data = {
     ],
     },
     {
-      name: 'Juan',
+      name: 'Juan User',
       lastname: 'Juan',
       email: 'user@example.com',
       phone: '2',
@@ -212,9 +212,9 @@ const data = {
     ],
       },
     {
-      name: 'prueba',
-      lastname: 'prueba',
-      email: 'prueba@example.com',
+      name: 'client',
+      lastname: 'client',
+      email: 'client@example.com',
       phone: '3',
       password: bcrypt.hashSync('Aa123456'),
       image : "https://firebasestorage.googleapis.com/v0/b/delivery-udemy-mysql-b2eff.appspot.com/o/user_menu.png?alt=media&token=73763014-45af-465d-9831-7ef660ca5bb1",
