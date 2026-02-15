@@ -124,7 +124,7 @@ const createUser = async(req, res) => {
             return res.status(400).json({ message: 'Ya existe un Usuario con ese Nombre' });
         }
         delete req.body['_id'];
-        req.body.password = bcrypt.hashSync(req.body.password);
+        req.body.password = bcrypt.hashSync(req.body.passwordNue);
         req.body.role = "user";
         const user = new User( req.body );
         await user.save();

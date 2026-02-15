@@ -164,8 +164,8 @@ userRouter.post(
     // }
 ///// control logs
       const log = user.numLogs + 1;
-      if(log > 3) {
-      user.numLogs = 0;    
+      if(log > 5) {
+      // user.numLogs = 0;    
       user.isActive = false;    
       await user.save();
       res.status(401).send({ message: 'Hable con Administrador ' });
@@ -216,8 +216,8 @@ userRouter.post(
     // }
 ///// control logs
       const log = user.numLogs + 1;
-      if(log > 3) {
-      user.numLogs = 0;    
+      if(log > 5) {
+      // user.numLogs = 0;    
       user.isActive = false;    
       await user.save();
       res.status(401).send({ message: 'Hable con Administrador ' });
@@ -305,7 +305,7 @@ userRouter.post(
         .messages()
         .send(
           {
-            from: 'Amazona <me@mg.yourdomain.com>',
+            from: 'JPZ <javier_pazz@hotmail.com>',
             to: `${user.name} <${user.email}>`,
             subject: `Reset Password`,
             html: ` 

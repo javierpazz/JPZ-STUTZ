@@ -84,6 +84,24 @@ orderRouter.post(
     });
 
     const order = await newOrder.save();
+      mailgun()
+        .messages()
+        .send(
+          {
+            from: 'JPZ <javier_pazz@hotmail.com>',
+            to: `${req.user.name} <${req.user.email}>`,
+            subject: `New order ${order._id}`,
+            html: payOrderEmailTemplate(order),
+          },
+          (error, body) => {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log(body);
+            }
+          }
+        );
+
     res.status(201).send({ message: ' Orden Creada', order });
   })
 );

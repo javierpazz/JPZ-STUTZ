@@ -60,7 +60,7 @@ const mailgun = () =>
 const payOrderEmailTemplate = (order) => {
   return `<h1>Thanks for shopping with us</h1>
   <p>
-  Hi ${order.user.name},</p>
+  Hi ${order.shippingAddress.fullName},</p>
   <p>We have finished processing your order.</p>
   <h2>[Order ${order._id}] (${order.createdAt.toString().substring(0, 10)})</h2>
   <table>
@@ -75,7 +75,7 @@ const payOrderEmailTemplate = (order) => {
     .map(
       (item) => `
     <tr>
-    <td>${item.name}</td>
+    <td>${item.title}</td>
     <td align="center">${item.quantity}</td>
     <td align="right"> $${item.price.toFixed(2)}</td>
     </tr>
