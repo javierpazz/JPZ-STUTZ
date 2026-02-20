@@ -89,7 +89,16 @@ productRouter.get('/eco', async (req, res) => {
     )
     .sort({ name: +1 }
     );
-  res.send(products);
+
+       const updatedProducts = products.map( product => {
+        product.images = product.images.map( image => {
+            return image.includes('http') ? image : `${ process.env.BASE_URL}${ image }`
+        });
+
+        return product;
+    })
+
+  res.send(updatedProducts);
 });
 
 productRouter.get('/xpv', async (req, res) => {
