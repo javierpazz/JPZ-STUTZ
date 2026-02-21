@@ -43,16 +43,13 @@ const getProductBySlug = async( req, res = response ) => {
             message: 'Producto no encontrado'
         })
     }
-       const updatedProduct = products.map( product => {
+       const updatedProduct = 
         product.images = product.images.map( image => {
             return image.includes('http') ? image : `${ process.env.BASE_URL}${ image }`
-        });
-
-        return product;
     })
+        product.images = updatedProduct
 
-
-    return res.json( updatedProduct );
+    return res.json( product );
 
 
 }
